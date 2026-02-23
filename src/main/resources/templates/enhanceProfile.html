@@ -1,0 +1,144 @@
+<th:block th:replace="baseFile :: base(~{::pageCss}, ~{::pageJs}, ~{::content})">
+
+<!-- ================= PAGE CSS ================= -->
+<th:block th:fragment="pageCss">
+    <link rel="stylesheet" th:href="@{/css/signUpStyleEnhanceProfile.css}">
+</th:block>
+
+
+<!-- ================= PAGE CONTENT ================= -->
+<th:block th:fragment="content">
+<section class="success-section">
+    <div class="success-wrapper">
+
+        <!-- Left Panel -->
+        <div class="success-left">
+            <div class="brand-area">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-address-book"></i>
+                </div>
+                <h2 class="brand-name">SmartCM</h2>
+            </div>
+
+            <div class="left-text">
+                <div class="success-badge">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Account Created
+                </div>
+
+                <h1>
+                    You're all set,<br>
+                    <span th:text="${registeredUserDto.name}">Friend</span>!
+                </h1>
+
+                <p>
+                    Your account has been created successfully.
+                    Take a moment to complete your profile.
+                </p>
+            </div>
+
+            <ul class="tip-list">
+                <li><i class="fa-solid fa-image"></i> Add a profile picture</li>
+                <li><i class="fa-solid fa-pen-to-square"></i> Write a short bio</li>
+                <li><i class="fa-solid fa-users"></i> Start adding contacts</li>
+            </ul>
+        </div>
+
+
+        <!-- Right Panel -->
+        <div class="success-right">
+            <div class="form-card">
+
+                <div class="form-header text-center">
+                    <div class="header-icon">🎉</div>
+                    <h3>Complete Your Profile</h3>
+                    <p>This step is optional — but recommended ✨</p>
+                </div>
+
+                <form th:action="@{/enhance-form}"
+                      method="post"
+                      th:object="${enhancedUser}"
+                      enctype="multipart/form-data">
+
+                    <!-- ================= FILE INPUT ================= -->
+                    <div class="mb-4">
+                        <label class="form-label">Profile Picture</label>
+
+                        <div class="file-input-wrapper">
+
+                            <input type="file"
+                                   id="profileFile"
+                                   th:field="*{multipartFile}"
+                                   class="form-control pe-5"
+                                   th:classappend="${#fields.hasErrors('multipartFile')} ? ' is-invalid' : ''"
+                                   accept="image/*">
+
+                            <!-- Clear Button -->
+                            <button type="button"
+                                    id="clearFileBtn"
+                                    class="clear-file-btn"
+                                    style="display:none;">
+                                ✖
+                            </button>
+
+                        </div>
+
+                        <p class="text-muted small mt-2">
+                            Allowed file size: 10KB – 2MB
+                        </p>
+
+                        <p class="validation-msg text-danger"
+                           th:if="${#fields.hasErrors('multipartFile')}"
+                           th:errors="*{multipartFile}">
+                        </p>
+                    </div>
+
+
+                    <!-- ================= BIO INPUT ================= -->
+                    <div class="mb-4">
+                        <label class="form-label">Short Bio</label>
+
+                        <textarea class="form-control"
+                                  th:field="*{bio}"
+                                  rows="4"
+                                  placeholder="Tell something interesting within 200 characters..."
+                                  th:classappend="${#fields.hasErrors('bio')} ? ' is-invalid' : ''">
+                        </textarea>
+
+                        <p class="validation-msg text-danger"
+                           th:if="${#fields.hasErrors('bio')}"
+                           th:errors="*{bio}">
+                        </p>
+                    </div>
+
+
+                    <!-- ================= BUTTONS ================= -->
+                    <div class="d-flex gap-3">
+                        <button type="submit"
+                                class="btn btn-primary btn-lg w-100">
+                            Save &amp; Continue
+                        </button>
+
+                        <a th:href="@{/dashboard}"
+                           class="btn btn-outline-secondary btn-lg w-100">
+                            Skip for Now
+                        </a>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+</th:block>
+
+
+<!-- ================= PAGE JS ================= -->
+<th:block th:fragment="pageJs">
+    <!-- Use defer so DOM is ready -->
+    <script th:src="@{/js/enhanceProfileScript.js}" defer></script>
+</th:block>
+
+</th:block>

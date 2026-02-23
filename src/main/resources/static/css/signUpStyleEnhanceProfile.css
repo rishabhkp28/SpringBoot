@@ -1,0 +1,422 @@
+/* ===== SHARED CSS FOR SIGNUP + SUCCESS PAGES ===== */
+
+/* ===== LAYOUT ===== */
+.signup-section,
+.success-section {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: stretch;
+    background: #f8fafc;
+}
+
+.signup-container,
+.success-wrapper {
+    display: flex;
+    width: 100%;
+}
+
+/* ===== LEFT PANEL ===== */
+.signup-left,
+.success-left {
+    flex: 1;
+    background: linear-gradient(135deg, #1e40af 0%, #1e293b 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 3.5rem;
+    gap: 2.5rem;
+}
+
+.brand-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.brand-icon {
+    background: rgba(255,255,255,0.15);
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.brand-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.left-text h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 1rem;
+}
+
+.left-text h1 span {
+    color: #93c5fd;
+}
+
+.left-text p {
+    color: #cbd5e1;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ===== SUCCESS BADGE ===== */
+.success-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(74, 222, 128, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* ===== FEATURE / TIP LISTS ===== */
+.feature-list,
+.tip-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.feature-list li,
+.tip-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    color: #e2e8f0;
+}
+
+.feature-list li i,
+.tip-list li i {
+    background: rgba(147, 197, 253, 0.2);
+    color: #93c5fd;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+/* ===== RIGHT PANEL ===== */
+.signup-right,
+.success-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    background: #f8fafc;
+}
+
+.form-card {
+    width: 100%;
+    max-width: 460px;
+}
+
+.form-header {
+    margin-bottom: 2rem;
+}
+
+.form-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.3rem;
+}
+
+.form-header p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* success page header centered */
+.form-header.text-center,
+.success-right .form-header {
+    text-align: center;
+}
+
+.header-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+}
+
+/* ===== FIELDS ===== */
+.field-group {
+    margin-bottom: 1.25rem;
+}
+
+.field-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 0.4rem;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+.input-wrap > i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.input-wrap input {
+    width: 100%;
+    padding: 0.7rem 2.8rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #0f172a;
+    background: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    outline: none;
+}
+
+.input-wrap input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-wrap input.is-invalid {
+    border-color: #ef4444;
+}
+
+.field-hint {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin-top: 0.35rem;
+    margin-bottom: 0;
+}
+
+/* ===== PASSWORD TOGGLE ===== */
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: #2563eb;
+}
+
+/* ===== FORM CONTROLS (success page) ===== */
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.form-control {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #0f172a;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 110px;
+}
+
+/* ===== TERMS ===== */
+.terms-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.terms-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #2563eb;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.terms-row label {
+    font-size: 0.875rem;
+    color: #475569;
+    cursor: pointer;
+}
+
+.terms-row label a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.terms-row label a:hover {
+    text-decoration: underline;
+}
+
+/* ===== SUBMIT BUTTON ===== */
+.submit-btn {
+    width: 100%;
+    padding: 0.8rem;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+}
+
+.submit-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+/* bootstrap btn overrides */
+.btn-primary {
+    background: #2563eb;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.btn-outline-secondary {
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #475569;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-secondary:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #1e293b;
+}
+
+/* ===== LOGIN LINK ===== */
+.login-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 0;
+}
+
+.login-link a {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* ===== VALIDATION ===== */
+.validation-msg {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+.file-input-wrapper {
+    position: relative;
+}
+
+.clear-file-btn {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    color: #dc3545;
+    cursor: pointer;
+}
+
+.clear-file-btn:hover {
+    color: #a71d2a;
+}
+
+
+@media (max-width: 768px) {
+    .signup-left,
+    .success-left {
+        display: none;
+    }
+
+    .signup-right,
+    .success-right {
+        padding: 2rem 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .form-card {
+        max-width: 100%;
+    }
+
+    .d-flex.gap-3 {
+        flex-direction: column;
+    }
+}

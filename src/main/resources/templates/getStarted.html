@@ -1,0 +1,31 @@
+<th:block th:replace = "baseFile::base( ~{::pageCss}, ~{::pageJs},~{::content})">
+
+<th:block th:fragment = "content">
+    <section class="hero-bg">
+        <div class="hero-overlay">
+
+            <div class="hero-content text-center">
+                <h1 class="hero-title hero-fade-in">
+                    Smart Contact Manager
+                </h1>
+
+                <p class="hero-subtitle">
+                    Manage all your contacts securely, efficiently,
+                    and from anywhere.
+                </p>
+
+                <a th:href="@{/signUp}" class="btn btn-primary btn-lg hero-btn">
+                    Get Started
+                </a>
+            </div>
+
+        </div>
+    </section>
+</th:block>
+
+<th:block th:fragment = "pageJs"><script th:src="@{/js/getStartedScript.js}"></script></th:block>
+
+<th:block th:fragment = "pageCss"><link rel="stylesheet" th:href="@{/css/getStartedStyle.css}"></th:block>
+</th:block>
+
+

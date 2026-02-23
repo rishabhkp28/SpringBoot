@@ -1,0 +1,125 @@
+<th:block th:replace="baseFile :: base(~{::pageCss}, ~{::pageJs}, ~{::content})">
+
+<th:block th:fragment="pageCss">
+    <link rel="stylesheet" th:href="@{/css/signUpStyleEnhanceProfile.css}">
+</th:block>
+
+<th:block th:fragment="content">
+<section class="signup-section">
+    <div class="signup-container">
+
+        <!-- Left Panel -->
+        <div class="signup-left">
+            <div class="brand-area">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-address-book"></i>
+                </div>
+                <h2 class="brand-name">SmartCM</h2>
+            </div>
+            <div class="left-text">
+                <h1>Manage your contacts,<br><span>effortlessly.</span></h1>
+                <p>One place for all your contacts. Secure, fast, and always accessible.</p>
+            </div>
+            <ul class="feature-list">
+                <li><i class="fa-solid fa-check"></i> Secure contact storage</li>
+                <li><i class="fa-solid fa-check"></i> Organize with groups &amp; tags</li>
+                <li><i class="fa-solid fa-check"></i> Access from anywhere</li>
+            </ul>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="signup-right">
+            <div class="form-card">
+                <div class="form-header">
+                    <h3>Create your account</h3>
+                    <p>Get started in less than a minute</p>
+                </div>
+
+                <form th:action="@{/signUp}" method="post" th:object="${user}">
+
+                    <div class="field-group">
+                        <label for="name">Full Name</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="name" name="name"
+                                   th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name') ? 'is-invalid' : ''}"
+                                   placeholder="John Doe" required>
+                        </div>
+                        <section id="nameErrorServerSide">
+                            <p style="color:red" th:each="e : ${#fields.errors('name')}"
+                               th:text="${e}" class="validation-msg"></p>
+                        </section>
+                        <p id="nameError" class="validation-msg"></p>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="email" name="email"
+                                   th:field="*{email}"
+                                   th:classappend="${#fields.hasErrors('email') ? 'is-invalid' : ''}"
+                                   placeholder="you@example.com" required>
+                        </div>
+                        <section id="emailErrorServerSide">
+                            <p style="color:red" th:each="e : ${#fields.errors('email')}"
+                               th:text="${e}" class="validation-msg"></p>
+                        </section>
+                        <p id="emailError" class="validation-msg"></p>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="password" name="password"
+                                   th:field="*{password}"
+                                   th:classappend="${#fields.hasErrors('password') ? 'is-invalid' : ''}"
+                                   placeholder="Min 8 characters" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword()">
+                                <i class="fa-solid fa-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                        <p class="field-hint">Uppercase, lowercase, number &amp; special character.</p>
+                        <section id="passwordErrorServerSide">
+                            <p style="color:red" th:each="e : ${#fields.errors('password')}"
+                               th:text="${e}" class="validation-msg"></p>
+                        </section>
+                        <p id="passwordError" class="validation-msg"></p>
+                    </div>
+
+                    <div class="terms-row">
+                        <input type="checkbox" id="agreeTerms" name="agreeTerms"
+                               th:field="*{agreeTerms}"
+                               th:classappend="${#fields.hasErrors('agreeTerms') ? 'is-invalid' : ''}"
+                               required>
+                        <label for="agreeTerms">
+                            I agree to the <a href="/terms" target="_blank">Terms &amp; Conditions</a>
+                        </label>
+                    </div>
+                    <p style="color:red" id="agreeTermsServerSide"
+                       th:errors="*{agreeTerms}" class="validation-msg"></p> <!-- another way to display errors -->
+                    <p id="agreeError" class="validation-msg"></p>
+
+                    <button type="submit" class="submit-btn">
+                        Create Account <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+
+                </form>
+
+                <p class="login-link">
+                    Already have an account? <a th:href="@{/login}">Login here</a>
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+</th:block>
+
+<th:block th:fragment="pageJs">
+    <script th:src="@{/js/signUpScript.js}"></script>
+</th:block>
+
+</th:block>

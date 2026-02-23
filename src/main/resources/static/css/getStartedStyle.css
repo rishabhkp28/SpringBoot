@@ -1,0 +1,61 @@
+/* ================= HERO BACKGROUND SECTION ================= */
+
+.hero-bg {
+    min-height: calc(100vh - 72px);
+    background: radial-gradient(at top left, #2563eb, #1e293b 60%);
+}
+
+.hero-overlay {
+    min-height: calc(100vh - 72px);
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.hero-content {
+    color: #ffffff;
+    max-width: 720px;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #e0e0e0;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.hero-btn {
+    padding: 0.75rem 2.5rem;
+    font-size: 1.1rem;
+}
+
+.hero-fade-in {
+    animation: heroFade 0.8s ease-in;
+}
+
+@keyframes heroFade {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+
+

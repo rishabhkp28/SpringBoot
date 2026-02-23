@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:fragment="base(pageCss,pageJs,content)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Contact Manager</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+          rel="stylesheet">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Base CSS -->
+    <link rel="stylesheet" th:href="@{/css/baseStyle.css}">
+		   <!-- Page Specific CSS -->
+		<th:block th:if="${pageCss != null}" th:replace="${pageCss}"></th:block>
+
+</head>
+
+<body class="bg-light">
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top custom-navbar">
+    <div class="container-fluid px-4 px-lg-5">
+
+        <!-- LOGO -->
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+            <span class="logo-icon me-2">
+                <i class="fa-solid fa-address-book"></i>
+            </span>
+            <span class="logo-text">SmartCM</span>
+        </a>
+
+        <!-- TOGGLER (Hamburger icon)-->
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" 
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+		<!-- aria-controls = tells html that hamburger icon deals with id = "mainnavbar"-->
+        <!-- NAV ITEMS -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+                        <i class="fa-solid fa-layer-group me-1"></i>
+                        Features
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Contact Management</a></li>
+                        <li><a class="dropdown-item" href="#">Groups & Tags</a></li>
+                        <li><a class="dropdown-item" href="#">Import / Export</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+                        <i class="fa-solid fa-box me-1"></i>
+                        Product
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Pricing</a></li>
+                        <li><a class="dropdown-item" href="#">Security</a></li>
+                        <li><a class="dropdown-item" href="#">Integrations</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+                        <i class="fa-solid fa-building me-1"></i>
+                        Company
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">About</a></li>
+                        <li><a class="dropdown-item" href="#">Careers</a></li>
+                        <li><a class="dropdown-item" href="#">Blog</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fa-solid fa-envelope me-1"></i>
+                        Contact
+                    </a>
+                </li>
+
+                <li class="nav-item ms-lg-3">
+                    <a class="btn btn-outline-primary btn-sm" th:href="@{/login}">
+                        Login
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="btn btn-primary btn-sm" th:href="@{/signUp}">
+                        Get Started
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ================= MAIN CONTENT ================= -->
+<main th:replace="${content}">
+    <!-- child page content -->
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+    <div class="container">
+
+        <div class="row footer-top">
+
+            <!-- BRAND -->
+            <div class="col-md-4 mb-4">
+                <h5 class="footer-brand">
+                    <i class="fa-solid fa-address-book me-2"></i>
+                    SmartCM
+                </h5>
+                <p class="footer-text">
+                    Smart Contact Manager helps you securely store,
+                    organize, and manage all your contacts in one place.
+                </p>
+            </div>
+
+            <!-- PRODUCT -->
+            <div class="col-md-2 col-6 mb-4">
+                <h6 class="footer-heading">Product</h6>
+                <ul class="footer-links">
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Security</a></li>
+                </ul>
+            </div>
+
+            <!-- COMPANY -->
+            <div class="col-md-2 col-6 mb-4">
+                <h6 class="footer-heading">Company</h6>
+                <ul class="footer-links">
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+
+            <!-- SUPPORT -->
+            <div class="col-md-2 col-6 mb-4">
+                <h6 class="footer-heading">Support</h6>
+                <ul class="footer-links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Status</a></li>
+                </ul>
+            </div>
+
+            <!-- LEGAL -->
+            <div class="col-md-2 col-6 mb-4">
+                <h6 class="footer-heading">Legal</h6>
+                <ul class="footer-links">
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- DIVIDER -->
+        <hr class="footer-divider">
+
+        <!-- BOTTOM -->
+        <div class="footer-bottom">
+            <span>© 2026 Smart Contact Manager</span>
+            <span class="footer-made">
+                Built for learning & real-world use
+            </span>
+        </div>
+
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Navbar Hover JS -->
+<script th:src="@{/js/baseScript.js}"></script>
+<th:block th:if="${pageJs != null}" th:replace="${pageJs}"></th:block>
+
+</body>
+</html>

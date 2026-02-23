@@ -1,0 +1,116 @@
+<th:block th:replace="baseFile :: base(~{::pageCss}, ~{::pageJs}, ~{::content})">
+
+<th:block th:fragment="pageCss">
+    <link rel="stylesheet" th:href="@{/css/loginStyle.css}">
+</th:block>
+
+<th:block th:fragment="content">
+<section class="login-section">
+    <div class="login-container">
+
+        <!-- Left Panel -->
+        <div class="login-left">
+            <div class="brand-area">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-address-book"></i>
+                </div>
+                <h2 class="brand-name">SmartCM</h2>
+            </div>
+            <div class="left-text">
+                <h1>Welcome back to<br><span>SmartCM.</span></h1>
+                <p>Sign in to pick up right where you left off. Your contacts are waiting.</p>
+            </div>
+            <ul class="feature-list">
+                <li><i class="fa-solid fa-shield-halved"></i> Your data is always encrypted</li>
+                <li><i class="fa-solid fa-bolt"></i> Instant access, zero hassle</li>
+                <li><i class="fa-solid fa-rotate"></i> Synced across all your devices</li>
+            </ul>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="login-right">
+            <div class="form-card">
+
+                <div class="form-header">
+                    <h3>Sign in to your account</h3>
+                    <p>Welcome back — let's get you in</p>
+                </div>
+
+                <!-- Server-side error (e.g. bad credentials) -->
+                <div th:if="${param.error}" class="alert-error" id="loginErrorAlert">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                 	<span>Invalid email or password
+						</span>
+                </div>
+					
+                <form th:action="@{/login}" method="post" id="loginForm" th:object = "${Userlog}" novalidate>
+
+                    <!-- Email -->
+                    <div class="field-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email"
+                                   id="email"
+                                   name="email"
+                                   th:field = "*{email}"
+                                   placeholder="you@example.com"
+                                   autocomplete="email"
+                                   required>
+                        </div>
+                        <p id="emailError" class="validation-msg"></p>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="field-group">
+                        <label for="password">
+                            Password
+                            <a th:href="@{/forgot-password}" class="forgot-link">Forgot password?</a>
+                        </label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password"
+                                   id="password"
+                                   name="password"
+                                   th:field = "*{password}"
+                                   placeholder="Enter your password"
+                                   autocomplete="current-password"
+                                   required>
+                            <button type="button" class="toggle-password" onclick="togglePassword()">
+                                <i class="fa-solid fa-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                        <p id="passwordError" class="validation-msg"></p>
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="remember-row">
+                        <label class="remember-label">
+                            <input type="checkbox" id="rememberMe" name="remember-me">
+                            Keep me signed in
+                        </label>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        Sign In <i class="fa-solid fa-arrow-right"></i>
+                    </button> 	 
+
+                </form>
+
+                <p class="signup-link">
+                    Don't have an account? <a th:href="@{/signUp}">Create one free</a>
+                </p>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+</th:block>
+
+<th:block th:fragment="pageJs">
+    <script th:src="@{/js/loginScript.js}"></script>
+</th:block>
+
+</th:block>
