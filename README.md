@@ -9,3 +9,6 @@ Up Next
 -> User Dashboard
 -> Forget_Password Module
 -> Payment Gateway and many more---
+
+
+1 March - Implemented Dashboard base template , Made stub pages , fixed upper case and lower case issues related to gmail sign in, Now working on modular code to represent what is present on the dashboard
