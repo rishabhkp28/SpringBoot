@@ -85,43 +85,65 @@ public class ConnectController {
     	if (authentication == null || !authentication.isAuthenticated()) {
     		System.out.println("This is post controller");
             return "redirect:/login"; // Send to login page
-        }
+        }/*Redirect allows to handlle post->redirect->get , 
+        Or this enhanceform would open the login page and if we click on reload the same post data is sent again*/
     	
     	
+    	//the user can only reach here if the user has been authenticated by the spring security
+    	
+    	//main task is to get the user 
     	String fileName= "";
     	UserDto userDto = null;
+    	try
+    	{
+    		userDto = sc.findByEmail(authentication.getName()); //this wont fail as its authenticated, but if happens its invalid session or user deleted by admin
+    		System.out.println("we got hte user as "+userDto.getEmail());
+    	}
+    	catch(UserNotFoundException e)
+    	{
+    		return "redirect:/logout";
+    	}
+    	
+    	if(result.hasErrors()) {
+    		model.addAttribute("registeredUserDto",userDto);
+    		//no need for second as spring remembers that profileEnhanced and its binded already
+    		return "enhanceProfile";
+    	}
+    	
+    	try
+    	{
+    		int count = 0;
+    		if(enhancedProfile.getMultipartFile()!= null
+    				&& !enhancedProfile.getMultipartFile().isEmpty())
+        	{
+    			fileName = fileUploader.upload(enhancedProfile.getMultipartFile());
+    			userDto.setImage(fileName);
+    			count = 1;
+        	}
     		
-	    	try
-	    	{
-	    		int count = 0;
-	    		userDto = sc.findByEmail(authentication.getName());
-	    		if(enhancedProfile.getMultipartFile()!= null)
-	        	{
-	    			fileName = fileUploader.upload(enhancedProfile.getMultipartFile());
-	    			userDto.setImage(fileName);
-	    			count = 1;
-	        	}
+            if (enhancedProfile.getBio() != null && 
+                !enhancedProfile.getBio().isBlank()) {
+            	userDto.setBio(enhancedProfile.getBio());
+                count +=1 ;
+            }
+            
+            if(count!=0)
+            	userDto =  sc.update(userDto);
+               
+    	}
+    
+	    	catch(EmptyFileException | FileSizeException | UnsupportedFileTypeException | FileStorageException  e) {
 	    		
-	            if (enhancedProfile.getBio() != null && 
-	                !enhancedProfile.getBio().isBlank()) {
-	            	userDto.setBio(enhancedProfile.getBio());
-	                count +=1 ;
-	            }
-	            
-	            if(count!=0)
-	            	userDto =  sc.update(userDto);
-	            
-	            
-	   
-	    	}
-	    	catch(EmptyFileException | FileSizeException | UnsupportedFileTypeException | FileStorageException |UserNotFoundException e) {
+	    		model.addAttribute("registeredUserDto", userDto);
 	    	    result.rejectValue("multipartFile", e.getMessage());
 	    	    return "enhanceProfile";
 	    	}
     	
-    	
-	    	 model.addAttribute("User", userDto);
-	    	 return "dashboard";
+	    	model.addAttribute("user",userDto);
+	 		model.addAttribute("activePage","dashboard");
+	 		model.addAttribute("pageTitle","Dashboard");	
+	 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Welcome to your User Dashboard");
+	 		return "normalUser/userDashboard";
     	
     }
     

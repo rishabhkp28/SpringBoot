@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:fragment="base(pageCss, pageJs, content)">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${pageTitle != null ? pageTitle + ' — SmartCM' : 'SmartCM Dashboard'}">SmartCM Dashboard</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+
+    <!-- Dashboard fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+
+    <!-- Base dashboard CSS -->
+    <link rel="stylesheet" th:href="@{/css/dashboardBaseStyle.css}"/>
+
+    <!-- ░░ PAGE-SPECIFIC CSS SLOT ░░ -->
+    <th:block th:if="${pageCss != null}" th:replace="${pageCss}"></th:block>
+</head>
+
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     AMBIENT BACKGROUND
+     ═══════════════════════════════════════════════ -->
+<div class="db-ambient" aria-hidden="true">
+    <div class="db-orb db-orb-1"></div>
+    <div class="db-orb db-orb-2"></div>
+    <div class="db-grain"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     LAYOUT SHELL
+     ═══════════════════════════════════════════════ -->
+<div class="db-shell" id="dbShell">
+
+    <!-- ─────────────────────────────────────────
+         SIDEBAR
+         ───────────────────────────────────────── -->
+    <aside class="db-sidebar" id="dbSidebar">
+
+        <!-- Brand + collapse button -->
+        <div class="db-brand">
+            <div class="db-brand-icon">
+                <i class="fa-solid fa-address-book"></i>
+            </div>
+            <span class="db-brand-name">SmartCM</span>
+            <button class="db-collapse-btn" id="dbCollapseBtn"
+                    title="Toggle sidebar" aria-label="Toggle sidebar">
+                <i class="fa-solid fa-chevron-left db-collapse-icon"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="db-nav" aria-label="Dashboard navigation">
+
+            <span class="db-nav-section">Menu</span>
+            <ul>
+                <li>
+                    <a th:href="@{/user/dashboard}"
+                       th:classappend="${activePage == 'dashboard'} ? ' db-active'">
+                        <span class="db-nav-icon"><i class="fa-solid fa-house-chimney"></i></span>
+                        <span class="db-nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/user/contacts}"
+                       th:classappend="${activePage == 'contacts'} ? ' db-active'">
+                        <span class="db-nav-icon"><i class="fa-solid fa-address-book"></i></span>
+                        <span class="db-nav-text">My Contacts</span>
+                        <span class="db-nav-badge"
+                              th:if="${contactCount != null}"
+                              th:text="${contactCount}">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/user/favourites}"
+                       th:classappend="${activePage == 'favourites'} ? ' db-active'">
+                        <span class="db-nav-icon"><i class="fa-solid fa-star"></i></span>
+                        <span class="db-nav-text">Favourites</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/user/groups}"
+                       th:classappend="${activePage == 'groups'} ? ' db-active'">
+                        <span class="db-nav-icon"><i class="fa-solid fa-layer-group"></i></span>
+                        <span class="db-nav-text">Groups &amp; Tags</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/user/import}"
+                       th:classappend="${activePage == 'import'} ? ' db-active'">
+                        <span class="db-nav-icon"><i class="fa-solid fa-file-import"></i></span>
+                        <span class="db-nav-text">Import / Export</span>
+                    </a>
+                </li>
+            </ul>
+
+        </nav>
+
+        <!-- Sidebar footer -->
+        <div class="db-sidebar-foot">
+            <span class="db-sidebar-version">version : 1.0.0</span>
+        </div>
+
+    </aside><!-- /sidebar -->
+
+    <!-- ─────────────────────────────────────────
+         MAIN WRAPPER
+         ───────────────────────────────────────── -->
+    <div class="db-main" id="dbMain">
+
+        <!-- ── TOPBAR ──────────────────────────── -->
+        <header class="db-topbar">
+
+            <!-- Left: mobile toggle + page title -->
+            <div class="db-topbar-left">
+                <button class="db-mobile-btn" id="dbMobileBtn" aria-label="Open menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="db-page-heading">
+                    <h1 class="db-page-title"
+                        th:text="${pageTitle} ?${pageTitle}: 'DummyDebug'"></h1>
+                    <p class="db-page-sub"
+                       th:text="${pageSubtitle} ?${pageSubtitle}: 'Your personal cloud contact hub'"></p>
+                </div>
+            </div>
+
+            <!-- Right: profile button + dropdown -->
+            <div class="db-topbar-right">
+                <div class="db-profile-wrap" id="dbProfileWrap">
+
+                    <!-- Trigger button -->
+                    <button class="db-profile-btn" id="dbProfileBtn"
+                            aria-haspopup="true" aria-expanded="false">
+                        <div class="db-avatar-ring">
+                           <img th:if="${user?.image != null}"
+						     th:src="@{/images/{image}(image=${user.image})}"
+						     class="db-avatar-img"
+						     alt="Profile"/>
+						
+						<span th:if="${user?.image == null}"
+						      class="db-avatar-initials"
+						      th:text="${user?.name != null ? #strings.substring(user.name, 0, 1).toUpperCase() : 'U'}">
+						    U
+						</span> </div>
+                        <div class="db-profile-info">
+                            <span class="db-profile-name"
+                                  th:text="${user?.name} ?: 'User'"></span>
+                            <span class="db-profile-email"
+                                  th:text="${user?.email} ?: 'user@email.com'"></span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down db-profile-caret"></i>
+                    </button>
+
+                    <!-- Dropdown panel -->
+                    <div class="db-profile-dropdown" id="dbProfileDropdown" role="menu">
+
+                        <!-- User card header inside dropdown -->
+                        <div class="db-dropdown-header">
+                            <div class="db-dh-avatar">
+                                <img th:if="${user?.image != null}"
+                                     th:src="@{/images/{img}(img = ${user.image})}"
+                                     alt="Profile"/>
+                                <span th:if="${user?.image == null}"
+                                      th:text="${user?.name != null ? #strings.substring(user.name, 0, 1).toUpperCase() : 'U'}">U</span>
+                            </div>
+                            <div>
+                                <p class="db-dh-name"
+                                   th:text="${user?.name} ?: 'User'">User</p>
+                                <p class="db-dh-email"
+                                   th:text="${user?.email} ?: 'user@email.com'"></p>
+                            </div>
+                        </div>
+
+                        <div class="db-dropdown-divider"></div>
+
+                        <a th:href="@{/user/profile}" class="db-dropdown-item" role="menuitem">
+                            <span class="db-di-icon"><i class="fa-solid fa-circle-user"></i></span>
+                            <span>View Profile</span>
+                        </a>
+                        <a th:href="@{/user/settings}" class="db-dropdown-item" role="menuitem">
+                            <span class="db-di-icon"><i class="fa-solid fa-sliders"></i></span>
+                            <span>Account Settings</span>
+                        </a>
+                        <a href="#" class="db-dropdown-item" role="menuitem">
+                            <span class="db-di-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                            <span>Privacy &amp; Security</span>
+                        </a>
+
+                        <div class="db-dropdown-divider"></div>
+
+                        <a th:href="@{/logout}" class="db-dropdown-item db-dropdown-danger" role="menuitem">
+                            <span class="db-di-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                            <span>Sign Out</span>
+                        </a>
+
+                    </div><!-- /db-profile-dropdown -->
+                </div><!-- /db-profile-wrap -->
+            </div><!-- /db-topbar-right -->
+
+        </header><!-- /db-topbar -->
+
+        	
+        <main class="db-content" id="dbContent">
+            <th:block th:replace="${content}">
+                <!-- Filled by child pages via th:replace -->
+            </th:block>
+        </main>
+
+    </div><!-- /db-main -->
+
+</div><!-- /db-shell -->
+
+<!-- Mobile sidebar overlay -->
+<div class="db-overlay" id="dbOverlay" aria-hidden="true"></div>
+
+<!-- Base dashboard JS -->
+<script th:src="@{/js/dashboardBaseScript.js}"></script>
+
+<!-- ░░ PAGE-SPECIFIC JS SLOT ░░ -->
+<th:block th:if="${pageJs != null}" th:replace="${pageJs}"></th:block>
+
+</body>
+</html>

@@ -52,16 +52,17 @@ public class SecurityConfiguration{//these class provide the  bean dependencies 
 		 
 		 
 		 http.authorizeHttpRequests(auth -> auth
-			        .requestMatchers("/signUp", "/login", "/css/**", "/js/**","/getStarted").permitAll()//first general matchers then role based then public
-			        .requestMatchers("/admin/**").hasRole("ADMIN")
-			        .requestMatchers("/user/**").hasRole("USER") //this role method is predefined spring security paramter that defines hierarchy
+			        .requestMatchers("/signUp", "/login", "/css/**", "/js/**","/getStarted","/dynamic/validate/**").permitAll()//first general matchers then role based then public
+			        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+			        .requestMatchers("/user/**").hasAuthority("USER") //this role method is predefined spring security paramter that defines hierarchy
 			        .anyRequest().authenticated()
+			        /* hasRole internally checks for ROLE_USER or ROLE_ADMIN while has Authority doesnt*/
 			)
 			.formLogin(form -> form
 			        .loginPage("/login")//Spring security already handling the security on authentication page
 			        .usernameParameter("email")          // IMPORTANT if you're using email field
 			        .passwordParameter("password")       // optional if default
-			        .defaultSuccessUrl("/dashboard", true)// false-> go to the originally requested Url and not dashboard if user requetsed that earlier and reached on login page after redirect
+			        .defaultSuccessUrl("/user/dashboard", true)// false-> go to the originally requested Url and not dashboard if user requetsed that earlier and reached on login page after redirect
 			        .failureUrl("/login?error=true") //format ?key1=value1&key2=value2
 			        .permitAll() //this allows the authenticated user to switch to these mentioned without logging in again
 			)

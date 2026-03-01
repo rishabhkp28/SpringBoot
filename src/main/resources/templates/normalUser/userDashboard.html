@@ -1,0 +1,236 @@
+<th:block th:replace = "dashboardBase :: base(~{::pageCss} , ~{::pageJs} , ~{::content})">
+
+<th:block th:fragment = "pageCss">
+	<link rel = "stylesheet" th:href = "@{/css/userDashboardStyle.css}">
+	</th:block>
+
+
+<th:block th:fragment = "content">
+<div id="page-content">
+
+    <!-- ──────────────────────────────────────────────────
+         STAT CARDS ROW  — 4 columns
+         ────────────────────────────────────────────────── -->
+    <div class="dash-stat-grid">
+
+        <!-- Total Contacts -->
+        <div class="dash-stat-card dash-anim dash-anim-d1">
+            <div class="dash-stat-icon-wrap dash-si-blue">
+                <i class="fa-solid fa-address-book"></i>
+            </div>
+            <div class="dash-stat-body">
+                <p class="dash-stat-val" th:text="${totalContacts} ?: '—'">—</p>
+                <p class="dash-stat-lbl">Total Contacts</p>
+            </div>
+            <div class="dash-stat-glyph" aria-hidden="true">
+                <i class="fa-solid fa-address-book"></i>
+            </div>
+        </div>
+
+        <!-- Favourites -->
+        <div class="dash-stat-card dash-anim dash-anim-d2">
+            <div class="dash-stat-icon-wrap dash-si-gold">
+                <i class="fa-solid fa-star"></i>
+            </div>
+            <div class="dash-stat-body">
+                <p class="dash-stat-val" th:text="${favoriteCount} ?: '—'">—</p>
+                <p class="dash-stat-lbl">Favourites</p>
+            </div>
+            <div class="dash-stat-glyph" aria-hidden="true">
+                <i class="fa-solid fa-star"></i>
+            </div>
+        </div>
+
+        <!-- Added This Month -->
+        <div class="dash-stat-card dash-anim dash-anim-d3">
+            <div class="dash-stat-icon-wrap dash-si-green">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <div class="dash-stat-body">
+                <p class="dash-stat-val" th:text="${addedThisMonth} ?: '—'">—</p>
+                <p class="dash-stat-lbl">Added This Month</p>
+            </div>
+            <div class="dash-stat-glyph" aria-hidden="true">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+        </div>
+
+        <!-- Groups & Tags -->
+        <div class="dash-stat-card dash-anim dash-anim-d4">
+            <div class="dash-stat-icon-wrap dash-si-purple">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div class="dash-stat-body">
+                <p class="dash-stat-val" th:text="${groupCount} ?: '—'">—</p>
+                <p class="dash-stat-lbl">Groups &amp; Tags</p>
+            </div>
+            <div class="dash-stat-glyph" aria-hidden="true">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+        </div>
+
+    </div><!-- /stat grid -->
+
+
+    <!-- ──────────────────────────────────────────────────
+         LOWER TWO-COLUMN GRID
+         Left: Recent Contacts  |  Right: Actions + Strength
+         ────────────────────────────────────────────────── -->
+    <div class="dash-lower-grid">
+
+        <!-- ── LEFT: Recent Contacts ────────────────────── -->
+        <div class="dash-panel dash-anim dash-anim-d2">
+
+            <div class="dash-panel-head">
+                <div>
+                    <h2 class="dash-panel-title">Recent Contacts</h2>
+                    <p class="dash-panel-sub">Your latest additions</p>
+                </div>
+                <a th:href="@{/user/contacts}" class="dash-panel-link">
+                    View all&nbsp;<i class="fa-solid fa-arrow-right fa-xs"></i>
+                </a>
+            </div>
+
+            <!-- Live data from model -->
+            <ul class="dash-contact-list"
+                th:if="${recentContacts != null and !#lists.isEmpty(recentContacts)}">
+                <li class="dash-contact-row" th:each="c : ${recentContacts}">
+                    <div class="dash-c-av"
+                         th:text="${c.name != null ? #strings.substring(c.name,0,2).toUpperCase() : '?'}">AB</div>
+                    <div class="dash-c-info">
+                        <p class="dash-c-name" th:text="${c.name}">Name</p>
+                        <p class="dash-c-meta" th:text="${c.email} ?: (${c.phone} ?: '—')">meta</p>
+                    </div>
+                    <span class="dash-tag" th:text="${c.category} ?: 'Contact'">Tag</span>
+                </li>
+            </ul>
+
+            <!-- Placeholder when no data -->
+            <ul class="dash-contact-list"
+                th:if="${recentContacts == null or #lists.isEmpty(recentContacts)}">
+                <li class="dash-contact-row">
+                    <div class="dash-c-av">AS</div>
+                    <div class="dash-c-info">
+                        <p class="dash-c-name">Arjun Singh</p>
+                        <p class="dash-c-meta">arjun@example.com</p>
+                    </div>
+                    <span class="dash-tag dash-tag-work">Work</span>
+                </li>
+                <li class="dash-contact-row">
+                    <div class="dash-c-av">MK</div>
+                    <div class="dash-c-info">
+                        <p class="dash-c-name">Meera Kapoor</p>
+                        <p class="dash-c-meta">+91 98765 43210</p>
+                    </div>
+                    <span class="dash-tag dash-tag-friend">Friend</span>
+                </li>
+                <li class="dash-contact-row">
+                    <div class="dash-c-av">RV</div>
+                    <div class="dash-c-info">
+                        <p class="dash-c-name">Rohan Verma</p>
+                        <p class="dash-c-meta">rohan@startup.io</p>
+                    </div>
+                    <span class="dash-tag dash-tag-client">Client</span>
+                </li>
+                <li class="dash-contact-row">
+                    <div class="dash-c-av">NJ</div>
+                    <div class="dash-c-info">
+                        <p class="dash-c-name">Naina Joshi</p>
+                        <p class="dash-c-meta">naina@gmail.com</p>
+                    </div>
+                    <span class="dash-tag">Family</span>
+                </li>
+                <li class="dash-contact-row">
+                    <div class="dash-c-av">PS</div>
+                    <div class="dash-c-info">
+                        <p class="dash-c-name">Pradeep Sharma</p>
+                        <p class="dash-c-meta">pradeep@corp.in</p>
+                    </div>
+                    <span class="dash-tag dash-tag-work">Work</span>
+                </li>
+            </ul>
+
+        </div><!-- /recent contacts -->
+
+
+        <!-- ── RIGHT COLUMN ─────────────────────────────── -->
+        <div class="dash-right-col">
+
+            <!-- Quick Actions -->
+            <div class="dash-panel dash-anim dash-anim-d3">
+                <div class="dash-panel-head">
+                    <div>
+                        <h2 class="dash-panel-title">Quick Actions</h2>
+                        <p class="dash-panel-sub">Jump right in</p>
+                    </div>
+                </div>
+
+                <div class="dash-action-list">
+                    <a th:href="@{/user/contacts/add}" class="dash-action-btn">
+                        <span class="dash-action-icon"><i class="fa-solid fa-user-plus"></i></span>
+                        <span class="dash-action-label">Add New Contact</span>
+                        <i class="fa-solid fa-chevron-right dash-action-arr"></i>
+                    </a>
+                    <a th:href="@{/user/contacts}" class="dash-action-btn">
+                        <span class="dash-action-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <span class="dash-action-label">Search Contacts</span>
+                        <i class="fa-solid fa-chevron-right dash-action-arr"></i>
+                    </a>
+                    <a th:href="@{/user/import}" class="dash-action-btn">
+                        <span class="dash-action-icon"><i class="fa-solid fa-file-import"></i></span>
+                        <span class="dash-action-label">Import from CSV</span>
+                        <i class="fa-solid fa-chevron-right dash-action-arr"></i>
+                    </a>
+                    <a th:href="@{/user/export}" class="dash-action-btn">
+                        <span class="dash-action-icon"><i class="fa-solid fa-file-export"></i></span>
+                        <span class="dash-action-label">Export Contacts</span>
+                        <i class="fa-solid fa-chevron-right dash-action-arr"></i>
+                    </a>
+                </div>
+            </div><!-- /quick actions -->
+
+
+            <!-- Profile Strength -->
+            <div class="dash-panel dash-panel-strength dash-anim dash-anim-d5">
+
+                <div class="dash-strength-top">
+                    <div class="dash-strength-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <h3 class="dash-panel-title" style="font-size:0.95rem;">Profile Strength</h3>
+                        <p class="dash-panel-sub">Complete your profile to unlock all features</p>
+                    </div>
+                </div>
+
+                <div class="dash-progress-row">
+                    <div class="dash-progress-track">
+                        <div class="dash-progress-fill"
+                             id="dashProgressFill"
+                             th:attr="data-pct=${profileStrength} ?: 60"
+                             style="width:0%">
+                        </div>
+                    </div>
+                    <span class="dash-progress-pct"
+                          id="dashProgressPct"
+                          th:text="(${profileStrength} ?: '60') + '%'">60%</span>
+                </div>
+
+                <a th:href="@{/user/profile}" class="dash-strength-cta">
+                    Complete Profile&nbsp;<i class="fa-solid fa-arrow-right fa-xs"></i>
+                </a>
+
+            </div><!-- /profile strength -->
+
+        </div><!-- /right col -->
+
+    </div><!-- /lower grid -->
+
+</div><!-- /page-content -->
+</th:block>
+
+<!-- ── Page-specific JS ────────────────────────────────── -->
+<th:block  th:fragment = "pageJs">
+    <script th:src="@{/js/userDashboardScript.js}"></script>
+</th:block>
+</th:block>

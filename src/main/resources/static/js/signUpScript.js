@@ -21,10 +21,10 @@ const emailInput = document.getElementById("email");
 const emailError = document.getElementById("emailError");
 const emailServerSide = document.getElementById("emailErrorServerSide");
 
-let debounceTimerEmail;
+let debounceTimerEmail; //to prevent rapid firing
 
 
-emailInput.addEventListener("input", function() {
+emailInput.addEventListener("input", function() { //only listeners execute everytiem the event occurs
     const email = this.value.trim();
     clearTimeout(debounceTimerEmail);
 
@@ -45,22 +45,30 @@ emailInput.addEventListener("input", function() {
         }
 
         // Must end with @gmail.com
-        if (!email.endsWith("@gmail.com")) {
+        if (!email.toLowerCase().endsWith("@gmail.com")) {
             isValid = false;
             message += "Email must end with @gmail.com.<br>";
         }
 		
-		fetch(`/users/validate/email/${encodeURIComponent(email)}`) //Promise
+		if (!isValid) {
+		        showError(emailInput, emailError, message, emailServerSide);
+		        return;   
+		    }
+		
+		fetch(`/dynamic/validate/email/${encodeURIComponent(email)}`) //Promise
 		.then(res => res.json()) //returns res.json
 		.then(
 			resjson => 
 				{
 					console.log(resjson);
-				if(!resjson)//valid state
-					{
-						isValid = false;
-						message += "Email already exists.<br>";
-					}
+					console.log(emailInput.value+" "+resjson);
+					if (email !== emailInput.value.trim()) return;//preventing api delay
+
+					    if (!resjson) {
+							isValid = false;
+							message = "Email already exists.<br>";
+					        
+					    }
 					
 					if (!isValid) 
 					           showError(emailInput, emailError, message, emailServerSide);

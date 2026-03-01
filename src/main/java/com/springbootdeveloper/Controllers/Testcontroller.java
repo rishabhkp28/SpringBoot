@@ -57,7 +57,7 @@ public class Testcontroller {
 	
 	
 	
-	@GetMapping(path = "/users/validate/email/{email}")
+	@GetMapping(path = "/dynamic/validate/email/{email}")
     @ResponseBody
     public boolean validEmailDynamicValidation(@PathVariable("email") String email)
     {
@@ -86,21 +86,6 @@ public class Testcontroller {
 	    return "enhanceProfile";
 	}
 	
-	@GetMapping(path ="/dashboard")
-	public String displayDashboard(Authentication authentication,Model model)
-	{
-		/*This check is not needed as we have handled it in the Spring Security Configuration File .....
-		if (authentication == null || !authentication.isAuthenticated()) {
-			System.out.println("Login is Failed");
-		    return "redirect:/login";
-		}*/
-		
-		UserDto userDto = null;
-		userDto = sc.findByEmail(authentication.getName());
-    	
-		model.addAttribute("User",userDto);
-		return "dashboard";
-		
-	}
+	
 	
 }

@@ -20,6 +20,7 @@ public class UserDto {
     @Email(message = "Not a valid email")
     @Pattern(
         regexp = "^[A-Za-z0-9._%+-]+@gmail\\.com$",
+        flags = Pattern.Flag.CASE_INSENSITIVE,
         message = "Email must end with @gmail.com"
     )
     private String email;
