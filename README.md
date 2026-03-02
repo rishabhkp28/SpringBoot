@@ -8,7 +8,9 @@ User Dashboard.
 Forgot Password module.
 Payment Gateway integration.
 Cloud Integration.
+ResponseStatus Handling in controller
 Additional enhancements and improvements.
+
 
 Progress Update (1 March):
 Implemented the base template for the Dashboard.
