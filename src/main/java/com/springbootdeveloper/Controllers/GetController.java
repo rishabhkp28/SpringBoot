@@ -16,15 +16,15 @@ import com.springbootdeveloper.Exceptions.FileSizeException;
 import com.springbootdeveloper.Exceptions.FileStorageException;
 import com.springbootdeveloper.Exceptions.UnsupportedFileTypeException;
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
-import com.springbootdeveloper.ServiceLayer.ServiceClass;
+import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
-public class Testcontroller {
+public class GetController {
 	
 	@Autowired
-	private ServiceClass sc;
+	private ServiceClassUser sc;
 	
 	
 	

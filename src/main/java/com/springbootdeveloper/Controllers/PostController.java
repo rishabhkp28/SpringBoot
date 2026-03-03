@@ -1,10 +1,6 @@
 package com.springbootdeveloper.Controllers;
 // helps the user to connect to us
 
-
-import java.security.Principal;
-
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,29 +10,29 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.springbootdeveloper.DTO.ProfileEnhanceDto;
 import com.springbootdeveloper.DTO.UserDto;
-import com.springbootdeveloper.ServiceLayer.ServiceClass;
+import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
 import com.springbootdeveloper.Exceptions.DuplicateEmailException;
 import com.springbootdeveloper.Exceptions.EmptyFileException;
 import com.springbootdeveloper.Exceptions.FileSizeException;
 import com.springbootdeveloper.Exceptions.FileStorageException;
 import com.springbootdeveloper.Exceptions.UnsupportedFileTypeException;
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
-import com.springbootdeveloper.Helpers.FileUploader;
+import com.springbootdeveloper.Helpers.FileHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @Controller
-public class ConnectController {
+public class PostController {
 
     
-    private final ServiceClass sc;
-    private final FileUploader fileUploader;
+    private final ServiceClassUser sc;
+    private final FileHandler fileHandler;
     
-    private ConnectController(ServiceClass sc,FileUploader fileUploader)
+    private PostController(ServiceClassUser sc,FileHandler fileHandler)
     {
     	this.sc = sc;
-    	this.fileUploader = fileUploader;
+    	this.fileHandler = fileHandler;
     	
     }
     /*this name inside modelAttribute matters in the thymeleaf but not in spring This name must match the th:object name in the page ,during addattribute()
@@ -112,33 +108,15 @@ public class ConnectController {
     	
     	try
     	{
-    		int count = 0;
-    		if(enhancedProfile.getMultipartFile()!= null
-    				&& !enhancedProfile.getMultipartFile().isEmpty())
-        	{
-    			fileName = fileUploader.upload(enhancedProfile.getMultipartFile());
-    			userDto.setImage(fileName);
-    			count = 1;
-        	}
-    		
-            if (enhancedProfile.getBio() != null && 
-                !enhancedProfile.getBio().isBlank()) {
-            	userDto.setBio(enhancedProfile.getBio());
-                count +=1 ;
-            }
-            
-            if(count!=0)
-            	userDto =  sc.update(userDto);
-               
+    		userDto = sc.save(userDto,enhancedProfile);
     	}
-    
-	    	catch(EmptyFileException | FileSizeException | UnsupportedFileTypeException | FileStorageException  e) {
-	    		
-	    		model.addAttribute("registeredUserDto", userDto);
-	    	    result.rejectValue("multipartFile", e.getMessage());
-	    	    return "enhanceProfile";
-	    	}
-    	
+    	catch(RuntimeException e) {
+    		
+    		model.addAttribute("registeredUserDto", userDto);
+    	    result.rejectValue("multipartFile", e.getMessage());
+    	    return "enhanceProfile";
+    	}
+    			    	
 	    	model.addAttribute("user",userDto);
 	 		model.addAttribute("activePage","dashboard");
 	 		model.addAttribute("pageTitle","Dashboard");	

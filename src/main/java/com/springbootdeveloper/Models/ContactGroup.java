@@ -4,5 +4,6 @@ public enum ContactGroup {
     CLIENT,
     FRIEND,
     FAMILY,
-    WORK
+    WORK,
+    ANONYMOUS
 }

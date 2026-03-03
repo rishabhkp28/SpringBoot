@@ -6,7 +6,12 @@ import java.util.UUID;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "contacts")
+@Table(
+	    name = "contacts",
+	    uniqueConstraints = @UniqueConstraint(
+	        columnNames = {"group", "name"}
+	    )
+	)
 public class Contact {
 
     @Id
@@ -20,12 +25,12 @@ public class Contact {
     @Column(nullable = false, length = 100)
     private String nickName;
 
-    private String work;
+   
 
     @Column(length = 500)
     private String description;
 
-    private Long phone;
+    private String phone;
 
     @Column(nullable = false)
     private String email;
@@ -53,14 +58,12 @@ public class Contact {
     public String getNickName() { return nickName; }
     public void setNickName(String nickName) { this.nickName = nickName; }
 
-    public String getWork() { return work; }
-    public void setWork(String work) { this.work = work; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public Long getPhone() { return phone; }
-    public void setPhone(Long phone) { this.phone = phone; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }

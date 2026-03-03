@@ -4,19 +4,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import com.springbootdeveloper.ServiceLayer.ServiceClass;
+import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
+import com.springbootdeveloper.DTO.ContactDto;
 import com.springbootdeveloper.DTO.UserDto;
+import com.springbootdeveloper.Exceptions.UserNotFoundException;
 
 
 @Controller
-public class userController {
+public class UserControllerGet {
 	
 	
-	private ServiceClass serviceClass;
+	private ServiceClassUser serviceClassUser;
 	
-	public userController(ServiceClass serviceClass)
+	public UserControllerGet(ServiceClassUser serviceClassUser)
 	{
-		this.serviceClass = serviceClass;
+		this.serviceClassUser = serviceClassUser;
 	}
 	
 	@GetMapping(path ="/user/dashboard")
@@ -29,8 +31,15 @@ public class userController {
 		}*/
 		
 		UserDto userDto = null;
-		userDto = serviceClass.findByEmail(authentication.getName());
-    	
+				
+				try
+				{
+					userDto = serviceClassUser.findByEmail(authentication.getName());
+				}
+				catch(UserNotFoundException e)
+				{
+					return "redirect:/logout"; //invalid session of the person
+				}
 		model.addAttribute("user",userDto);
 		model.addAttribute("activePage","dashboard");
 		model.addAttribute("pageTitle","Dashboard");
@@ -47,9 +56,16 @@ public class userController {
 	public String displayContacts(Authentication authentication,Model model)
 	{
 		UserDto userDto = null;
-		userDto = serviceClass.findByEmail(authentication.getName());
-    	
-		model.addAttribute("User",userDto);
+				
+				try
+				{
+					userDto = serviceClassUser.findByEmail(authentication.getName());
+				}
+				catch(UserNotFoundException e)
+				{
+					return "redirect:/logout"; //invalid session of the person
+				}
+		model.addAttribute("user",userDto);
 		model.addAttribute("activePage","contacts");
 		model.addAttribute("pageTitle","Contacts");
 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Below shows your list of contacts saved on our cloud");
@@ -60,9 +76,16 @@ public class userController {
 	public String displayFavourites(Authentication authentication,Model model)
 	{
 		UserDto userDto = null;
-		userDto = serviceClass.findByEmail(authentication.getName());
-    	
-		model.addAttribute("User",userDto);
+				
+				try
+				{
+					userDto = serviceClassUser.findByEmail(authentication.getName());
+				}
+				catch(UserNotFoundException e)
+				{
+					return "redirect:/logout"; //invalid session of the person
+				}
+		model.addAttribute("user",userDto);
 		model.addAttribute("activePage","favourites");
 		model.addAttribute("pageTitle","Favourites");
 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Below shows your favourite contacts saved on our cloud");
@@ -74,9 +97,15 @@ public class userController {
 	public String displayGroups(Authentication authentication,Model model)
 	{
 		UserDto userDto = null;
-		userDto = serviceClass.findByEmail(authentication.getName());
-    	
-		model.addAttribute("User",userDto);
+				try
+				{
+					userDto = serviceClassUser.findByEmail(authentication.getName());
+				}
+				catch(UserNotFoundException e)
+				{
+					return "redirect:/logout"; //invalid session of the person
+				}
+		model.addAttribute("user",userDto);
 		model.addAttribute("activePage","groups");
 		model.addAttribute("pageTitle","Groups");
 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Below shows your customized Groups");
@@ -88,9 +117,17 @@ public class userController {
 	{
 		
 		UserDto userDto = null;
-		userDto = serviceClass.findByEmail(authentication.getName());
+				
+				try
+				{
+					userDto = serviceClassUser.findByEmail(authentication.getName());
+				}
+				catch(UserNotFoundException e)
+				{
+					return "redirect:/logout"; //invalid session of the person
+				}
     	
-		model.addAttribute("User",userDto);
+		model.addAttribute("user",userDto);
 		model.addAttribute("activePage","import");
 		model.addAttribute("pageTitle","Import");
 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Below are the import functionalities available");
@@ -101,9 +138,17 @@ public class userController {
 	public String displaProfile(Authentication authentication,Model model)
 	{
 		UserDto userDto = null;
-		userDto = serviceClass.findByEmail(authentication.getName());
-    	
-		model.addAttribute("User",userDto);
+				
+				try
+				{
+					userDto = serviceClassUser.findByEmail(authentication.getName());
+				}
+				catch(UserNotFoundException e)
+				{
+					return "redirect:/logout"; //invalid session of the person
+				}
+		    	
+		model.addAttribute("user",userDto);
 		model.addAttribute("activePage","profile");
 		model.addAttribute("pageTitle","Profile");
 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Below is your Profile on our server");
@@ -115,13 +160,61 @@ public class userController {
 	{
 		
 		UserDto userDto = null;
-		userDto = serviceClass.findByEmail(authentication.getName());
-    	
-		model.addAttribute("User",userDto);
+		
+		try
+		{
+			userDto = serviceClassUser.findByEmail(authentication.getName());
+		}
+		catch(UserNotFoundException e)
+		{
+			return "redirect:/logout"; //invalid session of the person
+		}
+		model.addAttribute("user",userDto);
 		model.addAttribute("activePage","settings");
 		model.addAttribute("pageTitle","Settings");
 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!!Configure as you want");
 		return "normalUser/userSettings";
 		
 	}
+	
+	@GetMapping(path ="/user/addContactRequest")
+	public String handleAddContact(Authentication authentication,Model model)
+	{
+		UserDto userDto = null;
+		
+		try
+		{
+			userDto = serviceClassUser.findByEmail(authentication.getName());
+		}
+		catch(UserNotFoundException e)
+		{
+			return "redirect:/logout"; //invalid session of the person
+		}
+		
+		model.addAttribute("user",userDto);
+		model.addAttribute("activePage","dashboard");
+		model.addAttribute("pageTitle","Dashboard");
+		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Welcome to your User Dashboard");
+	    model.addAttribute("contactDto", new ContactDto());
+		return "normalUser/addContact";		
+		
+	}
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

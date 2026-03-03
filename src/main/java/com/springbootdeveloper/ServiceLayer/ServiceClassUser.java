@@ -12,11 +12,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
+import com.springbootdeveloper.DTO.ProfileEnhanceDto;
 import com.springbootdeveloper.DTO.UserDto;
 import com.springbootdeveloper.Exceptions.DuplicateEmailException;
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
+import com.springbootdeveloper.Helpers.FileHandler;
 import com.springbootdeveloper.Models.User;
-import com.springbootdeveloper.RepositoryLayer.DatabaseLayer;
+import com.springbootdeveloper.RepositoryLayer.DatabaseLayerUser;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -24,16 +26,18 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class ServiceClass {//defined for rules and regulations regarding the business
+public class ServiceClassUser {//defined for rules and regulations regarding the business
 
     @Autowired
-    private  DatabaseLayer dl; // didnt made this final ,as it would require initial value or constructor initializatoin, for autowired i dont need that
+    private  DatabaseLayerUser dl; // didnt made this final ,as it would require initial value or constructor initializatoin, for autowired i dont need that
     
     private final BCryptPasswordEncoder passEncoder;
     private final AuthenticationManager authenticationManager;
+    @Autowired
+    private FileHandler fileHandler;//Spring injects it via reflection
     
     //Spring injects it from Spring security
-    public ServiceClass(BCryptPasswordEncoder passEncoder,AuthenticationManager authenticationManager)
+    public ServiceClassUser(BCryptPasswordEncoder passEncoder,AuthenticationManager authenticationManager)
     {
     	this.passEncoder = passEncoder;
     	this.authenticationManager = authenticationManager;
@@ -82,6 +86,33 @@ public class ServiceClass {//defined for rules and regulations regarding the bus
         
       
         user = dl.save(user);
+        return convertToDto(user);
+    }
+    	// ===== SAVE =====
+    public UserDto save(UserDto userDto, ProfileEnhanceDto enhancedProfile)throws RuntimeException 
+    {
+    	String fileName = "";
+    	
+    	
+    	User user = dl.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User Not Found")); //if its value give value , if empty optional then throw exception
+   	 							//this is exception Supplier
+    	
+		if(enhancedProfile.getMultipartFile()!= null
+				&& !enhancedProfile.getMultipartFile().isEmpty())
+    	{
+			fileName = fileHandler.upload(enhancedProfile.getMultipartFile());
+			user.setImage(fileName);
+			
+    	}
+		
+        if (enhancedProfile.getBio() != null && 
+            !enhancedProfile.getBio().isBlank()) {
+        	user.setBio(enhancedProfile.getBio());
+        	 
+           
+        }
+        
         return convertToDto(user);
     }
     

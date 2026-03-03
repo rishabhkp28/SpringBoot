@@ -8,17 +8,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.springbootdeveloper.Models.User;
-import com.springbootdeveloper.RepositoryLayer.DatabaseLayer;
-import com.springbootdeveloper.ServiceLayer.ServiceClass;
+import com.springbootdeveloper.RepositoryLayer.DatabaseLayerUser;
+import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
 
 
 
 @Service
 public class UserDetailsServiceImplementer implements UserDetailsService {
 	
-	private final DatabaseLayer dl;
+	private final DatabaseLayerUser dl;
 	
-	public UserDetailsServiceImplementer(DatabaseLayer dl)
+	public UserDetailsServiceImplementer(DatabaseLayerUser dl)
 	{
 		this.dl = dl;
 	}

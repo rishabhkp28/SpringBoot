@@ -221,10 +221,10 @@
 <div class="db-overlay" id="dbOverlay" aria-hidden="true"></div>
 
 <!-- Base dashboard JS -->
+<th:block th:if="${pageJs != null}" th:replace="${pageJs}"></th:block>
 <script th:src="@{/js/dashboardBaseScript.js}"></script>
 
 <!-- ░░ PAGE-SPECIFIC JS SLOT ░░ -->
-<th:block th:if="${pageJs != null}" th:replace="${pageJs}"></th:block>
 
 </body>
 </html>

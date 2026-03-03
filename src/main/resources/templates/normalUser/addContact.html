@@ -1,0 +1,191 @@
+<th:block th:replace="~{dashboardBase :: base(~{::pageCss}, ~{::pageJs}, ~{::content})}">
+
+<!-- ░░ PAGE CSS ░░ -->
+<th:block th:fragment="pageCss">
+    <link rel="stylesheet" th:href="@{/css/addContactStyle.css}"/>
+</th:block>
+
+<!-- ░░ PAGE CONTENT ░░ -->
+<th:block th:fragment="content">
+<div id="add-contact-page" class="ac-page">
+
+    <!-- Flash Messages -->
+    <div th:if="${successMessage}" class="ac-flash ac-flash-success">
+        <i class="fa-solid fa-circle-check"></i>
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="ac-flash ac-flash-error">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <div class="ac-card">
+
+        <!-- Card Header -->
+        <div class="ac-card-header">
+            <h2 class="ac-card-heading">Add New Contact</h2>
+            <p class="ac-card-sub">Fill in the details below to save a new contact</p>
+        </div>
+
+        <form th:action="@{/user/addContactRequest}"
+              method="post"
+              enctype="multipart/form-data"
+              th:object="${contactDto}"
+              class="ac-form"
+              id="ac-form">
+
+            <!-- NAME + NICKNAME -->
+            <div class="ac-form-grid">
+
+                <div class="ac-field-group">
+                    <label class="ac-label" for="name">Full Name</label>
+                    <div class="ac-input-wrap">
+                        <i class="fa-solid fa-user ac-input-icon"></i>
+                        <input type="text"
+                               id="name"
+                               th:field="*{name}"
+                               class="ac-input"
+                               placeholder="John Doe"
+                               th:classappend="${#fields.hasErrors('name')} ? ' is-invalid' : ''"/>
+                    </div>
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="validation-msg"></p>
+                    <p id="nameError" class="validation-msg"></p>
+                </div>
+
+                <div class="ac-field-group">
+                    <label class="ac-label" for="nickName">Nickname</label>
+                    <div class="ac-input-wrap">
+                        <i class="fa-solid fa-tag ac-input-icon"></i>
+                        <input type="text"
+                               id="nickName"
+                               th:field="*{nickName}"
+                               class="ac-input"
+                               placeholder="Johnny"
+                               th:classappend="${#fields.hasErrors('nickName')} ? ' is-invalid' : ''"/>
+                    </div>
+                    <p th:if="${#fields.hasErrors('nickName')}" th:errors="*{nickName}" class="validation-msg"></p>
+                    <p id="nickNameError" class="validation-msg"></p>
+                </div>
+
+            </div>
+
+            <!-- EMAIL -->
+            <div class="ac-field-group">
+                <label class="ac-label" for="email">Email</label>
+                <div class="ac-input-wrap">
+                    <i class="fa-solid fa-envelope ac-input-icon"></i>
+                    <input type="email"
+                           id="email"
+                           th:field="*{email}"
+                           class="ac-input"
+                           placeholder="john@example.com"
+                           th:classappend="${#fields.hasErrors('email')} ? ' is-invalid' : ''"/>
+                </div>
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="validation-msg"></p>
+                <p id="emailError" class="validation-msg"></p>
+            </div>
+
+            <!-- PHONE -->
+            <div class="ac-field-group">
+                <label class="ac-label" for="phone">Phone</label>
+                <div class="ac-input-wrap">
+                    <i class="fa-solid fa-phone ac-input-icon"></i>
+                    <input type="text"
+                           id="phone"
+                           th:field="*{phone}"
+                           class="ac-input"
+                           placeholder="+91 98765 43210"
+                           th:classappend="${#fields.hasErrors('phone')} ? ' is-invalid' : ''"/>
+                </div>
+                <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="validation-msg"></p>
+                <p id="phoneError" class="validation-msg"></p>
+            </div>
+
+            <!-- GROUP + PROFILE PICTURE -->
+            <div class="ac-form-grid">
+
+                <div class="ac-field-group">
+                    <label class="ac-label" for="group">Group</label>
+                    <div class="ac-select-wrap">
+                        <i class="fa-solid fa-layer-group ac-input-icon"></i>
+                        <select id="group"
+                                th:field="*{group}"
+                                class="ac-input ac-select"
+                                th:classappend="${#fields.hasErrors('group')} ? ' is-invalid' : ''">
+                            <option value="">Select group…</option>
+                            <option th:each="g : ${T(com.springbootdeveloper.Models.ContactGroup).values()}"
+                                    th:value="${g}"
+                                    th:text="${g.name()}">
+                            </option>
+                        </select>
+                    </div>
+                    <p th:if="${#fields.hasErrors('group')}" th:errors="*{group}" class="validation-msg"></p>
+                    <p id="groupError" class="validation-msg"></p>
+                </div>
+
+                <div class="ac-field-group">
+                    <label class="ac-label">Profile Picture</label>
+
+                    <!-- Hidden native input. th:field sets id="multipartFile" automatically. -->
+                    <input type="file"
+                           th:field="*{multipartFile}"
+                           accept="image/*"
+                           class="ac-file-hidden"
+                           th:classappend="${#fields.hasErrors('multipartFile')} ? ' is-invalid' : ''"/>
+
+                    <!-- Custom upload zone -->
+                    <div class="ac-upload-zone" id="ac-upload-zone">
+                        <div class="ac-upload-icon">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <span class="ac-upload-label" id="ac-upload-label">Click or drag image here</span>
+                        <span class="ac-upload-sub" id="ac-upload-sub">PNG · JPG · WEBP — max 5 MB</span>
+
+                        <div class="ac-preview-wrap" id="ac-preview-wrap">
+                            <img src="" alt="Preview" class="ac-preview-img" id="ac-img-preview"/>
+                            <div class="ac-preview-info">
+                                <span class="ac-preview-name" id="ac-preview-name"></span>
+                                <span class="ac-preview-size" id="ac-preview-size"></span>
+                            </div>
+                            <button type="button" class="ac-clear-btn" id="ac-clear-file" title="Remove">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p th:if="${#fields.hasErrors('multipartFile')}" th:errors="*{multipartFile}" class="validation-msg"></p>
+                    <p id="fileError" class="validation-msg"></p>
+                </div>
+
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="ac-field-group">
+                <label class="ac-label" for="description">Description</label>
+                <div class="ac-input-wrap ac-input-wrap--textarea">
+                    <i class="fa-solid fa-align-left ac-input-icon"></i>
+                    <textarea id="description"
+                              th:field="*{description}"
+                              class="ac-input"
+                              placeholder="Short note about this contact…"
+                              th:classappend="${#fields.hasErrors('description')} ? ' is-invalid' : ''"></textarea>
+                </div>
+                <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="validation-msg"></p>
+                <p id="descriptionError" class="validation-msg"></p>
+            <!-- SUBMIT -->
+            <button type="submit" class="ac-btn ac-btn-primary" id="ac-submit-btn">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Add Contact</span>
+            </button>
+
+        </form>
+    </div>
+</div>
+</th:block>
+
+<!-- ░░ PAGE JS ░░ -->
+<th:block th:fragment="pageJs">
+    <script th:src="@{/js/addContactScript.js}"></script>
+</th:block>
+
+</th:block>

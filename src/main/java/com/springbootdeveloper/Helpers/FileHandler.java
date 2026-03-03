@@ -17,7 +17,7 @@ import com.springbootdeveloper.Exceptions.FileStorageException;
 import com.springbootdeveloper.Exceptions.UnsupportedFileTypeException;
 
 @Component
-public class FileUploader 
+public class FileHandler 
 {
 	
 	private static final String uploadDirectory = "C:\\PLACEMENTS\\JAVA\\Java Developer\\SmartContactManager\\src\\main\\resources\\static\\images";
@@ -39,11 +39,6 @@ public class FileUploader
 	    {
 	    	throw new FileSizeException("File size must be between 10KB and 2MB");
 	    }
-	    
-	    	
-	    
-	    
-	    
 	    
 	    String contentType = multipartFile.getContentType();
 	    
@@ -75,9 +70,11 @@ public class FileUploader
 	    } catch (IOException e) {
 	        throw new FileStorageException("Issue occurred while trying to save the file", e);
 	    }
-	    
+	    	
 	    return uniqueFilename;
 	}
+	
+	
 	
 	
 }

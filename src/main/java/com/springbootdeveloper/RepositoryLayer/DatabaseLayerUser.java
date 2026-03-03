@@ -10,7 +10,7 @@ import com.springbootdeveloper.Models.User;
 
 
 @Repository
-public interface DatabaseLayer extends CrudRepository<User, UUID> {
+public interface DatabaseLayerUser extends CrudRepository<User, UUID> {
 
     Optional<User> findByEmail(String email);
 
