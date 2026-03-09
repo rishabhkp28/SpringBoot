@@ -10,6 +10,89 @@
     padding: 8px 0 48px;
     animation: dbFadeUp 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
+/*compulsory*/
+
+.ac-required-note {
+    font-size: 0.78rem;
+    color: #888;
+    margin-top: -8px;      /* tucks it closer under the subtitle */
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+.ac-required-star {
+    color: #e05252;
+    font-weight: 600;
+    margin-right: 2px;
+}
+
+.ac-char-counter {
+    float: right;
+    font-size: 0.78rem;
+    color: #888;
+    font-weight: 400;
+}
+/* ── FAVOURITE TOGGLE ────────────────────────────────────── */
+.ac-favourite-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ac-fav-checkbox {
+    display: none;
+}
+
+.ac-fav-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    padding: 11px 18px;
+    background: rgba(7, 9, 15, 0.65);
+    border: 1px solid rgba(71, 85, 105, 0.70);
+    border-radius: var(--r-sm);
+    transition: border-color 0.22s, background 0.22s, box-shadow 0.22s;
+    width: 100%;
+}
+
+.ac-fav-label:hover {
+    border-color: var(--blue-border);
+    background: var(--blue-dim);
+}
+
+.ac-fav-checkbox:checked + .ac-fav-label {
+    border-color: rgba(234, 179, 8, 0.55);
+    background: rgba(234, 179, 8, 0.08);
+    box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.10);
+}
+
+.ac-fav-star {
+    font-size: 1.1rem;
+    color: rgba(148, 163, 184, 0.65);
+    transition: color 0.25s, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.ac-fav-checkbox:checked + .ac-fav-label .ac-fav-star {
+    color: #eab308;
+    transform: scale(1.25) rotate(-5deg);
+}
+
+.ac-fav-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #cbd5e1;
+    transition: color 0.22s;
+}
+
+.ac-fav-checkbox:checked + .ac-fav-label .ac-fav-text {
+    color: #eab308;
+}
+
 
 /* ── FLASH MESSAGES ──────────────────────────────────────── */
 .ac-flash {
@@ -37,7 +120,7 @@
 
 /* ── CARD ────────────────────────────────────────────────── */
 .ac-card {
-    background: rgba(13, 16, 24, 0.72);
+    background: rgba(18, 22, 34, 0.85);
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
     border: 1px solid var(--border);
@@ -49,8 +132,6 @@
         0 32px 80px rgba(0, 0, 0, 0.45),
         0 0 0 1px rgba(37, 99, 235, 0.07) inset;
 }
-
-/* Top accent line */
 .ac-card::before {
     content: "";
     position: absolute;
@@ -74,16 +155,17 @@
 }
 .ac-card-heading {
     font-family: var(--font-display);
-    font-size: 1.65rem;
+    font-size: 1.75rem;
     font-style: italic;
     font-weight: 400;
-    color: var(--text);
+    color: #f1f5f9;
     line-height: 1.1;
     margin: 0 0 5px;
+    letter-spacing: -0.01em;
 }
 .ac-card-sub {
-    font-size: 0.72rem;
-    color: var(--text-2);
+    font-size: 0.75rem;
+    color: rgba(148, 163, 184, 0.75);
     letter-spacing: 0.04em;
 }
 
@@ -111,11 +193,11 @@
 
 /* ── LABEL ───────────────────────────────────────────────── */
 .ac-label {
-    font-size: 0.70rem;
+    font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: 0.10em;
     text-transform: uppercase;
-    color: var(--text-2);
+    color: var(--text);
     transition: color 0.2s;
 }
 .ac-field-group:focus-within .ac-label {
@@ -135,10 +217,11 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: 0.78rem;
-    color: var(--text-muted);
+    color: rgba(148, 163, 184, 0.65);
     pointer-events: none;
     transition: color 0.2s;
     z-index: 2;
+    line-height: 1;
 }
 .ac-input-wrap:focus-within .ac-input-icon {
     color: var(--blue-text);
@@ -148,26 +231,30 @@
     transform: none;
 }
 
-/* ── SELECT ICON WRAPPER ─────────────────────────────────── */
+/* ── SELECT WRAPPER ──────────────────────────────────────── */
 .ac-select-wrap {
     position: relative;
 }
+/* Left icon */
 .ac-select-wrap .ac-input-icon {
     position: absolute;
     left: 13px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 0.78rem;
-    color: var(--text-muted);
+    color: rgba(148, 163, 184, 0.65);
     pointer-events: none;
     z-index: 2;
+    line-height: 1;
     transition: color 0.2s;
 }
 .ac-select-wrap:focus-within .ac-input-icon {
     color: var(--blue-text);
 }
+/* Select itself */
 .ac-select-wrap .ac-select {
     padding-left: 40px;
+    padding-right: 38px;
 }
 
 /* ── BASE INPUT ──────────────────────────────────────────── */
@@ -175,21 +262,19 @@
     width: 100%;
     padding: 11px 15px;
     background: rgba(7, 9, 15, 0.65);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(71, 85, 105, 0.70);
     border-radius: var(--r-sm);
-    color: var(--text);
+    color: #e2e8f0;
     font-family: var(--font);
     font-size: 0.875rem;
-    font-weight: 400;
+    font-weight: 450;
     line-height: 1.5;
     outline: none;
     transition: border-color 0.22s, background 0.22s, box-shadow 0.22s;
     appearance: none;
     -webkit-appearance: none;
 }
-.ac-input::placeholder {
-    color: var(--text-muted);
-}
+.ac-input::placeholder { color: rgba(148, 163, 184, 0.70); }
 .ac-input:hover {
     border-color: var(--border-2);
     background: rgba(10, 13, 22, 0.80);
@@ -203,9 +288,7 @@
     border-color: rgba(239, 68, 68, 0.55);
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.10);
 }
-.ac-field-group:has(.is-invalid) .ac-label {
-    color: var(--danger);
-}
+.ac-field-group:has(.is-invalid) .ac-label { color: var(--danger); }
 
 /* ── TEXTAREA ────────────────────────────────────────────── */
 textarea.ac-input {
@@ -215,10 +298,7 @@ textarea.ac-input {
 
 /* ── SELECT ──────────────────────────────────────────────── */
 select.ac-input {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    padding-right: 38px;
+    background-image: none;   /* no SVG — FA chevron handles the arrow */
     cursor: pointer;
 }
 select.ac-input option {
@@ -226,7 +306,28 @@ select.ac-input option {
     color: var(--text);
 }
 
-/* ── FILE INPUT — hidden, zone is the UI ─────────────────── */
+/* ── SELECT ARROW (FA chevron, right side) ───────────────── */
+.ac-select-arrow {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: rgba(148, 163, 184, 0.70);
+    pointer-events: none;
+    line-height: 1;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                color    0.25s ease;
+}
+.ac-select-arrow.open {
+    transform: translateY(-50%) rotate(180deg);
+    color: var(--blue-text);
+}
+
+/* ── FILE INPUT — hidden ─────────────────────────────────── */
 .ac-file-hidden {
     display: none !important;
     visibility: hidden;
@@ -242,7 +343,7 @@ select.ac-input option {
     gap: 7px;
     min-height: 120px;
     padding: 16px 14px;
-    border: 1.5px dashed var(--border-2);
+    border: 1.5px dashed rgba(71, 85, 105, 0.80);
     border-radius: var(--r-md);
     background: rgba(7, 9, 15, 0.55);
     cursor: pointer;
@@ -287,15 +388,15 @@ select.ac-input option {
 }
 
 .ac-upload-label {
-    font-size: 0.80rem;
+    font-size: 0.85rem;
     font-weight: 500;
-    color: var(--text);
+    color: #cbd5e1;
     line-height: 1.3;
     word-break: break-all;
 }
 .ac-upload-sub {
     font-size: 0.68rem;
-    color: var(--text-2);
+    color: rgba(148, 163, 184, 0.80);
     letter-spacing: 0.02em;
 }
 
@@ -404,9 +505,9 @@ select.ac-input option {
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 640px) {
-    .ac-card { padding: 26px 20px 30px; border-radius: var(--r-lg); }
-    .ac-form-grid { grid-template-columns: 1fr; }
-    .ac-card-heading { font-size: 1.4rem; }
+    .ac-card        { padding: 26px 20px 30px; border-radius: var(--r-lg); }
+    .ac-form-grid   { grid-template-columns: 1fr; }
+    .ac-card-heading{ font-size: 1.4rem; }
 }
 @media (max-width: 480px) {
     .ac-page { padding: 4px 0 32px; }

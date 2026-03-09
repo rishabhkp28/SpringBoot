@@ -3,6 +3,8 @@ package com.springbootdeveloper.DTO;
 import jakarta.validation.constraints.*;
 import java.util.*;
 
+import com.springbootdeveloper.Models.Contact;
+
 
 public class UserDto {
 
@@ -43,7 +45,7 @@ public class UserDto {
     @AssertTrue(message = "You must agree to the terms")
     private boolean agreeTerms;
 
-    private Set<ContactDto> contactDtos = new HashSet<>();
+    private List<ContactDto> contactDtos = new ArrayList<>();
 
 	public UUID getUserId() {
 		return userId;
@@ -117,13 +119,12 @@ public class UserDto {
 		this.agreeTerms = agreeTerms;
 	}
 
-	public Set<ContactDto> getContactDtos() {
+	public List<ContactDto> getContactDtos() {
 		return contactDtos;
 	}
 
-	public void setContactDtos(Set<ContactDto> contactDtos) {
+	public void setContactDtos(List<ContactDto>contactDtos) { //to set them from entity
 		this.contactDtos = contactDtos;
 	}
 
-    
 }

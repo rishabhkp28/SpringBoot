@@ -124,12 +124,22 @@
         if (!sidebar) return;
 
         const TIP_ID = 'scm-nav-tip';
+        let removeTimer = null;   // ← cancel token — prevents stale closures
 
-        const removeTip = () => {
-            const old = el(TIP_ID);
-            if (old) {
-                old.style.opacity = '0';
-                setTimeout(() => old && old.remove(), 150);
+        const killTip = (instant) => {
+            // Cancel any pending removal so it can't delete a NEW tip
+            if (removeTimer) { clearTimeout(removeTimer); removeTimer = null; }
+
+            const existing = el(TIP_ID);
+            if (!existing) return;
+
+            if (instant) {
+                existing.remove();
+            } else {
+                existing.style.opacity = '0';
+                // Capture the exact node — not looked up by ID later
+                const node = existing;
+                removeTimer = setTimeout(() => { node.remove(); removeTimer = null; }, 150);
             }
         };
 
@@ -140,7 +150,10 @@
 
             link.addEventListener('mouseenter', () => {
                 if (!sidebar.classList.contains('collapsed')) return;
-                removeTip();
+
+                // Kill any existing tip INSTANTLY (no fade) so the new one
+                // appears immediately without a 150ms gap
+                killTip(true);
 
                 const tip = document.createElement('div');
                 tip.id = TIP_ID;
@@ -175,7 +188,8 @@
                 requestAnimationFrame(() => { tip.style.opacity = '1'; });
             });
 
-            link.addEventListener('mouseleave', removeTip);
+            // On leave: fade out gracefully
+            link.addEventListener('mouseleave', () => killTip(false));
         });
     }
 

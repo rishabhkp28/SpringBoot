@@ -3,6 +3,9 @@ package com.springbootdeveloper.Models;
 import jakarta.persistence.*;
 import java.util.*;
 
+
+
+//This is the owning entity as this defines the join rules , and hence the mapped by will be pressent in the other entity
 @Entity
 @Table(
     name = "users",
@@ -11,8 +14,8 @@ import java.util.*;
 public class User {
 
     @Id
-    @GeneratedValue
-    @Column(columnDefinition = "BINARY(16)", updatable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)//even if i dont write this hibernate generates this automatically
+    @Column(columnDefinition = "BINARY(16)", updatable = false, nullable = false)
     private UUID userId;
 
     @Column(nullable = false)
@@ -32,15 +35,12 @@ public class User {
     private boolean enable;
 
     private String role;
-
-    @ManyToMany
-    @JoinTable(
-        name = "person_contact",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "contact_id")
-    )
-    private Set<Contact> contacts = new HashSet<>();
-
+    
+    
+    //this has nothing to do with the jpa ,its for java memory management and optimization
+    @OneToMany(mappedBy ="user",  cascade = CascadeType.ALL, orphanRemoval = true)//in case when user removes the contact ,then we must delete it from contacts also
+    List<Contact> contacts = new ArrayList<>();
+    
 	public UUID getUserId() {
 		return userId;
 	}
@@ -105,13 +105,23 @@ public class User {
 		this.role = role;
 	}
 
-	public Set<Contact> getContacts() {
+	public List<Contact> getContacts() {
 		return contacts;
 	}
 
-	public void setContacts(Set<Contact> contacts) {
+	public void setContacts(List<Contact> contacts) {
 		this.contacts = contacts;
 	}
+	
+	public void addContact(Contact contact) {
+	    this.contacts.add(contact);
+	    
+	}
+	public void removeContact(Contact contact) {
+	    this.contacts.remove(contact);
+	    contact.setUser(null);
+	}
+
 	
 	
     

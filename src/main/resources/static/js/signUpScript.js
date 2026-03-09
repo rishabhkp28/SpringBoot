@@ -107,7 +107,7 @@ let debounceTimerName;
 
 
 nameInput.addEventListener("input", function() {
-    const name = this.value.trim();
+    const name = this.value;
     clearTimeout(debounceTimerName);
 
     if (name === "") {
@@ -126,9 +126,9 @@ nameInput.addEventListener("input", function() {
         }
 
         // Only letters and spaces
-        if (!/^[a-zA-Z\s]+$/.test(name)) {
+        if (!/^[A-Za-z]+( [A-Za-z]+)*$/.test(name)) { 
             isValid = false;
-            message += "Name can only have letters and spaces.<br>";
+            message += "Name can only have letters and spaces and no trailing spaces.<br>";
         }
 
         // Minimum 3 characters

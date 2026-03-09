@@ -12,12 +12,8 @@ import com.springbootdeveloper.DTO.ProfileEnhanceDto;
 import com.springbootdeveloper.DTO.UserDto;
 import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
 import com.springbootdeveloper.Exceptions.DuplicateEmailException;
-import com.springbootdeveloper.Exceptions.EmptyFileException;
-import com.springbootdeveloper.Exceptions.FileSizeException;
-import com.springbootdeveloper.Exceptions.FileStorageException;
-import com.springbootdeveloper.Exceptions.UnsupportedFileTypeException;
+
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
-import com.springbootdeveloper.Helpers.FileHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -27,12 +23,12 @@ public class PostController {
 
     
     private final ServiceClassUser sc;
-    private final FileHandler fileHandler;
-    
-    private PostController(ServiceClassUser sc,FileHandler fileHandler)
+   
+
+    private PostController(ServiceClassUser sc)
     {
     	this.sc = sc;
-    	this.fileHandler = fileHandler;
+    	
     	
     }
     /*this name inside modelAttribute matters in the thymeleaf but not in spring This name must match the th:object name in the page ,during addattribute()
@@ -121,6 +117,8 @@ public class PostController {
 	 		model.addAttribute("activePage","dashboard");
 	 		model.addAttribute("pageTitle","Dashboard");	
 	 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Welcome to your User Dashboard");
+	 		model.addAttribute("recentContacts",null);
+	 		model.addAttribute("favouritesCount",sc.getFavouritesCount(userDto));
 	 		return "normalUser/userDashboard";
     	
     }

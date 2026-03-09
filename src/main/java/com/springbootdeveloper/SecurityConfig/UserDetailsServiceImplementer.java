@@ -28,9 +28,7 @@ public class UserDetailsServiceImplementer implements UserDetailsService {
 	
 		
 		Optional<User> user = dl.findByEmail(email);
-		
-		
-		
+	
 		if(user.isEmpty())
 			throw new UsernameNotFoundException("Could not find the user in the database");
 		

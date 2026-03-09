@@ -1,11 +1,14 @@
-<th:block th:replace = "dashboardBase :: base(~{::pageCss} , ~{::pageJs} , ~{::content})">
 
-<th:block th:fragment = "pageCss">
-	<link rel = "stylesheet" th:href = "@{/css/userDashboardStyle.css}">
-	</th:block>
+<th:block
+      th:replace="~{dashboardBase :: base(~{::pageCss}, ~{::pageJs}, ~{::content})}">
 
+<!-- ░░ PAGE CSS ░░ -->
+<th:block th:fragment="pageCss">
+    <link rel="stylesheet" th:href="@{/css/userDashboardStyle.css}"/>
+</th:block>
 
-<th:block th:fragment = "content">
+<!-- ░░ PAGE CONTENT ░░ -->
+<th:block th:fragment="content">
 <div id="page-content">
 
     <!-- ──────────────────────────────────────────────────
@@ -33,7 +36,7 @@
                 <i class="fa-solid fa-star"></i>
             </div>
             <div class="dash-stat-body">
-                <p class="dash-stat-val" th:text="${favoriteCount} ?: '—'">—</p>
+                <p class="dash-stat-val" th:text="${favouritesCount} ?: '—'">—</p>
                 <p class="dash-stat-lbl">Favourites</p>
             </div>
             <div class="dash-stat-glyph" aria-hidden="true">
@@ -101,53 +104,14 @@
                         <p class="dash-c-name" th:text="${c.name}">Name</p>
                         <p class="dash-c-meta" th:text="${c.email} ?: (${c.phone} ?: '—')">meta</p>
                     </div>
-                    <span class="dash-tag" th:text="${c.category} ?: 'Contact'">Tag</span>
-                </li>
-            </ul>
-
-            <!-- Placeholder when no data -->
-            <ul class="dash-contact-list"
-                th:if="${recentContacts == null or #lists.isEmpty(recentContacts)}">
-                <li class="dash-contact-row">
-                    <div class="dash-c-av">AS</div>
-                    <div class="dash-c-info">
-                        <p class="dash-c-name">Arjun Singh</p>
-                        <p class="dash-c-meta">arjun@example.com</p>
-                    </div>
-                    <span class="dash-tag dash-tag-work">Work</span>
-                </li>
-                <li class="dash-contact-row">
-                    <div class="dash-c-av">MK</div>
-                    <div class="dash-c-info">
-                        <p class="dash-c-name">Meera Kapoor</p>
-                        <p class="dash-c-meta">+91 98765 43210</p>
-                    </div>
-                    <span class="dash-tag dash-tag-friend">Friend</span>
-                </li>
-                <li class="dash-contact-row">
-                    <div class="dash-c-av">RV</div>
-                    <div class="dash-c-info">
-                        <p class="dash-c-name">Rohan Verma</p>
-                        <p class="dash-c-meta">rohan@startup.io</p>
-                    </div>
-                    <span class="dash-tag dash-tag-client">Client</span>
-                </li>
-                <li class="dash-contact-row">
-                    <div class="dash-c-av">NJ</div>
-                    <div class="dash-c-info">
-                        <p class="dash-c-name">Naina Joshi</p>
-                        <p class="dash-c-meta">naina@gmail.com</p>
-                    </div>
-                    <span class="dash-tag">Family</span>
-                </li>
-                <li class="dash-contact-row">
-                    <div class="dash-c-av">PS</div>
-                    <div class="dash-c-info">
-                        <p class="dash-c-name">Pradeep Sharma</p>
-                        <p class="dash-c-meta">pradeep@corp.in</p>
-                    </div>
-                    <span class="dash-tag dash-tag-work">Work</span>
-                </li>
+                    <span th:if="${c.favourite}" class="dash-fav-badge" title="Favourite">
+								    <i class="fa-solid fa-star"></i>
+								</span>
+                    <span th:if="${c.group != null and c.group.name() == 'WORK'}"      class="dash-tag dash-tag-work"      th:text="'Work'"></span>
+				<span th:if="${c.group != null and c.group.name() == 'FRIEND'}"    class="dash-tag dash-tag-friend"    th:text="'Friend'"></span>
+				<span th:if="${c.group != null and c.group.name() == 'FAMILY'}"    class="dash-tag dash-tag-family"    th:text="'Family'"></span>
+				<span th:if="${c.group != null and c.group.name() == 'CLIENT'}"    class="dash-tag dash-tag-client"    th:text="'Client'"></span>
+				<span th:if="${c.group != null and c.group.name() == 'ANONYMOUS'}" class="dash-tag dash-tag-anonymous" th:text="'Anonymous'"></span>  </li>
             </ul>
 
         </div><!-- /recent contacts -->
@@ -164,7 +128,6 @@
                         <p class="dash-panel-sub">Jump right in</p>
                     </div>
                 </div>
-
                 <div class="dash-action-list">
                     <a th:href="@{/user/addContactRequest}" class="dash-action-btn">
                         <span class="dash-action-icon"><i class="fa-solid fa-user-plus"></i></span>
@@ -192,7 +155,6 @@
 
             <!-- Profile Strength -->
             <div class="dash-panel dash-panel-strength dash-anim dash-anim-d5">
-
                 <div class="dash-strength-top">
                     <div class="dash-strength-icon">
                         <i class="fa-solid fa-shield-halved"></i>
@@ -202,7 +164,6 @@
                         <p class="dash-panel-sub">Complete your profile to unlock all features</p>
                     </div>
                 </div>
-
                 <div class="dash-progress-row">
                     <div class="dash-progress-track">
                         <div class="dash-progress-fill"
@@ -215,11 +176,9 @@
                           id="dashProgressPct"
                           th:text="(${profileStrength} ?: '60') + '%'">60%</span>
                 </div>
-
                 <a th:href="@{/user/profile}" class="dash-strength-cta">
                     Complete Profile&nbsp;<i class="fa-solid fa-arrow-right fa-xs"></i>
                 </a>
-
             </div><!-- /profile strength -->
 
         </div><!-- /right col -->
@@ -229,8 +188,8 @@
 </div><!-- /page-content -->
 </th:block>
 
-<!-- ── Page-specific JS ────────────────────────────────── -->
-<th:block  th:fragment = "pageJs">
+<!-- ░░ PAGE JS ░░ -->
+<th:block th:fragment="pageJs">
     <script th:src="@{/js/userDashboardScript.js}"></script>
 </th:block>
 </th:block>

@@ -10,47 +10,66 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
 import com.springbootdeveloper.Models.ContactGroup;
 
 public class ContactDto {
 
     private UUID contactId;
 
-    @NotBlank
-    @Size(min = 6, message = "Name must be at least 6 characters long")
-    @Pattern(regexp = "^[A-Za-z]+( [A-Za-z]+)*$", message = "Name can contain only letters and spaces")
+    // ✅ FIX — removed duplicate @NotBlank (was declared twice)
+    @NotBlank(message = "Name is required")
+    @Size(min = 3, message = "Name must be at least 3 characters long")
+    @Pattern(
+        regexp = "^[A-Za-z]+( [A-Za-z]+)*$",
+        message = "Name can contain only letters and single space (not trailing) between words"
+    )
     private String name;
 
-    @Size(min = 6, message = "Nick name must be at least 6 characters long")
-    @Pattern(regexp = "^[A-Za-z0-9]+( [A-Za-z0-9]+)*$", message = "Nick name can contain only letters, digits, and spaces")
+    // ✅ CORRECT — empty string OR letters/digits with single non-trailing spaces
+    @Pattern(
+        regexp = "^$|^[A-Za-z0-9]+( [A-Za-z0-9]+)*$",
+        message = "Nick name can contain letters, digits, and single spaces (not trailing) between words, or it can be empty"
+    )
     private String nickName;
-
     
+    
+    @Size(max = 200)
     private String description;
-    
+
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits")
+    @Pattern(
+        regexp = "^[0-9]{10}$",
+        message = "Phone number must be exactly 10 digits"
+    )
     private String phone;
 
+    // ✅ CORRECT — empty string OR valid gmail address (case insensitive)
+    // @Email handles basic format check; @Pattern enforces @gmail.com specifically
     @Email(message = "Not a valid email")
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@gmail\\.com$", 
-    message = "Email must end with @gmail.com",
-    flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Pattern(
+        regexp = "^$|^[A-Za-z0-9._%+\\-]+@gmail\\.com$",
+        message = "Email must end with @gmail.com",
+        flags = Pattern.Flag.CASE_INSENSITIVE
+    )
     private String email;
 
     private MultipartFile multipartFile;
+
     private String fileName;
 
-    // ===== New fields =====
-    private LocalDateTime createdDate;
-    
-    
-    @NotNull(message = "Contact group is required")
-    private ContactGroup group;
-    
-    private LocalDateTime updatedDate;  
+    private boolean favourite;
 
-    // ===== getters & setters =====
+    private LocalDateTime createdDate;
+
+    @NotNull(message = "Contact group is required")
+    private ContactGroup group; // if ContactGroup can't convert to this enum, BindingResult throws error
+
+    private LocalDateTime updatedDate;
+
+
+    // ===== Getters & Setters =====
+
     public UUID getContactId() { return contactId; }
     public void setContactId(UUID contactId) { this.contactId = contactId; }
 
@@ -59,8 +78,6 @@ public class ContactDto {
 
     public String getNickName() { return nickName; }
     public void setNickName(String nickName) { this.nickName = nickName; }
-
-   
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
@@ -72,29 +89,20 @@ public class ContactDto {
     public void setEmail(String email) { this.email = email; }
 
     public MultipartFile getMultipartFile() { return multipartFile; }
-    public void setMultipartFile(MultipartFile image) { this.multipartFile = multipartFile; }
-    
-    
-    public String getFileName() {
-    	return fileName;
-    }
-    public void setFileName(String fileName) {
-    	this.fileName = fileName;
-    }
-    
-    
+    public void setMultipartFile(MultipartFile multipartFile) { this.multipartFile = multipartFile; }
+
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
+
     public LocalDateTime getCreatedDate() { return createdDate; }
-    public void setCreatedDate(LocalDateTime createdDate) { this.createdDate = createdDate; }//needed for  conversion to DTO
+    public void setCreatedDate(LocalDateTime createdDate) { this.createdDate = createdDate; } // needed for Entity → DTO conversion
 
     public LocalDateTime getUpdatedDate() { return updatedDate; }
-    public void setUpdatedDate(LocalDateTime updatedDate) { this.updatedDate = updatedDate; } //needed for  conversion to DTO
-
+    public void setUpdatedDate(LocalDateTime updatedDate) { this.updatedDate = updatedDate; } // needed for DTO conversion
 
     public ContactGroup getGroup() { return group; }
     public void setGroup(ContactGroup group) { this.group = group; }
-    
-    
-    
-    
-    
+
+    public boolean getFavourite() { return favourite; }
+    public void setFavourite(boolean favourite) { this.favourite = favourite; }
 }

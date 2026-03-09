@@ -8,9 +8,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(
 	    name = "contacts",
-	    uniqueConstraints = @UniqueConstraint(
-	        columnNames = {"group", "name"}
-	    )
+	    uniqueConstraints = @UniqueConstraint(columnNames = {"userId","groupName", "name","phone"})
 	)
 public class Contact {
 
@@ -34,21 +32,26 @@ public class Contact {
 
     @Column(nullable = false)
     private String email;
+    
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = false) //this will store the UserId for hte User as a foreign key
+    private User user;
 
     private String image;
+    
+    private boolean favourite;
 
     // ===== New fields =====
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, name = "groupName")
     private ContactGroup group;
 
 	private LocalDateTime updatedDate;
 
-    // ===== getters & setters =====
-
+	
     public UUID getContactId() { return contactId; }
     public void setContactId(UUID contactId) { this.contactId = contactId; }
 
@@ -76,13 +79,28 @@ public class Contact {
 
     public ContactGroup getGroup() { return group; }
     public void setGroup(ContactGroup group) { this.group = group; }
-
-    // Automatically set createdDate before saving
+    
+    
+    public void setUser(User user) {
+    	this.user = user;
+    }
+    public User getUser()
+    {
+    	return user;
+    }
+    
+    public void setFavourite(boolean favourite)
+    {
+    	this.favourite = favourite;
+    }
+    public boolean getFavourite() { return favourite;}
+  	
+	// Automatically set createdDate before saving
     @PrePersist
     public void prePersist() {
         this.createdDate = LocalDateTime.now();
     }
-    @PreUpdate  // add this
+    @PreUpdate  // for the update date of the contact
     public void preUpdate() {
         this.updatedDate = LocalDateTime.now();
     }

@@ -1,8 +1,10 @@
 package com.springbootdeveloper.ServiceLayer;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
-
+import java.util.List;
+import java.util.stream.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,11 +14,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
+import com.springbootdeveloper.DTO.ContactDto;
 import com.springbootdeveloper.DTO.ProfileEnhanceDto;
 import com.springbootdeveloper.DTO.UserDto;
 import com.springbootdeveloper.Exceptions.DuplicateEmailException;
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
 import com.springbootdeveloper.Helpers.FileHandler;
+import com.springbootdeveloper.Models.Contact;
 import com.springbootdeveloper.Models.User;
 import com.springbootdeveloper.RepositoryLayer.DatabaseLayerUser;
 
@@ -25,7 +29,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 @Service
-@Transactional
 public class ServiceClassUser {//defined for rules and regulations regarding the business
 
     @Autowired
@@ -35,6 +38,8 @@ public class ServiceClassUser {//defined for rules and regulations regarding the
     private final AuthenticationManager authenticationManager;
     @Autowired
     private FileHandler fileHandler;//Spring injects it via reflection
+    @Autowired
+    private ServiceClassContact serviceClassContact;
     
     //Spring injects it from Spring security
     public ServiceClassUser(BCryptPasswordEncoder passEncoder,AuthenticationManager authenticationManager)
@@ -152,6 +157,12 @@ public class ServiceClassUser {//defined for rules and regulations regarding the
 		    dto.setImage(user.getImage());
 		    dto.setBio(user.getBio());
 		    
+		    
+		    List<Contact> contacts = user.getContacts();
+		    
+		    List<ContactDto> contactDtos = contacts.stream().map(contact -> serviceClassContact.convertToDto(contact)).collect(Collectors.toList());
+   
+		    dto.setContactDtos(contactDtos); //converted them to contactDtos , so as to send to the user
 			return dto;
 	}
     
@@ -167,11 +178,13 @@ public class ServiceClassUser {//defined for rules and regulations regarding the
     	user.setEnable(userdata.isEnable());
     	user.setImage(userdata.getImage());
     	user.setBio(userdata.getBio());
-    	
+    	    	
     	return user;
-    	
-    	
+
     }
+    
+    
+    
     public void autoLogin(UserDto dto, HttpServletRequest request)
     {//this dto  has the pass to autologin on first time registration
     	
@@ -195,5 +208,30 @@ public class ServiceClassUser {//defined for rules and regulations regarding the
                 SecurityContextHolder.getContext()
         );
     }
+    
+    public List<ContactDto> getFavouriteContacts(UserDto userDto)
+    {
+    	
+    	List<ContactDto> contactDtos = userDto.getContactDtos();
+    	contactDtos = contactDtos.stream().filter(contactDto -> contactDto.getFavourite() == true).collect(Collectors.toList());
+    	
+    	return contactDtos;
+    	
+    }
+    
+    
+    public long getFavouritesCount(UserDto userDto)
+    {
+    	long  favourites = this.getFavouriteContacts(userDto).size();
+    	
+    	System.out.println(favourites);
+    	System.out.println("-----------------------------------------------------"+favourites);
+    	
+    	return favourites;
+
+    }
+    
+    
+ 
 
 }

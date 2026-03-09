@@ -16,3 +16,4 @@ public interface DatabaseLayerUser extends CrudRepository<User, UUID> {
 
     boolean existsByEmail(String email); //auto implemented by SpringBoot as I used the keywords it provides
 }
+			

@@ -1,181 +1,152 @@
 /* ═══════════════════════════════════════════════════════════
    SmartCM — DASHBOARD PAGE SCRIPT
-   Progress bar · Stat counter · Contact row effects
+   Progress bar · Counter animation · Stat card micro-fx
    ═══════════════════════════════════════════════════════════ */
 
 (function () {
     'use strict';
 
-    /* ── shorthand ───────────────────────────────────────── */
+    /* ── helpers ─────────────────────────────────────────── */
     const el  = id  => document.getElementById(id);
     const qsa = sel => document.querySelectorAll(sel);
 
     /* ══════════════════════════════════════════════════════
        1. PROFILE STRENGTH PROGRESS BAR
-       Reads data-pct attribute set by Thymeleaf and
-       animates the fill width after a short delay.
+          Reads data-pct attribute set by Thymeleaf,
+          animates from 0 → target on page load.
        ══════════════════════════════════════════════════════ */
     function initProgressBar() {
         const fill = el('dashProgressFill');
         const pct  = el('dashProgressPct');
         if (!fill) return;
 
-        const target = parseInt(fill.dataset.pct, 10) || 0;
-        const clamped = Math.min(Math.max(target, 0), 100);
+        const target = parseInt(fill.getAttribute('data-pct') || '60', 10);
 
-        // Small delay so the CSS transition fires visibly on load
+        // Slight delay so CSS transition fires after paint
         setTimeout(() => {
-            fill.style.width = clamped + '%';
-        }, 320);
+            fill.style.width = target + '%';
+        }, 500);
 
-        // Animate the percentage counter up
+        // Optional: animate the percentage number counting up
         if (pct) {
             let current = 0;
-            const step  = Math.ceil(clamped / 40); // ~40 frames
+            const step  = target / 40; // 40 frames ≈ ~0.7s
             const timer = setInterval(() => {
-                current += step;
-                if (current >= clamped) {
-                    current = clamped;
-                    clearInterval(timer);
-                }
-                pct.textContent = current + '%';
-            }, 28);
+                current = Math.min(current + step, target);
+                pct.textContent = Math.round(current) + '%';
+                if (current >= target) clearInterval(timer);
+            }, 18);
         }
     }
 
     /* ══════════════════════════════════════════════════════
-       2. STAT VALUE COUNTER ANIMATION
-       Counts up each stat number from 0 on page load.
+       2. STAT COUNTER ANIMATION
+          Animates numbers from 0 up to their displayed value.
+          Reads the rendered text content as the target.
        ══════════════════════════════════════════════════════ */
     function initStatCounters() {
-        qsa('.dash-stat-val').forEach(valEl => {
-            const raw = valEl.textContent.trim();
-            const num = parseInt(raw, 10);
-            if (isNaN(num) || raw === '—') return; // skip non-numeric / placeholder
+        qsa('.dash-stat-val').forEach(el => {
+            const raw    = el.textContent.trim();
+            const target = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+            if (isNaN(target) || target === 0) return;
 
-            valEl.textContent = '0';
-            let current  = 0;
-            const frames = 40;
-            const step   = Math.max(1, Math.ceil(num / frames));
+            // Replace with 0 to start count
+            el.textContent = '0';
+            let current = 0;
+            const duration = 900; // ms
+            const startTime = performance.now();
 
-            const timer = setInterval(() => {
-                current += step;
-                if (current >= num) {
-                    current = num;
-                    clearInterval(timer);
-                }
-                valEl.textContent = current.toLocaleString();
-            }, 28);
+            function tick(now) {
+                const elapsed  = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // ease-out cubic
+                const eased = 1 - Math.pow(1 - progress, 3);
+                current = Math.round(eased * target);
+                el.textContent = current.toLocaleString();
+                if (progress < 1) requestAnimationFrame(tick);
+            }
+
+            // Small delay so card fade-in plays first
+            setTimeout(() => requestAnimationFrame(tick), 300);
         });
     }
 
     /* ══════════════════════════════════════════════════════
-       3. CONTACT ROW — staggered entrance
-       Adds a subtle stagger to each contact row so they
-       animate in one by one rather than all at once.
+       3. CONTACT ROW HOVER HIGHLIGHT
+          Subtle left-border highlight on hover.
        ══════════════════════════════════════════════════════ */
-    function initContactRowStagger() {
-        qsa('.dash-contact-row').forEach((row, i) => {
-            row.style.opacity    = '0';
-            row.style.transform  = 'translateX(-8px)';
-            row.style.transition = 'opacity 0.30s ease, transform 0.30s ease';
-
-            setTimeout(() => {
-                row.style.opacity   = '1';
-                row.style.transform = 'translateX(0)';
-            }, 420 + i * 65); // starts after panel fade-in
+    function initContactRowFx() {
+        qsa('.dash-contact-row').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.paddingLeft      = '8px';
+                row.style.borderLeftWidth  = '2px';
+                row.style.borderLeftStyle  = 'solid';
+                row.style.borderLeftColor  = 'rgba(37, 99, 235, 0.45)';
+                row.style.transition       = 'padding-left 0.2s ease, border-color 0.2s ease';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.paddingLeft      = '0';
+                row.style.borderLeftWidth  = '0';
+            });
         });
     }
 
     /* ══════════════════════════════════════════════════════
-       4. ACTION BUTTONS — ripple on click
-       Lightweight CSS-driven ripple effect.
+       4. QUICK ACTION BUTTON — ripple on click
        ══════════════════════════════════════════════════════ */
-    function initActionRipple() {
+    function initRipple() {
         qsa('.dash-action-btn').forEach(btn => {
             btn.addEventListener('click', function (e) {
-                // Don't prevent navigation — purely cosmetic
+                const rect   = btn.getBoundingClientRect();
                 const ripple = document.createElement('span');
+                const size   = Math.max(rect.width, rect.height);
 
                 Object.assign(ripple.style, {
                     position:     'absolute',
+                    width:        size + 'px',
+                    height:       size + 'px',
                     borderRadius: '50%',
-                    background:   'rgba(147, 180, 255, 0.18)',
-                    width:        '120px',
-                    height:       '120px',
-                    pointerEvents:'none',
+                    background:   'rgba(37, 99, 235, 0.18)',
                     transform:    'scale(0)',
-                    transition:   'transform 0.45s ease, opacity 0.45s ease',
-                    opacity:      '1',
+                    left:         (e.clientX - rect.left - size / 2) + 'px',
+                    top:          (e.clientY - rect.top  - size / 2) + 'px',
+                    pointerEvents:'none',
+                    animation:    'dashRipple 0.5s ease forwards',
                 });
 
-                // Ensure parent is positioned
+                // Ensure btn has position:relative for ripple to sit inside
                 if (getComputedStyle(btn).position === 'static') {
                     btn.style.position = 'relative';
                 }
                 btn.style.overflow = 'hidden';
-
-                const rect = btn.getBoundingClientRect();
-                ripple.style.left = (e.clientX - rect.left - 60) + 'px';
-                ripple.style.top  = (e.clientY - rect.top  - 60) + 'px';
-
                 btn.appendChild(ripple);
-                requestAnimationFrame(() => {
-                    ripple.style.transform = 'scale(2)';
-                    ripple.style.opacity   = '0';
-                });
-
-                setTimeout(() => ripple.remove(), 480);
+                setTimeout(() => ripple.remove(), 500);
             });
         });
+
+        // Inject ripple keyframe once
+        if (!document.getElementById('dash-ripple-style')) {
+            const style = document.createElement('style');
+            style.id = 'dash-ripple-style';
+            style.textContent = `
+                @keyframes dashRipple {
+                    to { transform: scale(2.5); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
     }
 
     /* ══════════════════════════════════════════════════════
-       5. STAT CARDS — hover glow tint per color
-       Adds a faint colored ambient glow matching the card
-       icon color when the card is hovered.
-       ══════════════════════════════════════════════════════ */
-    function initStatCardGlow() {
-        const glowMap = {
-            'dash-si-blue':   'rgba(37, 99, 235, 0.08)',
-            'dash-si-gold':   'rgba(232, 160, 32, 0.07)',
-            'dash-si-green':  'rgba(34, 197, 94, 0.07)',
-            'dash-si-purple': 'rgba(139, 92, 246, 0.08)',
-        };
-
-        qsa('.dash-stat-card').forEach(card => {
-            const iconWrap = card.querySelector('.dash-stat-icon-wrap');
-            if (!iconWrap) return;
-
-            let glowColor = 'transparent';
-            for (const [cls, color] of Object.entries(glowMap)) {
-                if (iconWrap.classList.contains(cls)) { glowColor = color; break; }
-            }
-
-            card.addEventListener('mouseenter', () => {
-                card.style.background = glowColor === 'transparent'
-                    ? ''
-                    : `rgba(13, 16, 24, 0.82)`;
-                card.style.boxShadow = `0 14px 44px rgba(0,0,0,0.38), 0 0 0 1px ${glowColor}`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.background = '';
-                card.style.boxShadow  = '';
-            });
-        });
-    }
-
-    /* ══════════════════════════════════════════════════════
-       BOOT
+       BOOT — run after DOM is ready
        ══════════════════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', () => {
         initProgressBar();
         initStatCounters();
-        initContactRowStagger();
-        initActionRipple();
-        initStatCardGlow();
+        initContactRowFx();
+        initRipple();
 
-        console.log('%cSmartCM · Dashboard Page Ready', 'color:#4ade80;font-family:serif;font-style:italic;font-size:12px');
+        console.log('%cSmartCM Dashboard · Page Ready', 'color:#e8a020;font-family:serif;font-style:italic;font-size:12px');
     });
 
 })();
