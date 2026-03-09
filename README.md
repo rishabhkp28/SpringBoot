@@ -25,3 +25,15 @@ Created a separate controller for contact-related operations.
 Improved workflow by refining the service layer for User, clearly separating controller and service responsibilities.
 Split the service layer responsibilities between User and Contact.
 Implemented addContact functionality, including the corresponding controller and service methods to save contacts in the database.
+
+
+Progress Update (3–9 March):
+Modified the logical error in the User and Contact Entity (database mapping ManyToMany to OneToMany).
+Configured the addContact to work and display the recent results in the dashboard.
+Modified the addContact.html to include the server side validations as well as the js Client side dynamic validations.
+Implemented the Favourited functionality to display the favourite contacts by the * in the dashboard and also the total favourite contacts available.
+Implemented UI fixes and enhanced the existing code in addContact.html form.
+
+
+
+
