@@ -1,11 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{dashboardBase :: base(~{::pageCss}, ~{::pageJs}, ~{::content})}">
 
+<!-- ░░ PAGE CSS ░░ -->
+<th:block th:fragment="pageCss">
+    <link rel="stylesheet" th:href="@{/css/userGroupsStyle.css}"/>
+</th:block>
 
-<th:block th:replace="dashboardBase :: base(~{}, ~{}, ~{::content})">
+<!-- ░░ PAGE CONTENT ░░ -->
+<th:block th:fragment="content">
+<div id="page-content">
 
-    <th:block th:fragment="content">
-        <h1 style="font-size:20px; color: pink;">Hey this is the groups page</h1>
-    </th:block>
+    <!-- Page header -->
+    <div class="grp-page-header dash-anim dash-anim-d1">
+        <div>
+            <h2 class="grp-page-title">Groups &amp; Tags</h2>
+            <p class="grp-page-sub">Browse your contacts by group</p>
+        </div>
+    </div>
 
+    <!-- Group cards grid -->
+    <div class="grp-grid">
+
+        <!-- WORK -->
+        <a th:href="@{/user/groups/WORK}" class="grp-card grp-card--work dash-anim dash-anim-d1">
+            <div class="grp-card-icon">
+                <i class="fa-solid fa-briefcase"></i>
+            </div>
+            <div class="grp-card-body">
+                <p class="grp-card-name">Work</p>
+                <p class="grp-card-count"
+                   th:text="${workCount != null ? workCount + ' contacts' : '0 contacts'}">0 contacts</p>
+            </div>
+            <div class="grp-card-arrow">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+            <div class="grp-card-glyph" aria-hidden="true">
+                <i class="fa-solid fa-briefcase"></i>
+            </div>
+        </a>
+
+        <!-- FRIEND -->
+        <a th:href="@{/user/groups/FRIEND}" class="grp-card grp-card--friend dash-anim dash-anim-d2">
+            <div class="grp-card-icon">
+                <i class="fa-solid fa-user-group"></i>
+            </div>
+            <div class="grp-card-body">
+                <p class="grp-card-name">Friend</p>
+                <p class="grp-card-count"
+                   th:text="${friendsCount != null ? friendsCount + ' contacts' : '0 contacts'}">0 contacts</p>
+            </div>
+            <div class="grp-card-arrow">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+            <div class="grp-card-glyph" aria-hidden="true">
+                <i class="fa-solid fa-user-group"></i>
+            </div>
+        </a>
+
+        <!-- FAMILY -->
+        <a th:href="@{/user/groups/FAMILY}" class="grp-card grp-card--family dash-anim dash-anim-d3">
+            <div class="grp-card-icon">
+                <i class="fa-solid fa-house-chimney"></i>
+            </div>
+            <div class="grp-card-body">
+                <p class="grp-card-name">Family</p>
+                <p class="grp-card-count"
+                   th:text="${familyCount != null ? familyCount + ' contacts' : '0 contacts'}">0 contacts</p>
+            </div>
+            <div class="grp-card-arrow">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+            <div class="grp-card-glyph" aria-hidden="true">
+                <i class="fa-solid fa-house-chimney"></i>
+            </div>
+        </a>
+
+        <!-- CLIENT -->
+        <a th:href="@{/user/groups/CLIENT}" class="grp-card grp-card--client dash-anim dash-anim-d4">
+            <div class="grp-card-icon">
+                <i class="fa-solid fa-handshake"></i>
+            </div>
+            <div class="grp-card-body">
+                <p class="grp-card-name">Client</p>
+                <p class="grp-card-count"
+                   th:text="${clientsCount != null ? clientCount + ' contacts' : '0 contacts'}">0 contacts</p>
+            </div>
+            <div class="grp-card-arrow">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+            <div class="grp-card-glyph" aria-hidden="true">
+                <i class="fa-solid fa-handshake"></i>
+            </div>
+        </a>
+
+        <!-- ANONYMOUS -->
+        <a th:href="@{/user/groups/ANONYMOUS}" class="grp-card grp-card--anonymous dash-anim dash-anim-d5">
+            <div class="grp-card-icon">
+                <i class="fa-solid fa-user-secret"></i>
+            </div>
+            <div class="grp-card-body">
+                <p class="grp-card-name">Anonymous</p>
+                <p class="grp-card-count"
+                   th:text="${anonymousCount != null ? anonymousCount + ' contacts' : '0 contacts'}">0 contacts</p>
+            </div>
+            <div class="grp-card-arrow">
+                <i class="fa-solid fa-arrow-right"></i>
+            </div>
+            <div class="grp-card-glyph" aria-hidden="true">
+                <i class="fa-solid fa-user-secret"></i>
+            </div>
+        </a>
+
+    </div><!-- /grp-grid -->
+
+</div><!-- /page-content -->
+</th:block>
+
+<!-- ░░ PAGE JS ░░ -->
+<th:block th:fragment="pageJs">
+    <script th:src="@{/js/userGroupsScript.js}"></script>
 </th:block>
 
 </html>

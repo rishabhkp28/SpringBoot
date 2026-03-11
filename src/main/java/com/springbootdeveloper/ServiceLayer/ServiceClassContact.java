@@ -1,14 +1,16 @@
 package com.springbootdeveloper.ServiceLayer;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import com.springbootdeveloper.DTO.ContactDto;
-import com.springbootdeveloper.DTO.UserDto;
 import com.springbootdeveloper.Helpers.FileHandler;
 import com.springbootdeveloper.Models.Contact;
+import com.springbootdeveloper.Models.ContactGroup;
 import com.springbootdeveloper.Models.User;
 import com.springbootdeveloper.RepositoryLayer.DatabaseLayerContacts;
 import com.springbootdeveloper.RepositoryLayer.DatabaseLayerUser;
@@ -110,7 +112,76 @@ public class ServiceClassContact {
 	}
 	
 	
+	public List<ContactDto> findAllContacts(UUID id)
+	{
+		
+		return dbContacts.findByUser_UserId(id).stream().map(x-> convertToDto(x)).collect(Collectors.toList());
+	}
 	
+	public List<ContactDto> getFavouriteContacts(UUID id)
+    {
+    	
+    	    	
+    	return dbContacts.findFavouriteContacts(id).stream().map(x -> convertToDto(x)).collect(Collectors.toList());
+    	
+    }
+    
+	public List<ContactDto> getContactsAddedThisMonth(UUID id)
+	{
+		LocalDateTime startOfMonth = LocalDate.now()
+                .withDayOfMonth(1)
+                .atStartOfDay();
+			
+			LocalDateTime now = LocalDateTime.now();
+			
+			List<Contact> contacts = dbContacts
+			.findByUser_UserIdAndCreatedDateBetween(id, startOfMonth, now);
+			
+			return contacts.stream().map(x -> convertToDto(x)).collect(Collectors.toList());
+	}
+	
+	
+	
+	public List<ContactDto> getContactsByGroup(UUID userId,ContactGroup contactGroup)
+	{
+		
+		List<Contact> contacts = dbContacts.findByUser_UserIdAndGroup(userId, contactGroup);
+		
+		return contacts.stream().map(x-> convertToDto(x)).collect(Collectors.toList());
+		
+	}
+	
+	public long getCountByGroup(UUID userId,ContactGroup contactGroup)
+	{
+		
+		
+		return dbContacts.countByUser_UserIdAndGroup(userId, contactGroup);
+	}
+	
+  
+    public long getFavouritesCount(UUID userId)
+    {
+    	
+    	return  dbContacts.findFavouriteCount(userId);
+    	
+    }
+    
+    public long getContactsCount(UUID userId)
+    {
+    	return dbContacts.countByUser_UserId(userId);
+    }
+    
+    public long getThisMonthContactCount(UUID userId)
+    {
+    	LocalDateTime startOfMonth = LocalDate.now()
+                .withDayOfMonth(1).atStartOfDay();
+                
+    	LocalDateTime now = LocalDateTime.now();
+    	return dbContacts.countByUser_UserIdAndCreatedDateBetween(userId, startOfMonth, now);
+    }
+    
+    
+
 	
 	
 }

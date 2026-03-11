@@ -209,27 +209,6 @@ public class ServiceClassUser {//defined for rules and regulations regarding the
         );
     }
     
-    public List<ContactDto> getFavouriteContacts(UserDto userDto)
-    {
-    	
-    	List<ContactDto> contactDtos = userDto.getContactDtos();
-    	contactDtos = contactDtos.stream().filter(contactDto -> contactDto.getFavourite() == true).collect(Collectors.toList());
-    	
-    	return contactDtos;
-    	
-    }
-    
-    
-    public long getFavouritesCount(UserDto userDto)
-    {
-    	long  favourites = this.getFavouriteContacts(userDto).size();
-    	
-    	System.out.println(favourites);
-    	System.out.println("-----------------------------------------------------"+favourites);
-    	
-    	return favourites;
-
-    }
     
     
  

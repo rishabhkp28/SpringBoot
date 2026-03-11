@@ -25,9 +25,7 @@ public class GetController {
 	
 	@Autowired
 	private ServiceClassUser sc;
-	
-	
-	
+
 	
 	@GetMapping(path = "/getStarted")
 	public String launchPage()

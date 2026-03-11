@@ -1,5 +1,6 @@
 package com.springbootdeveloper.RepositoryLayer;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +11,7 @@ import com.springbootdeveloper.Models.Contact;
 import com.springbootdeveloper.Models.ContactGroup;
 import com.springbootdeveloper.Models.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -26,4 +28,34 @@ public interface DatabaseLayerContacts extends CrudRepository<Contact , UUID> {
 	
 	/* name Spring Data goes inside User and finds userId. So the full path is contact → users → userId.*/
 
-}
+	
+	List<Contact> findByUser_UserId(UUID id);
+	long countByUser_UserId(UUID id);
+	
+	@Query(value = "SELECT * FROM contacts WHERE user_id = :id AND favourite = true", nativeQuery = true)//exploring alternatives
+	List<Contact> findFavouriteContacts(UUID id);	
+	
+	@Query(value = "SELECT count(*) FROM contacts WHERE user_id  = :id AND favourite = true", nativeQuery = true)
+	long findFavouriteCount(UUID id);
+	
+	
+	List<Contact> findByUser_UserIdAndCreatedDateBetween(UUID userId,
+            LocalDateTime start,
+            LocalDateTime end);
+	
+	
+	long countByUser_UserIdAndCreatedDateBetween(UUID userId,
+            LocalDateTime start,
+            LocalDateTime end);
+	
+	
+
+		List<Contact> findByUser_UserIdAndGroup(UUID userId, ContactGroup group);
+		
+		long countByUser_UserIdAndGroup(UUID userId, ContactGroup group);
+
+}	
+
+
+
+

@@ -4,12 +4,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.springbootdeveloper.ServiceLayer.ServiceClassContact;
 import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
 import com.springbootdeveloper.DTO.ContactDto;
 import com.springbootdeveloper.DTO.UserDto;
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
+import com.springbootdeveloper.Models.ContactGroup;
 
 @Controller
 public class UserControllerGet {
@@ -31,7 +33,7 @@ public class UserControllerGet {
 		model.addAttribute("activePage",activePage);
 		model.addAttribute("pageTitle",pageTitle);
 		model.addAttribute("pageSubtitle",pageSubtitle);
-		model.addAttribute("userDto",userDto);
+		model.addAttribute("user",userDto);
 	}
 	
 	@GetMapping(path ="/user/dashboard")
@@ -44,7 +46,7 @@ public class UserControllerGet {
 		try
 		{
 			userDto = serviceClassUser.findByEmail(authentication.getName());
-			favourites = serviceClassUser.getFavouritesCount(userDto);
+			favourites = serviceClassContact.getFavouritesCount(userDto.getUserId());
 		}
 		catch(UserNotFoundException e)
 		{
@@ -60,8 +62,11 @@ public class UserControllerGet {
 				"Hey "+userDto.getName()+"!!! Welcome to your User Dashboard",userDto
 		);
 		
-		model.addAttribute("favouritesCount",serviceClassUser.getFavouritesCount(userDto));
+		model.addAttribute("favouritesCount",serviceClassContact.getFavouritesCount(userDto.getUserId()));
 		model.addAttribute("recentContacts",serviceClassContact.findLast10(userDto.getUserId()));
+		model.addAttribute("totalContactsCount",serviceClassContact.getContactsCount(userDto.getUserId()));
+		model.addAttribute("contactsAddedThisMonth",serviceClassContact.getThisMonthContactCount(userDto.getUserId()));
+		
 		return "normalUser/userDashboard";
 	}
 
@@ -87,11 +92,13 @@ public class UserControllerGet {
 				"Contacts",
 				"Hey "+userDto.getName()+"!!! Below shows your list of contacts saved on our cloud",userDto
 		);
-
+		
+		
+		model.addAttribute("userContacts",serviceClassContact.findAllContacts(userDto.getUserId()));
 		return "normalUser/userContacts";
 	}
 
-	@GetMapping(path ="/user/favourites")
+	@GetMapping(path ="/user/favouriteContacts")
 	public String displayFavourites(Authentication authentication,Model model)
 	{
 		UserDto userDto = null;
@@ -113,6 +120,7 @@ public class UserControllerGet {
 				"Favourites",
 				"Hey "+userDto.getName()+"!!! Below shows your favourite contacts saved on our cloud",userDto
 		);
+		model.addAttribute("userFavourites",serviceClassContact.getFavouriteContacts(userDto.getUserId()));
 
 		return "normalUser/userFavourites";
 	}
@@ -139,7 +147,14 @@ public class UserControllerGet {
 				"Groups",
 				"Hey "+userDto.getName()+"!!! Below shows your customized Groups", userDto
 		);
-
+		
+		model.addAttribute("friendsCount",serviceClassContact.getCountByGroup(userDto.getUserId(), ContactGroup.FRIEND));
+		model.addAttribute("familyCount",serviceClassContact.getCountByGroup(userDto.getUserId(), ContactGroup.FAMILY));
+		model.addAttribute("anonymousCount",serviceClassContact.getCountByGroup(userDto.getUserId(), ContactGroup.ANONYMOUS));
+		model.addAttribute("clietsCount",serviceClassContact.getCountByGroup(userDto.getUserId(), ContactGroup.CLIENT));
+		model.addAttribute("workCount",serviceClassContact.getCountByGroup(userDto.getUserId(), ContactGroup.WORK));
+		
+		
 		return "normalUser/userGroups";
 	}
 
@@ -245,6 +260,7 @@ public class UserControllerGet {
 				"Dashboard",
 				"Hey "+userDto.getName()+"!!! Welcome to your User Dashboard",userDto
 		);
+		
 
 	    model.addAttribute("contactDto", new ContactDto());
 
@@ -252,11 +268,64 @@ public class UserControllerGet {
 		
 	}
 	
+	@GetMapping(path ="/user/groups/{Group}")
+	public String displayGroupedContacts(Authentication authentication,@PathVariable("Group") ContactGroup group,Model model)
+	{
+		
+				UserDto userDto = null;
+		
+					try
+					{
+						userDto = serviceClassUser.findByEmail(authentication.getName());
+					}
+					catch(UserNotFoundException e)
+					{
+						return "redirect:/logout";
+					}
+					
+					setPageModel(
+							model,
+							"groups",
+							"Groups",
+							"Hey "+userDto.getName()+"!!!Here are the groups that exist in our system",userDto
+					);
+
+		model.addAttribute("groupContacts", serviceClassContact.getContactsByGroup(userDto.getUserId(), group));
+		model.addAttribute("nameOfGroup",group.toString());
+		return "normalUser/groupContacts";
+		
+	}
+	
+	@GetMapping(path ="/user/contactsForThisMonth")
+	public String displayContactsForThisMonth(Authentication authentication,Model model)
+	{
+		
+				UserDto userDto = null;
+		
+					try
+					{
+						userDto = serviceClassUser.findByEmail(authentication.getName());
+					}
+					catch(UserNotFoundException e)
+					{
+						return "redirect:/logout";
+					}
+		
+					setPageModel(
+							model,
+							"dashboard",
+							"Dashboard",
+							"Hey "+userDto.getName()+"!!!Here are the contacts that you added this month",userDto
+					);
+
+					
+
+		model.addAttribute("contactsAddedThisMonth", serviceClassContact.getContactsAddedThisMonth(userDto.getUserId()));
+		
+		return "normalUser/contactsAddedThisMonth";
+		
+	}
 	
 	
-	
-	
-	
-	
-	
+
 }

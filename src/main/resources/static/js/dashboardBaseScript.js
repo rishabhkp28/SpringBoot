@@ -204,7 +204,7 @@
         qsa('.db-nav a').forEach(link => {
             if (link.classList.contains('db-active')) return; // already set by Thymeleaf
             const href = link.getAttribute('href');
-            if (href && href !== '/' && path.startsWith(href)) {
+            if (href && href !== '/' && path === href) {
                 link.classList.add('db-active');
             }
         });

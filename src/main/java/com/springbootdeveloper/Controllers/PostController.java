@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.springbootdeveloper.DTO.ProfileEnhanceDto;
 import com.springbootdeveloper.DTO.UserDto;
+import com.springbootdeveloper.ServiceLayer.ServiceClassContact;
 import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
 import com.springbootdeveloper.Exceptions.DuplicateEmailException;
 
@@ -23,11 +24,12 @@ public class PostController {
 
     
     private final ServiceClassUser sc;
-   
+    private ServiceClassContact serviceClassContact;
 
-    private PostController(ServiceClassUser sc)
+    private PostController(ServiceClassUser sc, ServiceClassContact serviceClassContact)
     {
     	this.sc = sc;
+    	this.serviceClassContact = serviceClassContact;
     	
     	
     }
@@ -118,7 +120,7 @@ public class PostController {
 	 		model.addAttribute("pageTitle","Dashboard");	
 	 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Welcome to your User Dashboard");
 	 		model.addAttribute("recentContacts",null);
-	 		model.addAttribute("favouritesCount",sc.getFavouritesCount(userDto));
+	 		model.addAttribute("favouritesCount",serviceClassContact.getFavouritesCount(userDto.getUserId()));
 	 		return "normalUser/userDashboard";
     	
     }

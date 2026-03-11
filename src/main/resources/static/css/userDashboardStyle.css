@@ -33,7 +33,29 @@
     transform: translateY(-3px);
     box-shadow: 0 14px 40px rgba(0, 0, 0, 0.30);
 }
+/* ── STAT CARD AS LINK ───────────────────────────────────── */
+a.dash-stat-card--link {
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;        /* keep original flex layout */
+    color: inherit;       /* don't let <a> turn text blue */
+}
 
+a.dash-stat-card--link:hover {
+    border-color: var(--blue-border);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.30);
+}
+
+a.dash-stat-card--link:hover .dash-stat-lbl {
+    color: var(--blue-text);          /* label subtly highlights on hover */
+    transition: color var(--t);
+}
+
+a.dash-stat-card--link:hover .dash-stat-val {
+    color: #c0d9ff;                   /* number gets a soft blue tint */
+    transition: color var(--t);
+}
 /* Ghost icon watermark */
 .dash-stat-glyph {
     position: absolute;

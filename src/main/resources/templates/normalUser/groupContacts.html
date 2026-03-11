@@ -4,7 +4,7 @@
 
 <!-- ░░ PAGE CSS ░░ -->
 <th:block th:fragment="pageCss">
-    <link rel="stylesheet" th:href="@{/css/userContactsStyle.css}"/>
+    <link rel="stylesheet" th:href="@{/css/groupContactsStyle.css}"/>
 </th:block>
 
 <!-- ░░ PAGE CONTENT ░░ -->
@@ -18,18 +18,18 @@
 
             <div class="dash-panel-head">
                 <div>
-                    <h2 class="dash-panel-title">All Contacts</h2>
+                    <h2 class="dash-panel-title" th:text = "${nameOfGroup} + 'Contacts'"></h2>
                     <p class="dash-panel-sub"
-                       th:text="${userContacts != null ? userContacts.size() + ' contacts' : '0 contacts'}">
+                       th:text="${groupContacts != null ? groupContacts.size() + ' contacts' : '0 contacts'}">
                         0 contacts
                     </p>
                 </div>
             </div>
 
             <ul class="dash-contact-list"
-                th:if="${userContacts != null and !#lists.isEmpty(userContacts)}">
+                th:if="${groupContacts != null and !#lists.isEmpty(groupContacts)}">
 
-                <li class="dash-contact-row" th:each="c : ${userContacts}">
+                <li class="dash-contact-row" th:each="c : ${groupContacts}">
 
                     <div class="dash-c-av"
                          th:text="${c.name != null ? #strings.substring(c.name,0,2).toUpperCase() : '?'}">AB</div>
@@ -55,7 +55,7 @@
             </ul>
 
             <p class="dash-panel-sub" style="text-align:center; padding:32px 0;"
-               th:if="${userContacts == null or #lists.isEmpty(userContacts)}">
+               th:if="${groupContacts == null or #lists.isEmpty(groupContacts)}">
                 No contacts yet.
             </p>
 
@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <div class="dash-action-list">
-                    <a th:href="@{/user/addContactRequest}" class="dash-action-btn">
+                    <a th:href="@{/group/addContactRequest}" class="dash-action-btn">
                         <span class="dash-action-icon"><i class="fa-solid fa-user-plus"></i></span>
                         <span class="dash-action-label">Add New Contact</span>
                         <i class="fa-solid fa-chevron-right dash-action-arr"></i>
@@ -88,7 +88,7 @@
 
 <!-- ░░ PAGE JS ░░ -->
 <th:block th:fragment="pageJs">
-    <script th:src="@{/js/userContactsScript.js}"></script>
+    <script th:src="@{/js/groupContactsScript.js}"></script>
 </th:block>
 
 </html>

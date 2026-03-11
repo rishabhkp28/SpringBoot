@@ -4,7 +4,7 @@
 
 <!-- ░░ PAGE CSS ░░ -->
 <th:block th:fragment="pageCss">
-    <link rel="stylesheet" th:href="@{/css/userContactsStyle.css}"/>
+    <link rel="stylesheet" th:href="@{/css/contactsAddedThisMonthStyle.css}"/>
 </th:block>
 
 <!-- ░░ PAGE CONTENT ░░ -->
@@ -18,18 +18,18 @@
 
             <div class="dash-panel-head">
                 <div>
-                    <h2 class="dash-panel-title">All Contacts</h2>
+                    <h2 class="dash-panel-title">Contacts Added This Month</h2>
                     <p class="dash-panel-sub"
-                       th:text="${userContacts != null ? userContacts.size() + ' contacts' : '0 contacts'}">
+                       th:text="${contactsAddedThisMonth != null ? contactsAddedThisMonth.size() + ' contacts' : '0 contacts'}">
                         0 contacts
                     </p>
                 </div>
             </div>
 
             <ul class="dash-contact-list"
-                th:if="${userContacts != null and !#lists.isEmpty(userContacts)}">
+                th:if="${contactsAddedThisMonth != null and !#lists.isEmpty(contactsAddedThisMonth)}">
 
-                <li class="dash-contact-row" th:each="c : ${userContacts}">
+                <li class="dash-contact-row" th:each="c : ${contactsAddedThisMonth}">
 
                     <div class="dash-c-av"
                          th:text="${c.name != null ? #strings.substring(c.name,0,2).toUpperCase() : '?'}">AB</div>
@@ -55,7 +55,7 @@
             </ul>
 
             <p class="dash-panel-sub" style="text-align:center; padding:32px 0;"
-               th:if="${userContacts == null or #lists.isEmpty(userContacts)}">
+               th:if="${contactsAddedThisMonth == null or #lists.isEmpty(contactsAddedThisMonth)}">
                 No contacts yet.
             </p>
 
@@ -88,7 +88,7 @@
 
 <!-- ░░ PAGE JS ░░ -->
 <th:block th:fragment="pageJs">
-    <script th:src="@{/js/userContactsScript.js}"></script>
+    <script th:src="@{/js/contactsAddedThisMonthScript.js}"></script>
 </th:block>
 
 </html>

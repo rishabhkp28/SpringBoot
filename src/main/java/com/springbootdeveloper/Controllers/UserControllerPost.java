@@ -1,6 +1,7 @@
 package com.springbootdeveloper.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.task.TaskExecutionProperties.Mode;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +29,7 @@ public class UserControllerPost {
 
     
     @PostMapping(path = "/user/addContactRequest")
-    public String saveContact(@Valid @ModelAttribute ContactDto contactDto,
+    public String saveContact(@Valid @ModelAttribute("contactDto") ContactDto contactDto,
                               BindingResult results,
                               HttpServletRequest request,
                               Model model)
@@ -78,9 +79,18 @@ public class UserControllerPost {
             return "redirect:/logout";
         }
         catch (DataIntegrityViolationException ex) {
-
+        	System.out.println("--------------------------------");
+        	System.out.println("Duplicate exception is caught");
+        	System.out.println("--------------------------------");
             results.reject("duplicateContact",
                     "Contact with same name, phone and group already exists in this group.");
+            
+            setPageAttributes(
+                    model,
+                    "dashboard",
+                    "Dashboard",
+                    "Hey " + userDto.getName() + "!!! Welcome to your User Dashboard",userDto
+            );
 
             return "normalUser/addContact";
         }
@@ -116,9 +126,9 @@ public class UserControllerPost {
                 "recentContacts",
                 serviceClassContact.findLast10(userDto.getUserId())
         );
-        
-        model.addAttribute("favouritesCount",serviceClassUser.getFavouritesCount(userDto));
-
+        model.addAttribute("favouritesCount",serviceClassContact.getFavouritesCount(userDto.getUserId()));
+        model.addAttribute("totalContactsCount",serviceClassContact.getContactsCount(userDto.getUserId()));
+    	model.addAttribute("contactsAddedThisMonth",serviceClassContact.getContactsAddedThisMonth(userDto.getUserId()));
         return "redirect:/user/dashboard";
     }
 

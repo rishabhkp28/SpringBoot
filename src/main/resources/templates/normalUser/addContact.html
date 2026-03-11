@@ -35,12 +35,7 @@
             <span class="ac-required-star">*</span> Name, Phone and Group are required fields
         </p>
 
-        <section id="duplicateErrorServerSide">
-            <p style="color:red"
-               th:if="${#fields.hasGlobalErrors()}"
-               th:each="err : ${#fields.globalErrors()}"
-               th:text="${err}"></p>
-        </section>
+        
 
         <form th:action="@{/user/addContactRequest}"
               method="post"
@@ -48,7 +43,14 @@
               th:object="${contactDto}"
               class="ac-form"
               id="ac-form">
-
+			
+			
+			<section id="duplicateErrorServerSide">
+            <p style="color:red"
+               th:if="${#fields.hasGlobalErrors()}"
+               th:each="err : ${#fields.globalErrors()}"
+               th:text="${err}"></p>
+        </section>
             <!-- PROFILE PICTURE -->
             <div class="ac-field-group">
                 <label class="ac-label">Profile Picture</label>

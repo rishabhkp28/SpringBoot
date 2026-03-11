@@ -37,8 +37,9 @@ public class User {
     private String role;
     
     
-    //this has nothing to do with the jpa ,its for java memory management and optimization
-    @OneToMany(mappedBy ="user",  cascade = CascadeType.ALL, orphanRemoval = true)//in case when user removes the contact ,then we must delete it from contacts also
+    //lazily loaded , we need to fetch user again to see the contacts that belong here
+    //in case of deletetion of user we need to do save(user) to reflect the deletion of orphaned contact relation or use @Transactional
+    @OneToMany(mappedBy ="user",  cascade = CascadeType.ALL, orphanRemoval = true)
     List<Contact> contacts = new ArrayList<>();
     
 	public UUID getUserId() {

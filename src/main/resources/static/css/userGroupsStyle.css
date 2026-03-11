@@ -1,0 +1,224 @@
+/* ═══════════════════════════════════════════════════════════
+   SmartCM — GROUPS & TAGS PAGE CSS
+   All classes used in groups.html defined explicitly.
+   CSS token variables inherited from dashboardBase.css :root
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── PAGE HEADER ─────────────────────────────────────────── */
+.grp-page-header {
+    margin-bottom: 24px;
+}
+
+.grp-page-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+}
+
+.grp-page-sub {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin: 6px 0 0;
+}
+
+/* ── GRID ────────────────────────────────────────────────── */
+.grp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+/* ── BASE CARD ───────────────────────────────────────────── */
+.grp-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 20px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    text-decoration: none;
+    overflow: hidden;
+    transition:
+        transform    var(--t) var(--ease),
+        border-color var(--t) var(--ease),
+        box-shadow   var(--t) var(--ease);
+}
+.grp-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+}
+
+/* Icon bubble */
+.grp-card-icon {
+    width: 48px; height: 48px;
+    border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    transition: transform var(--t) var(--ease);
+}
+.grp-card:hover .grp-card-icon {
+    transform: scale(1.1) rotate(-4deg);
+}
+
+/* Body text */
+.grp-card-body { flex: 1; min-width: 0; }
+
+.grp-card-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.grp-card-count {
+    font-size: 0.70rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin: 5px 0 0;
+}
+
+/* Arrow */
+.grp-card-arrow {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: transform var(--t) var(--ease), color var(--t);
+}
+.grp-card:hover .grp-card-arrow {
+    transform: translateX(4px);
+}
+
+/* Ghost watermark glyph */
+.grp-card-glyph {
+    position: absolute;
+    bottom: -12px;
+    right: -8px;
+    font-size: 5rem;
+    opacity: 0.045;
+    pointer-events: none;
+    line-height: 1;
+    transition: opacity var(--t);
+}
+.grp-card:hover .grp-card-glyph { opacity: 0.08; }
+
+/* ── COLOUR VARIANTS ─────────────────────────────────────── */
+
+/* WORK — blue */
+.grp-card--work {
+    border-color: var(--blue-border);
+}
+.grp-card--work .grp-card-icon {
+    background: var(--blue-mid);
+    border: 1px solid var(--blue-border);
+    color: var(--blue-text);
+}
+.grp-card--work:hover {
+    border-color: rgba(37, 99, 235, 0.55);
+    box-shadow: 0 16px 40px rgba(37, 99, 235, 0.15);
+}
+.grp-card--work:hover .grp-card-arrow { color: var(--blue-text); }
+.grp-card--work .grp-card-name        { color: var(--blue-text); }
+
+/* FRIEND — purple */
+.grp-card--friend {
+    border-color: rgba(139, 92, 246, 0.28);
+}
+.grp-card--friend .grp-card-icon {
+    background: rgba(139, 92, 246, 0.14);
+    border: 1px solid rgba(139, 92, 246, 0.28);
+    color: #a78bfa;
+}
+.grp-card--friend:hover {
+    border-color: rgba(139, 92, 246, 0.55);
+    box-shadow: 0 16px 40px rgba(139, 92, 246, 0.15);
+}
+.grp-card--friend:hover .grp-card-arrow { color: #a78bfa; }
+.grp-card--friend .grp-card-name        { color: #a78bfa; }
+
+/* FAMILY — orange */
+.grp-card--family {
+    border-color: rgba(251, 146, 60, 0.28);
+}
+.grp-card--family .grp-card-icon {
+    background: rgba(251, 146, 60, 0.14);
+    border: 1px solid rgba(251, 146, 60, 0.28);
+    color: #fb923c;
+}
+.grp-card--family:hover {
+    border-color: rgba(251, 146, 60, 0.55);
+    box-shadow: 0 16px 40px rgba(251, 146, 60, 0.12);
+}
+.grp-card--family:hover .grp-card-arrow { color: #fb923c; }
+.grp-card--family .grp-card-name        { color: #fb923c; }
+
+/* CLIENT — green */
+.grp-card--client {
+    border-color: rgba(34, 197, 94, 0.26);
+}
+.grp-card--client .grp-card-icon {
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.26);
+    color: #4ade80;
+}
+.grp-card--client:hover {
+    border-color: rgba(34, 197, 94, 0.50);
+    box-shadow: 0 16px 40px rgba(34, 197, 94, 0.12);
+}
+.grp-card--client:hover .grp-card-arrow { color: #4ade80; }
+.grp-card--client .grp-card-name        { color: #4ade80; }
+
+/* ANONYMOUS — grey */
+.grp-card--anonymous {
+    border-color: rgba(107, 114, 128, 0.28);
+}
+.grp-card--anonymous .grp-card-icon {
+    background: rgba(107, 114, 128, 0.14);
+    border: 1px solid rgba(107, 114, 128, 0.28);
+    color: #9ca3af;
+}
+.grp-card--anonymous:hover {
+    border-color: rgba(107, 114, 128, 0.50);
+    box-shadow: 0 16px 40px rgba(107, 114, 128, 0.12);
+}
+.grp-card--anonymous:hover .grp-card-arrow { color: #9ca3af; }
+.grp-card--anonymous .grp-card-name        { color: #9ca3af; }
+
+/* ── ANIMATIONS ──────────────────────────────────────────── */
+@keyframes dashFadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.dash-anim {
+    opacity: 0;
+    animation: dashFadeUp 0.48s var(--ease) forwards;
+}
+.dash-anim-d1 { animation-delay: 0.06s; }
+.dash-anim-d2 { animation-delay: 0.13s; }
+.dash-anim-d3 { animation-delay: 0.20s; }
+.dash-anim-d4 { animation-delay: 0.27s; }
+.dash-anim-d5 { animation-delay: 0.34s; }
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .grp-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+    .grp-grid      { grid-template-columns: 1fr; }
+    .grp-page-title { font-size: 1.4rem; }
+}

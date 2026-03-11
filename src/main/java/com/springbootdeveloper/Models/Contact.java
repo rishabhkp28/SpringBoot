@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 	    uniqueConstraints = @UniqueConstraint(columnNames = {"userId","groupName", "name","phone"})
 	)
 public class Contact {
-
+//everything gets converted to snake case doesnt matter what ever we do or explicitly define the names 
     @Id
     @GeneratedValue
     @Column(columnDefinition = "BINARY(16)", nullable = false, updatable = false)

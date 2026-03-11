@@ -17,21 +17,22 @@
     <div class="dash-stat-grid">
 
         <!-- Total Contacts -->
-        <div class="dash-stat-card dash-anim dash-anim-d1">
+       <a th:href="@{/user/contacts}" class="dash-stat-card dash-stat-card--link dash-anim dash-anim-d1">
             <div class="dash-stat-icon-wrap dash-si-blue">
+           
                 <i class="fa-solid fa-address-book"></i>
             </div>
             <div class="dash-stat-body">
-                <p class="dash-stat-val" th:text="${totalContacts} ?: '—'">—</p>
+                <p class="dash-stat-val" th:text="${totalContactsCount} ?: '—'">—</p>
                 <p class="dash-stat-lbl">Total Contacts</p>
             </div>
             <div class="dash-stat-glyph" aria-hidden="true">
                 <i class="fa-solid fa-address-book"></i>
             </div>
-        </div>
+        </a>
 
         <!-- Favourites -->
-        <div class="dash-stat-card dash-anim dash-anim-d2">
+        <a th:href="@{/user/favouriteContacts}" class="dash-stat-card dash-stat-card--link dash-anim dash-anim-d2">
             <div class="dash-stat-icon-wrap dash-si-gold">
                 <i class="fa-solid fa-star"></i>
             </div>
@@ -42,35 +43,35 @@
             <div class="dash-stat-glyph" aria-hidden="true">
                 <i class="fa-solid fa-star"></i>
             </div>
-        </div>
+        </a>
 
         <!-- Added This Month -->
-        <div class="dash-stat-card dash-anim dash-anim-d3">
-            <div class="dash-stat-icon-wrap dash-si-green">
+        <a th:href="@{/user/contactsForThisMonth}" class="dash-stat-card dash-stat-card--link dash-anim dash-anim-d3">
+    				<div class="dash-stat-icon-wrap dash-si-green">
                 <i class="fa-solid fa-user-plus"></i>
             </div>
             <div class="dash-stat-body">
-                <p class="dash-stat-val" th:text="${addedThisMonth} ?: '—'">—</p>
+                <p class="dash-stat-val" th:text="${contactsAddedThisMonth} ?: '—'">—</p>
                 <p class="dash-stat-lbl">Added This Month</p>
             </div>
             <div class="dash-stat-glyph" aria-hidden="true">
                 <i class="fa-solid fa-user-plus"></i>
             </div>
-        </div>
+        </a>
 
         <!-- Groups & Tags -->
-        <div class="dash-stat-card dash-anim dash-anim-d4">
+        <a th:href="@{/user/groups}" class="dash-stat-card dash-stat-card--link dash-anim dash-anim-d4">
             <div class="dash-stat-icon-wrap dash-si-purple">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
             <div class="dash-stat-body">
-                <p class="dash-stat-val" th:text="${groupCount} ?: '—'">—</p>
+                <p class="dash-stat-val" th:text="'5'"></p>
                 <p class="dash-stat-lbl">Groups &amp; Tags</p>
             </div>
             <div class="dash-stat-glyph" aria-hidden="true">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
-        </div>
+        </a>
 
     </div><!-- /stat grid -->
 
@@ -101,9 +102,10 @@
                     <div class="dash-c-av"
                          th:text="${c.name != null ? #strings.substring(c.name,0,2).toUpperCase() : '?'}">AB</div>
                     <div class="dash-c-info">
-                        <p class="dash-c-name" th:text="${c.name}">Name</p>
-                        <p class="dash-c-meta" th:text="${c.email} ?: (${c.phone} ?: '—')">meta</p>
-                    </div>
+						    <p class="dash-c-name" th:text="${c.name}">Name</p>
+						    <p class="dash-c-meta" th:text="${c.email != null ? c.email : ''}"></p>
+						    <p class="dash-c-meta" th:text="${c.phone}"></p>
+						</div>
                     <span th:if="${c.favourite}" class="dash-fav-badge" title="Favourite">
 								    <i class="fa-solid fa-star"></i>
 								</span>
