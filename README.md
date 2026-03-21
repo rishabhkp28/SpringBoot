@@ -55,7 +55,7 @@ Progress Update (9–11 March):
     
 Progress Update (11–21 March):
 
-        * Shifted the focus from session based authentication to JWT for better scalability in future, made modules to implemente JWT implemented it in the project( This took the most time, learning JWT and implementing)
+        * Shifted the focus from session based authentication to JWT for better scalability in future, made modules to implement JWT,in the project( This took the most time, learning JWT and implementing)
         * Made appearence appealing with better animation for the logged in user.
         * Changed the theme for the project , made theme consistent to authenticated and non authenticated users.
         * Implemented the delete functionality and edit functionality for the contacts along with dynamic validations whereever needed.
