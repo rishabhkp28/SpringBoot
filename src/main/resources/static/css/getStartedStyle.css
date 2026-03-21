@@ -1,20 +1,54 @@
-/* ================= HERO BACKGROUND SECTION ================= */
+/* ═══════════════════════════════════════════════════════════
+   SmartCM — GET STARTED / HERO PAGE CSS
+   Dark navy theme | matches baseStyle + signUp theme
+   ═══════════════════════════════════════════════════════════ */
 
+/* ── HERO BACKGROUND ─────────────────────────────────────── */
 .hero-bg {
     min-height: calc(100vh - 72px);
-    background: radial-gradient(at top left, #2563eb, #1e293b 60%);
+    background: linear-gradient(160deg, #162660 0%, #0a1128 50%, #060d1f 100%);
+    position: relative;
+    overflow: hidden;
 }
 
+/* ambient orb top left */
+.hero-bg::before {
+    content: "";
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 65%);
+    top: -180px; left: -150px;
+    pointer-events: none;
+    filter: blur(70px);
+}
+
+/* ambient orb bottom right */
+.hero-bg::after {
+    content: "";
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 65%);
+    bottom: -150px; right: -120px;
+    pointer-events: none;
+    filter: blur(70px);
+}
+
+/* ── OVERLAY ─────────────────────────────────────────────── */
 .hero-overlay {
     min-height: calc(100vh - 72px);
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.35);
+    background: rgba(6, 13, 31, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2rem 1rem;
+    position: relative;
+    z-index: 1;
 }
 
+/* ── CONTENT ─────────────────────────────────────────────── */
 .hero-content {
     color: #ffffff;
     max-width: 720px;
@@ -26,20 +60,46 @@
     font-weight: 700;
     margin-bottom: 1rem;
     line-height: 1.2;
+    color: #ffffff;
+}
+
+.hero-title span {
+    color: #93c5fd;
 }
 
 .hero-subtitle {
     font-size: 1.2rem;
-    color: #e0e0e0;
+    color: #cbd5e1;                    /* bright — clearly readable */
     margin-bottom: 2rem;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
+/* ── CTA BUTTON ──────────────────────────────────────────── */
 .hero-btn {
     padding: 0.75rem 2.5rem;
     font-size: 1.1rem;
+    font-weight: 700;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 9px;
+    box-shadow: 0 4px 24px rgba(37, 99, 235, 0.50);
+    transition: background 0.22s, transform 0.15s, box-shadow 0.22s;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
+.hero-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.65);
+    color: #fff;
+}
+
+/* ── ANIMATION ───────────────────────────────────────────── */
 .hero-fade-in {
     animation: heroFade 0.8s ease-in;
 }
@@ -54,8 +114,3 @@
         transform: translateY(0);
     }
 }
-
-
-
-
-

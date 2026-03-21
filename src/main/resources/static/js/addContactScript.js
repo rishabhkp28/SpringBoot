@@ -97,17 +97,21 @@
 
             var isValid      = true;
             var message      = '';
-            var allowedTypes = ['image/png', 'image/jpeg', 'image/webp'];
+            var allowedTypes = ['image/png', 'image/jpeg', 'image/gif' , 'image/jpg'];
 
             if (!allowedTypes.includes(file.type)) {
                 isValid  = false;
                 message += 'Only PNG, JPG or WEBP images allowed.<br>';
             }
 
-            if (file.size > 5 * 1024 * 1024) {
+            if (file.size > 2 *1024 *1024) {
                 isValid  = false;
-                message += 'File must be under 5 MB.<br>';
+                message += 'File must be under 2 MB.<br>';
             }
+			if (file.size < 1024 * 10) {
+						                isValid   = false;
+						                message  += 'File must be above 10 KB.<br>';
+						            }
 
             if (!isValid) {
                 showError(input, errorEl, message, serverSide);
@@ -212,267 +216,280 @@
    ════════════════════════════════════════════════════════════ */
 
 
-// ------------------ NAME VALIDATION ------------------
-// DTO: @NotBlank  @Size(min=3)  @Pattern(^[A-Za-z]+( [A-Za-z]+)*$)
+   // ------------------ NAME VALIDATION ------------------
+   // DTO: @NotBlank  @Size(min=3, max=100)  @Pattern(^[A-Za-z]+( [A-Za-z]+)*$)
 
-const nameInput      = document.getElementById('name');
-const nameError      = document.getElementById('nameError');
-const nameServerSide = document.getElementById('nameErrorServerSide');
+   const nameInput      = document.getElementById('name');
+   const nameError      = document.getElementById('nameError');
+   const nameServerSide = document.getElementById('nameErrorServerSide');
 
-let debounceTimerName;
+   let debounceTimerName;
 
-nameInput.addEventListener('input', function () {
+   nameInput.addEventListener('input', function () {
 
-    const name = this.value;
-    clearTimeout(debounceTimerName);
+       const name = this.value;
+       clearTimeout(debounceTimerName);
 
-    if (name === '') {
-        reset(nameInput, nameError, nameServerSide);
-        return;
-    }
+       if (name === '') {
+           reset(nameInput, nameError, nameServerSide);
+           return;
+       }
 
-    debounceTimerName = setTimeout(() => {
+       debounceTimerName = setTimeout(() => {
 
-        let isValid = true;
-        let message = '';
+           let isValid = true;
+           let message = '';
 
-        // mirrors: ^[A-Za-z]+( [A-Za-z]+)*$
-        if (!/^[A-Za-z]+( [A-Za-z]+)*$/.test(name)) {
-            isValid  = false;
-            message += 'Name can contain only letters and single spaces (not trailing) between words.<br>';
-        }
+           // mirrors: ^[A-Za-z]+( [A-Za-z]+)*$
+           if (!/^[A-Za-z]+( [A-Za-z]+)*$/.test(name)) {
+               isValid  = false;
+               message += 'Name can contain only letters and single spaces (not trailing) between words.<br>';
+           }
 
-        // mirrors: @Size(min = 3)
-        if (name.length < 3) {
-            isValid  = false;
-            message += 'Name must be at least 3 characters long.<br>';
-        }
+           // mirrors: @Size(min = 3)
+           if (name.length < 3) {
+               isValid  = false;
+               message += 'Name must be at least 3 characters long.<br>';
+           }
 
-        if (!isValid)
-            showError(nameInput, nameError, message, nameServerSide);
-        else
-            showValid(nameInput, nameError, 'Looks good!', nameServerSide);
+           // mirrors: @Size(max = 100)
+           if (name.length > 100) {
+               isValid  = false;
+               message += 'Name must not exceed 100 characters.<br>';
+           }
 
-    }, 400);
-});
+           if (!isValid)
+               showError(nameInput, nameError, message, nameServerSide);
+           else
+               showValid(nameInput, nameError, 'Looks good!', nameServerSide);
 
+       }, 400);
+   });
 
-// ------------------ NICKNAME VALIDATION ------------------
-// DTO: @Pattern(^$|^[A-Za-z0-9]+( [A-Za-z0-9]+)*$)  — optional field
 
-const nickInput      = document.getElementById('nickName');
-const nickError      = document.getElementById('nickNameError');
-const nickServerSide = document.getElementById('nickNameErrorServerSide');
+   // ------------------ NICKNAME VALIDATION ------------------
+   // DTO: @Size(max=100)  @Pattern(^$|^[A-Za-z0-9]+( [A-Za-z0-9]+)*$)  — optional field
 
-let debounceTimerNick;
+   const nickInput      = document.getElementById('nickName');
+   const nickError      = document.getElementById('nickNameError');
+   const nickServerSide = document.getElementById('nickNameErrorServerSide');
 
-nickInput.addEventListener('input', function () {
+   let debounceTimerNick;
 
-    const nick = this.value; // ✅ property, not method call
-    clearTimeout(debounceTimerNick);
+   nickInput.addEventListener('input', function () {
 
-    if (nick === '') {
-        reset(nickInput, nickError, nickServerSide);
-        return;
-    }
+       const nick = this.value;
+       clearTimeout(debounceTimerNick);
 
-    debounceTimerNick = setTimeout(() => {
+       if (nick === '') {
+           reset(nickInput, nickError, nickServerSide);
+           return;
+       }
 
-        let isValid = true;
-        let message = '';
+       debounceTimerNick = setTimeout(() => {
 
-        // mirrors: ^[A-Za-z0-9]+( [A-Za-z0-9]+)*$
-        // (empty branch already handled above — only non-empty reaches here)
-        if (!/^[A-Za-z0-9]+( [A-Za-z0-9]+)*$/.test(nick)) {
-            isValid  = false;
-            message += 'Nick name can contain only letters, digits and single spaces (not trailing) between words.<br>';
-        }
+           let isValid = true;
+           let message = '';
 
-        if (!isValid)
-            showError(nickInput, nickError, message, nickServerSide);
-        else
-            showValid(nickInput, nickError, 'Looks good!', nickServerSide);
+           // mirrors: ^[A-Za-z0-9]+( [A-Za-z0-9]+)*$
+           if (!/^[A-Za-z0-9]+( [A-Za-z0-9]+)*$/.test(nick)) {
+               isValid  = false;
+               message += 'Nick name can contain only letters, digits and single spaces (not trailing) between words.<br>';
+           }
 
-    }, 400);
-});
+           // mirrors: @Size(max = 100)
+           if (nick.length > 100) {
+               isValid  = false;
+               message += 'Nick name must not exceed 100 characters.<br>';
+           }
 
+           if (!isValid)
+               showError(nickInput, nickError, message, nickServerSide);
+           else
+               showValid(nickInput, nickError, 'Looks good!', nickServerSide);
 
-// ------------------ EMAIL VALIDATION ------------------
-// DTO: @Email  @Pattern(^$|^[A-Za-z0-9._%+-]+@gmail\.com$, CASE_INSENSITIVE)  — optional field
+       }, 400);
+   });
 
-const emailInput      = document.getElementById('email');
-const emailError      = document.getElementById('emailError');
-const emailServerSide = document.getElementById('emailErrorServerSide');
 
-let debounceTimerEmail;
+   // ------------------ EMAIL VALIDATION ------------------
+   // DTO: @Email  @Size(max=300)  @Pattern(^$|^[A-Za-z0-9._%+-]+@gmail\.com$, CASE_INSENSITIVE)  — optional field
 
-emailInput.addEventListener('input', function () {
+   const emailInput      = document.getElementById('email');
+   const emailError      = document.getElementById('emailError');
+   const emailServerSide = document.getElementById('emailErrorServerSide');
 
-    const email = this.value.trim();
-    clearTimeout(debounceTimerEmail);
+   let debounceTimerEmail;
 
-    if (email === '') {
-        reset(emailInput, emailError, emailServerSide);
-        return;
-    }
+   emailInput.addEventListener('input', function () {
 
-    debounceTimerEmail = setTimeout(() => {
+       const email = this.value.trim();
+       clearTimeout(debounceTimerEmail);
 
-        let isValid = true;
-        let message = '';
+       if (email === '') {
+           reset(emailInput, emailError, emailServerSide);
+           return;
+       }
 
-        // ✅ Mirrors DTO exactly: ^[A-Za-z0-9._%+-]+@gmail\.com$ (case insensitive flag: i)
-        // Single strict regex — replaces the old loose format check + endsWith() combo.
-        // endsWith("@gmail.com") would wrongly accept "test@gmail.com.evil.com" — this does not.
-        if (!/^[A-Za-z0-9._%+\-]+@gmail\.com$/i.test(email)) {
-            isValid  = false;
-            message += 'Email must be a valid @gmail.com address.<br>';
-        }
+       debounceTimerEmail = setTimeout(() => {
 
-        if (!isValid)
-            showError(emailInput, emailError, message, emailServerSide);
-        else
-            showValid(emailInput, emailError, 'Email looks good!', emailServerSide);
+           let isValid = true;
+           let message = '';
 
-    }, 400);
-});
+           // mirrors: ^[A-Za-z0-9._%+-]+@gmail\.com$ (case insensitive)
+           if (!/^[A-Za-z0-9._%+\-]+@gmail\.com$/i.test(email)) {
+               isValid  = false;
+               message += 'Email must be a valid @gmail.com address.<br>';
+           }
 
+           // mirrors: @Size(max = 300)
+           if (email.length > 300) {
+               isValid  = false;
+               message += 'Email must not exceed 300 characters.<br>';
+           }
 
-// ------------------ PHONE VALIDATION ------------------
-// DTO: @NotBlank  @Pattern(^[0-9]{10}$)
+           if (!isValid)
+               showError(emailInput, emailError, message, emailServerSide);
+           else
+               showValid(emailInput, emailError, 'Email looks good!', emailServerSide);
 
-const phoneInput      = document.getElementById('phone');
-const phoneError      = document.getElementById('phoneError');
-const phoneServerSide = document.getElementById('phoneErrorServerSide');
+       }, 400);
+   });
 
-let debounceTimerPhone;
 
-phoneInput.addEventListener('input', function () {
+   // ------------------ PHONE VALIDATION ------------------
+   // DTO: @NotBlank  @Pattern(^[0-9]{10}$)
 
-    const phone = this.value.trim();
-    clearTimeout(debounceTimerPhone);
+   const phoneInput      = document.getElementById('phone');
+   const phoneError      = document.getElementById('phoneError');
+   const phoneServerSide = document.getElementById('phoneErrorServerSide');
 
-    if (phone === '') {
-        reset(phoneInput, phoneError, phoneServerSide);
-        return;
-    }
+   let debounceTimerPhone;
 
-    debounceTimerPhone = setTimeout(() => {
+   phoneInput.addEventListener('input', function () {
 
-        let isValid = true;
-        let message = '';
+       const phone = this.value.trim();
+       clearTimeout(debounceTimerPhone);
 
-        // mirrors: ^[0-9]{10}$
-        if (!/^[0-9]{10}$/.test(phone)) {
-            isValid  = false;
-            message += 'Phone number must be exactly 10 digits.<br>';
-        }
+       if (phone === '') {
+           reset(phoneInput, phoneError, phoneServerSide);
+           return;
+       }
 
-        if (!isValid)
-            showError(phoneInput, phoneError, message, phoneServerSide);
-        else
-            showValid(phoneInput, phoneError, 'Valid phone number!', phoneServerSide);
+       debounceTimerPhone = setTimeout(() => {
 
-    }, 400);
-});
+           let isValid = true;
+           let message = '';
 
+           // mirrors: ^[0-9]{10}$
+           if (!/^[0-9]{10}$/.test(phone)) {
+               isValid  = false;
+               message += 'Phone number must be exactly 10 digits.<br>';
+           }
 
-// ------------------ GROUP VALIDATION ------------------
-// DTO: @NotNull
+           if (!isValid)
+               showError(phoneInput, phoneError, message, phoneServerSide);
+           else
+               showValid(phoneInput, phoneError, 'Valid phone number!', phoneServerSide);
 
-const groupInput      = document.getElementById('group');
-const groupError      = document.getElementById('groupError');
-const groupServerSide = document.getElementById('groupErrorServerSide');
+       }, 400);
+   });
 
-groupInput.addEventListener('change', function () {
 
-    const group = this.value;
+   // ------------------ GROUP VALIDATION ------------------
+   // DTO: @NotNull
 
-    if (group === '') {
-        showError(groupInput, groupError, 'Please select a group.', groupServerSide);
-    } else {
-        showValid(groupInput, groupError, '', groupServerSide);
-    }
-});
+   const groupInput      = document.getElementById('group');
+   const groupError      = document.getElementById('groupError');
+   const groupServerSide = document.getElementById('groupErrorServerSide');
 
-// ------------------ DESCRIPTION VALIDATION ------------------
-// DTO: @Size(max = 200)
+   groupInput.addEventListener('change', function () {
 
-const descriptionInput      = document.getElementById('description');
-const descriptionError      = document.getElementById('descriptionError');
-const descriptionServerSide = document.getElementById('descriptionErrorServerSide');
+       const group = this.value;
 
-let debounceTimerDescription;
+       if (group === '') {
+           showError(groupInput, groupError, 'Please select a group.', groupServerSide);
+       } else {
+           showValid(groupInput, groupError, '', groupServerSide);
+       }
+   });
 
-descriptionInput.addEventListener('input', function () {
+   // ------------------ DESCRIPTION VALIDATION ------------------
+   // DTO: @Size(max = 200)
 
-    const description = this.value;  // ✅ declared first
+   const descriptionInput      = document.getElementById('description');
+   const descriptionError      = document.getElementById('descriptionError');
+   const descriptionServerSide = document.getElementById('descriptionErrorServerSide');
 
-    document.getElementById('descriptionCharCount').textContent = description.length;  // ✅ now safe to use
+   let debounceTimerDescription;
 
-    clearTimeout(debounceTimerDescription);
+   descriptionInput.addEventListener('input', function () {
 
-    if (description === '') {
-        reset(descriptionInput, descriptionError, descriptionServerSide);
-        return;
-    }
+       const description = this.value;
 
-    debounceTimerDescription = setTimeout(() => {
+       document.getElementById('descriptionCharCount').textContent = description.length;
 
-        let isValid = true;
-        let message = '';
+       clearTimeout(debounceTimerDescription);
 
-        // mirrors: @Size(max = 200)
-        if (description.length > 200) {
-            isValid  = false;
-            message += 'Description must not exceed 200 characters.<br>';
-        }
+       if (description === '') {
+           reset(descriptionInput, descriptionError, descriptionServerSide);
+           return;
+       }
 
-        if (!isValid)
-            showError(descriptionInput, descriptionError, message, descriptionServerSide);
-        else
-            showValid(descriptionInput, descriptionError,
-                      'Looking good! (' + description.length + '/200)', descriptionServerSide);
+       debounceTimerDescription = setTimeout(() => {
 
-    }, 400);
-});
+           let isValid = true;
+           let message = '';
 
+           // mirrors: @Size(max = 200)
+           if (description.length > 200) {
+               isValid  = false;
+               message += 'Description must not exceed 200 characters.<br>';
+           }
 
-// ------------------ COMMON FUNCTIONS ------------------
+           if (!isValid)
+               showError(descriptionInput, descriptionError, message, descriptionServerSide);
+           else
+               showValid(descriptionInput, descriptionError,
+                         'Looking good! (' + description.length + '/200)', descriptionServerSide);
 
-function showError(input, errorEl, msg, serverSide) {
-    input.classList.add('is-invalid');
-    input.classList.remove('is-valid');
-    errorEl.style.color = 'red';
-    errorEl.innerHTML   = msg;
-    if (serverSide) {
-        serverSide.innerHTML     = '';
-        serverSide.style.display = 'none';
-    }
-}
+       }, 400);
+   });
 
-function showValid(input, errorEl, msg, serverSide) {
-    input.classList.add('is-valid');
-    input.classList.remove('is-invalid');
-    errorEl.style.color = 'green';
-    errorEl.innerHTML   = msg;
-    if (serverSide) {
-        serverSide.innerHTML     = '';
-        serverSide.style.display = 'none';
-    }
-}
 
-function reset(input, errorEl, serverSide) {
-    input.classList.remove('is-valid', 'is-invalid');
-    errorEl.innerHTML   = '';
-    errorEl.style.color = '';
-    if (serverSide) {
-        serverSide.innerHTML     = '';
-        serverSide.style.display = 'none';
-    }
-}
+   // ------------------ COMMON FUNCTIONS ------------------
 
+   function showError(input, errorEl, msg, serverSide) {
+       input.classList.add('is-invalid');
+       input.classList.remove('is-valid');
+       errorEl.style.color = 'red';
+       errorEl.innerHTML   = msg;
+       if (serverSide) {
+           serverSide.innerHTML     = '';
+           serverSide.style.display = 'none';
+       }
+   }
 
+   function showValid(input, errorEl, msg, serverSide) {
+       input.classList.add('is-valid');
+       input.classList.remove('is-invalid');
+       errorEl.style.color = 'green';
+       errorEl.innerHTML   = msg;
+       if (serverSide) {
+           serverSide.innerHTML     = '';
+           serverSide.style.display = 'none';
+       }
+   }
+
+   function reset(input, errorEl, serverSide) {
+       input.classList.remove('is-valid', 'is-invalid');
+       errorEl.innerHTML   = '';
+       errorEl.style.color = '';
+       if (serverSide) {
+           serverSide.innerHTML     = '';
+           serverSide.style.display = 'none';
+       }
+   }
 // ------------------ AUTO HIDE DUPLICATE ERROR ------------------
 
 window.addEventListener('DOMContentLoaded', function () {

@@ -20,11 +20,14 @@ import com.springbootdeveloper.DTO.UserDto;
 import com.springbootdeveloper.Exceptions.DuplicateEmailException;
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
 import com.springbootdeveloper.Helpers.FileHandler;
+import com.springbootdeveloper.JWTSecurityConfig.JwtUtil;
 import com.springbootdeveloper.Models.Contact;
 import com.springbootdeveloper.Models.User;
 import com.springbootdeveloper.RepositoryLayer.DatabaseLayerUser;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
@@ -40,7 +43,8 @@ public class ServiceClassUser {//defined for rules and regulations regarding the
     private FileHandler fileHandler;//Spring injects it via reflection
     @Autowired
     private ServiceClassContact serviceClassContact;
-    
+    @Autowired
+    private JwtUtil jwtUtil;
     //Spring injects it from Spring security
     public ServiceClassUser(BCryptPasswordEncoder passEncoder,AuthenticationManager authenticationManager)
     {
@@ -184,29 +188,32 @@ public class ServiceClassUser {//defined for rules and regulations regarding the
     }
     
     
-    
-    public void autoLogin(UserDto dto, HttpServletRequest request)
-    {//this dto  has the pass to autologin on first time registration
-    	
+   
+    public void autoLogin(UserDto dto, HttpServletRequest request, HttpServletResponse response) {
+
         UsernamePasswordAuthenticationToken auth =
             new UsernamePasswordAuthenticationToken(
                 dto.getEmail(),
                 dto.getPassword()
-            );//verification of pass and email
+            );
 
         Authentication authentication =
-            authenticationManager.authenticate(auth);//login request
+            authenticationManager.authenticate(auth);
 
-        SecurityContextHolder.getContext()
-                             .setAuthentication(authentication);//gets stored in current thread only
-        /*Redirect = new HTTP request. and hence a new thread is created
-        */
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // ❌ Remove this session part as we dont need to save the sercurity context in the session— no sessions in JWT world
+        // HttpSession session = request.getSession(true);
+        // session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext);
+        // Added this instead
         
-        HttpSession session = request.getSession(true);
-        session.setAttribute(
-                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, //this takes our authentication object and stores it in our HttpSession
-                SecurityContextHolder.getContext()
-        );
+        String token = jwtUtil.generateToken(authentication); //created the token so as to send it to the cliet as a cookie
+        Cookie cookie = new Cookie("jwt", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(86400);
+        response.addCookie(cookie);
+        /*Added the cookie to the response ,now the browser makes sure that it sends this cookie with every request it makes*/
     }
     
     

@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
+<th:block
       th:replace="~{dashboardBase :: base(~{::pageCss}, ~{::pageJs}, ~{::content})}">
 
 <!-- ░░ PAGE CSS ░░ -->
@@ -26,33 +25,60 @@
                 </div>
             </div>
 
-            <ul class="dash-contact-list"
-                th:if="${userContacts != null and !#lists.isEmpty(userContacts)}">
+            <!-- Contact table wrap -->
+            <div class="dash-contact-table-wrap"
+                 th:if="${userContacts != null and !#lists.isEmpty(userContacts)}">
 
-                <li class="dash-contact-row" th:each="c : ${userContacts}">
+                <!-- Table header -->
+                <div class="dash-contact-thead">
+                    <span class="dash-th dash-th-contact">Contact</span>
+                    <span class="dash-th dash-th-fav">Fav</span>
+                    <span class="dash-th dash-th-group">Group</span>
+                </div>
 
-                    <div class="dash-c-av"
-                         th:text="${c.name != null ? #strings.substring(c.name,0,2).toUpperCase() : '?'}">AB</div>
+                <!-- Rows -->
+                <ul class="dash-contact-list">
+                    <li class="dash-contact-row" th:each="c : ${userContacts}">
 
-                    <div class="dash-c-info">
-                        <p class="dash-c-name" th:text="${c.name}">Name</p>
-                        <p class="dash-c-meta" th:text="${c.email != null ? c.email : ''}"></p>
-                        <p class="dash-c-meta" th:text="${c.phone != null ? c.phone : ''}"></p>
-                    </div>
+                        <!-- Contact cell: avatar + name + email -->
+                        <div class="dash-c-contact-cell">
 
-                    <span th:if="${c.favourite}" class="dash-fav-badge" title="Favourite">
-                        <i class="fa-solid fa-star"></i>
-                    </span>
+                            <!-- Avatar: image if available, else initials -->
+                            <div class="dash-c-av">
+                                <img th:if="${c.fileName != null}"
+                                     th:src="@{/user/images/{id}(id=${c.contactId})}"
+                                     class="dash-c-av-img"
+                                     alt="Contact photo"/>
+                                <span th:if="${c.fileName == null}"
+                                      th:text="${c.name != null ? #strings.substring(c.name,0,1).toUpperCase() : '?'}">?</span>
+                            </div>
 
-                    <span th:if="${c.group != null and c.group.name() == 'WORK'}"      class="dash-tag dash-tag-work"      th:text="'Work'"></span>
-                    <span th:if="${c.group != null and c.group.name() == 'FRIEND'}"    class="dash-tag dash-tag-friend"    th:text="'Friend'"></span>
-                    <span th:if="${c.group != null and c.group.name() == 'FAMILY'}"    class="dash-tag dash-tag-family"    th:text="'Family'"></span>
-                    <span th:if="${c.group != null and c.group.name() == 'CLIENT'}"    class="dash-tag dash-tag-client"    th:text="'Client'"></span>
-                    <span th:if="${c.group != null and c.group.name() == 'ANONYMOUS'}" class="dash-tag dash-tag-anonymous" th:text="'Anonymous'"></span>
+                            <div class="dash-c-info">
+                                <p class="dash-c-name" th:text="${c.name}">Name</p>
+                                <p class="dash-c-meta" th:text="${c.email != null ? c.email : ''}"></p>
+                                <p class="dash-c-meta" th:text="${c.phone != null ? c.phone : ''}"></p>
+                            </div>
+                        </div>
 
-                </li>
+                        <!-- Favourite cell -->
+                        <div class="dash-c-fav-cell">
+                            <span th:if="${c.favourite}" class="dash-fav-badge" title="Favourite">
+                                <i class="fa-solid fa-star"></i>
+                            </span>
+                        </div>
 
-            </ul>
+                        <!-- Group cell -->
+                        <div class="dash-c-group-cell">
+                            <span th:if="${c.group != null and c.group.name() == 'WORK'}"      class="dash-tag dash-tag-work"      th:text="'Work'"></span>
+                            <span th:if="${c.group != null and c.group.name() == 'FRIEND'}"    class="dash-tag dash-tag-friend"    th:text="'Friend'"></span>
+                            <span th:if="${c.group != null and c.group.name() == 'FAMILY'}"    class="dash-tag dash-tag-family"    th:text="'Family'"></span>
+                            <span th:if="${c.group != null and c.group.name() == 'CLIENT'}"    class="dash-tag dash-tag-client"    th:text="'Client'"></span>
+                            <span th:if="${c.group != null and c.group.name() == 'ANONYMOUS'}" class="dash-tag dash-tag-anonymous" th:text="'Anonymous'"></span>
+                        </div>
+
+                    </li>
+                </ul>
+            </div>
 
             <p class="dash-panel-sub" style="text-align:center; padding:32px 0;"
                th:if="${userContacts == null or #lists.isEmpty(userContacts)}">
@@ -77,6 +103,11 @@
                         <span class="dash-action-label">Add New Contact</span>
                         <i class="fa-solid fa-chevron-right dash-action-arr"></i>
                     </a>
+                    <a th:href="@{/user/editContactsRequest}" class="dash-action-btn">
+					    <span class="dash-action-icon"><i class="fa-solid fa-pen-to-square"></i></span>
+					    <span class="dash-action-label">Edit Contacts</span>
+					    <i class="fa-solid fa-chevron-right dash-action-arr"></i>
+					</a>
                 </div>
             </div>
         </div><!-- /side -->
@@ -91,4 +122,4 @@
     <script th:src="@{/js/userContactsScript.js}"></script>
 </th:block>
 
-</html>
+</th:block>

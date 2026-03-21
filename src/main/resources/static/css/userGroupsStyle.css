@@ -52,6 +52,34 @@
         border-color var(--t) var(--ease),
         box-shadow   var(--t) var(--ease);
 }
+
+/* shine sweep on every card */
+.grp-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.06) 45%,
+        rgba(255, 255, 255, 0.11) 50%,
+        rgba(255, 255, 255, 0.06) 55%,
+        transparent 100%
+    );
+    transform: skewX(-12deg);
+    transition: left 0.58s var(--ease);
+    pointer-events: none;
+    z-index: 0;
+}
+.grp-card:hover::before {
+    left: 130%;
+}
+
+/* keep card children above shine */
+.grp-card > * { position: relative; z-index: 1; }
+
 .grp-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
@@ -64,7 +92,7 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 1.1rem;
     flex-shrink: 0;
-    transition: transform var(--t) var(--ease);
+    transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease);
 }
 .grp-card:hover .grp-card-icon {
     transform: scale(1.1) rotate(-4deg);
@@ -112,6 +140,7 @@
     pointer-events: none;
     line-height: 1;
     transition: opacity var(--t);
+    z-index: 0;
 }
 .grp-card:hover .grp-card-glyph { opacity: 0.08; }
 
@@ -128,8 +157,13 @@
 }
 .grp-card--work:hover {
     border-color: rgba(37, 99, 235, 0.55);
-    box-shadow: 0 16px 40px rgba(37, 99, 235, 0.15);
+    box-shadow:
+        0 16px 40px rgba(37, 99, 235, 0.15),
+        0 0 0 1px rgba(37, 99, 235, 0.55),
+        0 0 20px rgba(37, 99, 235, 0.25),
+        0 0 48px rgba(37, 99, 235, 0.08);
 }
+.grp-card--work:hover .grp-card-icon  { box-shadow: 0 0 14px rgba(37, 99, 235, 0.55); }
 .grp-card--work:hover .grp-card-arrow { color: var(--blue-text); }
 .grp-card--work .grp-card-name        { color: var(--blue-text); }
 
@@ -144,8 +178,13 @@
 }
 .grp-card--friend:hover {
     border-color: rgba(139, 92, 246, 0.55);
-    box-shadow: 0 16px 40px rgba(139, 92, 246, 0.15);
+    box-shadow:
+        0 16px 40px rgba(139, 92, 246, 0.15),
+        0 0 0 1px rgba(139, 92, 246, 0.55),
+        0 0 20px rgba(139, 92, 246, 0.25),
+        0 0 48px rgba(139, 92, 246, 0.08);
 }
+.grp-card--friend:hover .grp-card-icon  { box-shadow: 0 0 14px rgba(139, 92, 246, 0.55); }
 .grp-card--friend:hover .grp-card-arrow { color: #a78bfa; }
 .grp-card--friend .grp-card-name        { color: #a78bfa; }
 
@@ -160,8 +199,13 @@
 }
 .grp-card--family:hover {
     border-color: rgba(251, 146, 60, 0.55);
-    box-shadow: 0 16px 40px rgba(251, 146, 60, 0.12);
+    box-shadow:
+        0 16px 40px rgba(251, 146, 60, 0.12),
+        0 0 0 1px rgba(251, 146, 60, 0.55),
+        0 0 20px rgba(251, 146, 60, 0.22),
+        0 0 48px rgba(251, 146, 60, 0.08);
 }
+.grp-card--family:hover .grp-card-icon  { box-shadow: 0 0 14px rgba(251, 146, 60, 0.50); }
 .grp-card--family:hover .grp-card-arrow { color: #fb923c; }
 .grp-card--family .grp-card-name        { color: #fb923c; }
 
@@ -176,8 +220,13 @@
 }
 .grp-card--client:hover {
     border-color: rgba(34, 197, 94, 0.50);
-    box-shadow: 0 16px 40px rgba(34, 197, 94, 0.12);
+    box-shadow:
+        0 16px 40px rgba(34, 197, 94, 0.12),
+        0 0 0 1px rgba(34, 197, 94, 0.50),
+        0 0 20px rgba(34, 197, 94, 0.22),
+        0 0 48px rgba(34, 197, 94, 0.08);
 }
+.grp-card--client:hover .grp-card-icon  { box-shadow: 0 0 14px rgba(34, 197, 94, 0.50); }
 .grp-card--client:hover .grp-card-arrow { color: #4ade80; }
 .grp-card--client .grp-card-name        { color: #4ade80; }
 
@@ -192,8 +241,13 @@
 }
 .grp-card--anonymous:hover {
     border-color: rgba(107, 114, 128, 0.50);
-    box-shadow: 0 16px 40px rgba(107, 114, 128, 0.12);
+    box-shadow:
+        0 16px 40px rgba(107, 114, 128, 0.12),
+        0 0 0 1px rgba(107, 114, 128, 0.50),
+        0 0 20px rgba(107, 114, 128, 0.20),
+        0 0 48px rgba(107, 114, 128, 0.06);
 }
+.grp-card--anonymous:hover .grp-card-icon  { box-shadow: 0 0 14px rgba(107, 114, 128, 0.45); }
 .grp-card--anonymous:hover .grp-card-arrow { color: #9ca3af; }
 .grp-card--anonymous .grp-card-name        { color: #9ca3af; }
 
@@ -219,6 +273,6 @@
 }
 
 @media (max-width: 560px) {
-    .grp-grid      { grid-template-columns: 1fr; }
+    .grp-grid       { grid-template-columns: 1fr; }
     .grp-page-title { font-size: 1.4rem; }
 }

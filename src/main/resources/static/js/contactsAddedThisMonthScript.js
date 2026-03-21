@@ -1,7 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
-   SmartCM — CONTACTS PAGE SCRIPT
+   SmartCM — CONTACTS ADDED THIS MONTH PAGE SCRIPT
    Row hover highlight · Ripple on action buttons
-   Same behaviour as userDashboardScript.js
    ═══════════════════════════════════════════════════════════ */
 
 (function () {
@@ -9,24 +8,25 @@
 
     const qsa = sel => document.querySelectorAll(sel);
 
-    /* ── Row hover highlight ─────────────────────────────── */
+    /* ══════════════════════════════════════════════════════
+       1. CONTACT ROW HOVER
+       ══════════════════════════════════════════════════════ */
     function initContactRowFx() {
         qsa('.dash-contact-row').forEach(row => {
             row.addEventListener('mouseenter', () => {
-                row.style.paddingLeft      = '8px';
-                row.style.borderLeftWidth  = '2px';
-                row.style.borderLeftStyle  = 'solid';
-                row.style.borderLeftColor  = 'rgba(37, 99, 235, 0.45)';
-                row.style.transition       = 'padding-left 0.2s ease, border-color 0.2s ease';
+                row.style.borderLeftWidth = '2px';
+                row.style.borderLeftStyle = 'solid';
+                row.style.borderLeftColor = 'rgba(37, 99, 235, 0.45)';
             });
             row.addEventListener('mouseleave', () => {
-                row.style.paddingLeft      = '0';
-                row.style.borderLeftWidth  = '0';
+                row.style.borderLeftWidth = '0';
             });
         });
     }
 
-    /* ── Ripple on action buttons ────────────────────────── */
+    /* ══════════════════════════════════════════════════════
+       2. RIPPLE on action buttons
+       ══════════════════════════════════════════════════════ */
     function initRipple() {
         qsa('.dash-action-btn').forEach(btn => {
             btn.addEventListener('click', function (e) {
@@ -64,11 +64,13 @@
         }
     }
 
-    /* ── Boot ────────────────────────────────────────────── */
+    /* ══════════════════════════════════════════════════════
+       BOOT
+       ══════════════════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', () => {
         initContactRowFx();
         initRipple();
-        console.log('%cSmartCM Contacts · Page Ready', 'color:#e8a020;font-family:serif;font-style:italic;font-size:12px');
+        console.log('%cSmartCM Contacts This Month · Page Ready', 'color:#e8a020;font-family:serif;font-style:italic;font-size:12px');
     });
 
 })();

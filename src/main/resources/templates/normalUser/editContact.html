@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
+<th:block
       th:replace="~{dashboardBase :: base(~{::pageCss}, ~{::pageJs}, ~{::content})}">
 
 <!-- ░░ PAGE CSS ░░ -->
 <th:block th:fragment="pageCss">
-    <link rel="stylesheet" th:href="@{/css/addContactStyle.css}"/>
+    <link rel="stylesheet" th:href="@{/css/editContactStyle.css}"/>
 </th:block>
 
 <!-- ░░ PAGE CONTENT ░░ -->
 <th:block th:fragment="content">
-<div id="add-contact-page" class="ac-page">
+<div id="edit-contact-page" class="ac-page">
 
     <!-- Flash Messages -->
     <div th:if="${successMessage}" class="ac-flash ac-flash-success">
@@ -26,47 +24,78 @@
 
         <!-- Card Header -->
         <div class="ac-card-header">
-            <h2 class="ac-card-heading">Add New Contact</h2>
-            <p class="ac-card-sub">Fill in the details below to save a new contact</p>
+            <div class="ec-header-row">
+                <!-- Back link -->
+                <a th:href="@{/user/contacts}" class="ec-back-btn" title="Back to contacts">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h2 class="ac-card-heading">Edit Contact</h2>
+                    <p class="ac-card-sub">Update the details below and save your changes</p>
+                </div>
+            </div>
         </div>
 
-        <!-- ✅ CHANGE 1 — required fields legend -->
         <p class="ac-required-note">
             <span class="ac-required-star">*</span> Name, Phone and Group are required fields
         </p>
 
-        
-
-        <form th:action="@{/user/addContactRequest}"
+        <form th:action="@{/user/editThisContact}"
               method="post"
               enctype="multipart/form-data"
               th:object="${contactDto}"
               class="ac-form"
               id="ac-form">
-			
-			
-			<section id="duplicateErrorServerSide">
-            <p style="color:red"
-               th:if="${#fields.hasGlobalErrors()}"
-               th:each="err : ${#fields.globalErrors()}"
-               th:text="${err}"></p>
-        </section>
-            <!-- PROFILE PICTURE -->
+
+            <!-- ✅ Hidden contactId so POST knows which contact to update -->
+            <input type="hidden" th:field="*{contactId}"/>
+
+            <!-- ✅ Hidden removePhoto flag — JS sets value to true when user removes photo -->
+            <input type="hidden" id="removePhotoFlag" th:field="*{removePhoto}"/>
+
+            <!-- Server-side global errors -->
+            <section id="duplicateErrorServerSide">
+                <p style="color:red"
+                   th:if="${#fields.hasGlobalErrors()}"
+                   th:each="err : ${#fields.globalErrors()}"
+                   th:text="${err}"></p>
+            </section>
+
+            <!-- ── PROFILE PICTURE ──────────────────────── -->
             <div class="ac-field-group">
                 <label class="ac-label">Profile Picture</label>
 
                 <input type="file"
+                       id="multipartFile"
                        th:field="*{multipartFile}"
                        accept="image/*"
                        class="ac-file-hidden"
                        th:classappend="${#fields.hasErrors('multipartFile')} ? ' is-invalid' : ''"/>
 
+                <!-- Current photo preview — shown when contact already has one -->
+                <div class="ec-current-photo" id="ec-current-photo"
+                     th:if="${contactDto.fileName != null and contactDto.fileName != ''}">
+                    <img th:src="@{/user/images/{id}(id=${contactDto.contactId})}"
+                         class="ec-current-img" alt="Current photo"
+                         id="ec-current-img"/>
+                    <div class="ec-current-info">
+                        <span class="ec-current-label">Current photo</span>
+                        <span class="ec-current-hint">Upload a new image to replace · or</span>
+                    </div>
+                    <!-- ✅ Remove photo button -->
+                    <button type="button" class="ec-remove-photo-btn" id="ec-remove-photo-btn" title="Remove photo">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>Remove</span>
+                    </button>
+                </div>
+
+               
                 <div class="ac-upload-zone" id="ac-upload-zone">
                     <div class="ac-upload-icon">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                     </div>
                     <span class="ac-upload-label" id="ac-upload-label">Click or drag image here</span>
-                    <span class="ac-upload-sub" id="ac-upload-sub">PNG · JPG ·JPEG · GIF — min 10KB ,max 2 MB</span>
+                    <span class="ac-upload-sub"   id="ac-upload-sub">PNG · JPG · GIF · JPEG  —min 2KB, max 2 MB</span>
 
                     <div class="ac-preview-wrap" id="ac-preview-wrap">
                         <img src="" alt="Preview" class="ac-preview-img" id="ac-img-preview"/>
@@ -88,11 +117,10 @@
                 <p id="fileError" class="validation-msg"></p>
             </div>
 
-            <!-- NAME + NICKNAME -->
+            <!-- ── NAME + NICKNAME ──────────────────────── -->
             <div class="ac-form-grid">
 
                 <div class="ac-field-group">
-                    <!-- ✅ CHANGE 2 — required star on Name label -->
                     <label class="ac-label" for="name">
                         Full Name <span class="ac-required-star">*</span>
                     </label>
@@ -135,7 +163,7 @@
 
             </div>
 
-            <!-- EMAIL -->
+            <!-- ── EMAIL ────────────────────────────────── -->
             <div class="ac-field-group">
                 <label class="ac-label" for="email">Email</label>
                 <div class="ac-input-wrap">
@@ -144,7 +172,7 @@
                            id="email"
                            th:field="*{email}"
                            class="ac-input"
-                           placeholder="john@example.com"
+                           placeholder="john@gmail.com"
                            th:classappend="${#fields.hasErrors('email')} ? ' is-invalid' : ''"/>
                 </div>
                 <section id="emailErrorServerSide">
@@ -155,9 +183,8 @@
                 <p id="emailError" class="validation-msg"></p>
             </div>
 
-            <!-- PHONE -->
+            <!-- ── PHONE ─────────────────────────────────── -->
             <div class="ac-field-group">
-                <!-- ✅ CHANGE 3 — required star on Phone label -->
                 <label class="ac-label" for="phone">
                     Phone <span class="ac-required-star">*</span>
                 </label>
@@ -167,8 +194,9 @@
                            id="phone"
                            th:field="*{phone}"
                            class="ac-input"
-                           placeholder="+91 98765 43210"
-                           th:classappend="${#fields.hasErrors('phone')} ? ' is-invalid' : ''" required/>
+                           placeholder="9876543210"
+                           th:classappend="${#fields.hasErrors('phone')} ? ' is-invalid' : ''"
+                           required/>
                 </div>
                 <section id="phoneErrorServerSide">
                     <p style="color:red" th:if="${#fields.hasErrors('phone')}"
@@ -178,9 +206,8 @@
                 <p id="phoneError" class="validation-msg"></p>
             </div>
 
-            <!-- GROUP -->
+            <!-- ── GROUP ─────────────────────────────────── -->
             <div class="ac-field-group">
-                <!-- ✅ CHANGE 4 — required star on Group label -->
                 <label class="ac-label" for="group">
                     Group <span class="ac-required-star">*</span>
                 </label>
@@ -188,11 +215,13 @@
                     <i class="fa-solid fa-layer-group ac-input-icon"></i>
                     <select id="group"
                             th:field="*{group}"
-                            class="ac-input ac-select" required>
+                            class="ac-input ac-select"
+                            required>
                         <option value="">Select group...</option>
                         <option th:each="g : ${T(com.springbootdeveloper.Models.ContactGroup).values()}"
                                 th:value="${g}"
-                                th:text="${g.name()}">GROUP</option>
+                                th:text="${g.name()}"
+                                th:selected="${contactDto.group.name() == g.name()}">GROUP</option>
                     </select>
                     <span class="ac-select-arrow">
                         <i class="fa-solid fa-chevron-down"></i>
@@ -206,7 +235,7 @@
                 <p id="groupError" class="validation-msg"></p>
             </div>
 
-            <!-- FAVOURITE -->
+            <!-- ── FAVOURITE ─────────────────────────────── -->
             <div class="ac-field-group">
                 <div class="ac-favourite-wrap">
                     <input type="checkbox"
@@ -217,7 +246,7 @@
                         <span class="ac-fav-star" id="ac-fav-star">
                             <i class="fa-regular fa-star"></i>
                         </span>
-                        <span class="ac-fav-text">Add to Favourites</span>
+                        <span class="ac-fav-text">Mark as Favourite</span>
                     </label>
                 </div>
                 <section id="favouriteErrorServerSide">
@@ -227,18 +256,16 @@
                 </section>
             </div>
 
-            <!-- DESCRIPTION -->
+            <!-- ── DESCRIPTION ───────────────────────────── -->
             <div class="ac-field-group">
                 <label class="ac-label" for="description">
                     Description
-                    <!-- ✅ CHANGE 5 — live character counter -->
                     <span class="ac-char-counter">
                         <span id="descriptionCharCount">0</span>/200
                     </span>
                 </label>
                 <div class="ac-input-wrap ac-input-wrap--textarea">
                     <i class="fa-solid fa-align-left ac-input-icon"></i>
-                    <!-- ✅ CHANGE 6 — maxlength="200" added -->
                     <textarea id="description"
                               th:field="*{description}"
                               class="ac-input"
@@ -254,11 +281,17 @@
                 <p id="descriptionError" class="validation-msg"></p>
             </div>
 
-            <!-- SUBMIT -->
-            <button type="submit" class="ac-btn ac-btn-primary" id="ac-submit-btn">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Add Contact</span>
-            </button>
+            <!-- ── SUBMIT ROW ────────────────────────────── -->
+            <div class="ec-btn-row">
+                <a th:href="@{/user/contacts}" class="ac-btn ec-btn-cancel">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Cancel</span>
+                </a>
+                <button type="submit" class="ac-btn ac-btn-primary ec-btn-save" id="ac-submit-btn">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Save Changes</span>
+                </button>
+            </div>
 
         </form>
     </div>
@@ -267,7 +300,7 @@
 
 <!-- ░░ PAGE JS ░░ -->
 <th:block th:fragment="pageJs">
-    <script th:src="@{/js/addContactScript.js}"></script>
+    <script th:src="@{/js/editContactScript.js}"></script>
 </th:block>
 
-</html>
+</th:block>

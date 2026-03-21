@@ -17,6 +17,7 @@ import com.springbootdeveloper.Exceptions.DuplicateEmailException;
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @Controller
@@ -39,7 +40,7 @@ public class PostController {
     @PostMapping(path = "/signUp") 
     public String handleSubmit(
             @Valid @ModelAttribute("user") UserDto userDto,
-            BindingResult result, HttpServletRequest request
+            BindingResult result, HttpServletRequest request, HttpServletResponse response
            
     ) // I can even skip this annotation @ModelAttribute here springboot automates it
     {
@@ -66,7 +67,7 @@ public class PostController {
             return "signUp"; //when error is there
         }
        
-        sc.autoLogin(userDto,request);//sent by the user
+        sc.autoLogin(userDto, request, response);//sent by the user
         
         return "redirect:/enhanceProfileRequest";
     }
@@ -108,6 +109,10 @@ public class PostController {
     	{
     		userDto = sc.save(userDto,enhancedProfile);
     	}
+    	catch(UserNotFoundException e)
+    	{
+    		return "redirect:/logout";
+    	}
     	catch(RuntimeException e) {
     		
     		model.addAttribute("registeredUserDto", userDto);
@@ -120,8 +125,10 @@ public class PostController {
 	 		model.addAttribute("pageTitle","Dashboard");	
 	 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Welcome to your User Dashboard");
 	 		model.addAttribute("recentContacts",null);
-	 		model.addAttribute("favouritesCount",serviceClassContact.getFavouritesCount(userDto.getUserId()));
-	 		return "normalUser/userDashboard";
+	 		model.addAttribute("favouritesCount",0);
+	 		model.addAttribute("contactsAddedThisMonth",0);
+	 		model.addAttribute("totalContactsCount",0);
+	 		return "redirect:/normalUser/userDashboard";
     	
     }
     
@@ -151,6 +158,7 @@ public class PostController {
     	
  }
     
+ 
     
     
     

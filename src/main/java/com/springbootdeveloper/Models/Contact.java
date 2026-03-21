@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(
 	    name = "contacts",
-	    uniqueConstraints = @UniqueConstraint(columnNames = {"userId","groupName", "name","phone"})
+	    uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","group_name", "name","phone"})
 	)
 public class Contact {
 //everything gets converted to snake case doesnt matter what ever we do or explicitly define the names 
@@ -25,17 +25,18 @@ public class Contact {
 
    
 
-    @Column(length = 500)
+    @Column(length = 200)
     private String description;
-
+    
+    @Column(length = 10)
     private String phone;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 300)
     private String email;
     
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false) //this will store the UserId for hte User as a foreign key
-    private User user;
+   @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = true) //this will store the UserId for hte User as a foreign key,
+    private User user;//in hibernate we wouldnt be able to delete contact directly from user side if we didnt set this to true...(in dbms we could)(orphan removal = True)
 
     private String image;
     
@@ -46,7 +47,7 @@ public class Contact {
     private LocalDateTime createdDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20, name = "groupName")
+    @Column(nullable = false, length = 20, name = "group_name")
     private ContactGroup group;
 
 	private LocalDateTime updatedDate;

@@ -3,42 +3,47 @@
 
 <!-- ░░ PAGE CSS ░░ -->
 <th:block th:fragment="pageCss">
-    <link rel="stylesheet" th:href="@{/css/userFavouriteContactsStyle.css}"/>
+    <link rel="stylesheet" th:href="@{/css/editContactsStyle.css}"/>
 </th:block>
 
 <!-- ░░ PAGE CONTENT ░░ -->
 <th:block th:fragment="content">
 <div id="page-content">
 
-    <div class="ct-layout">
-
-        <!-- ── FAVOURITE CONTACTS ─────────────────────────── -->
+    <div class="ec-layout">
+	
+	<div th:if="${errorMessage}" class="ac-flash ac-flash-error" th:id="errorMessageContact">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <span th:text="${errorMessage}"></span>
+</div>
+        <!-- ── ALL CONTACTS ───────────────────────────────── -->
         <div class="dash-panel dash-anim dash-anim-d1">
 
             <div class="dash-panel-head">
                 <div>
-                    <h2 class="dash-panel-title">Favourite Contacts</h2>
+                    <h2 class="dash-panel-title">All Contacts</h2>
                     <p class="dash-panel-sub"
-                       th:text="${userFavourites != null ? userFavourites.size() + ' contacts' : '0 contacts'}">
+                       th:text="${userContacts != null ? userContacts.size() + ' contacts' : '0 contacts'}">
                         0 contacts
                     </p>
                 </div>
             </div>
-
+			
             <!-- Contact table wrap -->
             <div class="dash-contact-table-wrap"
-                 th:if="${userFavourites != null and !#lists.isEmpty(userFavourites)}">
+                 th:if="${userContacts != null and !#lists.isEmpty(userContacts)}">
 
                 <!-- Table header -->
                 <div class="dash-contact-thead">
                     <span class="dash-th dash-th-contact">Contact</span>
                     <span class="dash-th dash-th-fav">Fav</span>
                     <span class="dash-th dash-th-group">Group</span>
+                    <span class="dash-th dash-th-edit">Actions</span>
                 </div>
 
                 <!-- Rows -->
                 <ul class="dash-contact-list">
-                    <li class="dash-contact-row" th:each="c : ${userFavourites}">
+                    <li class="dash-contact-row" th:each="c : ${userContacts}">
 
                         <!-- Contact cell: avatar + name + email -->
                         <div class="dash-c-contact-cell">
@@ -76,45 +81,45 @@
                             <span th:if="${c.group != null and c.group.name() == 'ANONYMOUS'}" class="dash-tag dash-tag-anonymous" th:text="'Anonymous'"></span>
                         </div>
 
+                        <!-- Edit & Delete cell -->
+                        <div class="dash-c-edit-cell">
+                            <a th:href="@{/user/editContact/{id}(id=${c.contactId})}"
+                               class="dash-edit-btn"
+                               title="Edit contact">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                           <form th:action="@{/user/deleteThisContact/{id}(id=${c.contactId})}" 
+								      method="post" 
+								      style="display:inline;">
+								    <button type="submit"
+								            class="dash-delete-btn"	
+								            title="Delete contact"
+								            th:data-contact-name="${c.name}"
+								            onclick="return confirm('Are you sure you want to delete &quot;' + this.getAttribute('data-contact-name') + '&quot;? This action cannot be undone.');">
+								        <i class="fa-solid fa-trash"></i>
+								    </button>
+								</form>
+                        </div>
+
                     </li>
                 </ul>
             </div>
 
             <p class="dash-panel-sub" style="text-align:center; padding:32px 0;"
-               th:if="${userFavourites == null or #lists.isEmpty(userFavourites)}">
-                No favourite contacts yet.
+               th:if="${userContacts == null or #lists.isEmpty(userContacts)}">
+                No contacts yet.
             </p>
 
-        </div><!-- /favourite contacts -->
+        </div><!-- /all contacts -->
 
-
-        <!-- ── SIDE PANEL ─────────────────────────────────── -->
-        <div class="ct-side dash-anim dash-anim-d2">
-            <div class="dash-panel">
-                <div class="dash-panel-head">
-                    <div>
-                        <h2 class="dash-panel-title">Quick Actions</h2>
-                        <p class="dash-panel-sub">Jump right in</p>
-                    </div>
-                </div>
-                <div class="dash-action-list">
-                    <a th:href="@{/user/addContactRequest}" class="dash-action-btn">
-                        <span class="dash-action-icon"><i class="fa-solid fa-user-plus"></i></span>
-                        <span class="dash-action-label">Add New Contact</span>
-                        <i class="fa-solid fa-chevron-right dash-action-arr"></i>
-                    </a>
-                </div>
-            </div>
-        </div><!-- /side -->
-
-    </div><!-- /ct-layout -->
+    </div><!-- /ec-layout -->
 
 </div><!-- /page-content -->
 </th:block>
 
 <!-- ░░ PAGE JS ░░ -->
 <th:block th:fragment="pageJs">
-    <script th:src="@{/js/userFavouriteContactsScript.js}"></script>
+    <script th:src="@{/js/editContactsScript.js}"></script>
 </th:block>
 
 </th:block>

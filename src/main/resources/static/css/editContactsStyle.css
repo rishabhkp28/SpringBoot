@@ -1,19 +1,27 @@
 /* ═══════════════════════════════════════════════════════════
-   SmartCM — FAVOURITE CONTACTS PAGE CSS
+   SmartCM — EDIT CONTACTS PAGE CSS (Full-width table)
    Tokens (--vars) inherited from dashboardBase.css via :root
    ═══════════════════════════════════════════════════════════ */
 
-/* ── PAGE LAYOUT ─────────────────────────────────────────── */
-.ct-layout {
+.ac-flash-error {
+    background-color: #fdecea;
+    color: #c62828;
+    border: 1px solid #f5c6cb;
+}
+
+/* Icons */
+.ac-flash i {
+    font-size: 16px;
+}
+
+/* ── PAGE LAYOUT — FULL WIDTH ────────────────────────────── */
+.ec-layout {
     display: grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 1fr;
     gap: 16px;
     align-items: start;
-}
-.ct-side {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    width: 100%;
+    max-width: 100%;
 }
 
 /* ── PANEL ───────────────────────────────────────────────── */
@@ -22,45 +30,11 @@
     border: 1px solid var(--border);
     border-radius: var(--r-xl);
     padding: 22px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color var(--t), box-shadow var(--t);
+    transition: border-color var(--t);
+    width: 100%;
+    max-width: 100%;
 }
-
-/* shine sweep on panel */
-.dash-panel::before {
-    content: "";
-    position: absolute;
-    top: 0; left: -75%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-        120deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.04) 45%,
-        rgba(255, 255, 255, 0.08) 50%,
-        rgba(255, 255, 255, 0.04) 55%,
-        transparent 100%
-    );
-    transform: skewX(-12deg);
-    transition: left 0.60s var(--ease);
-    pointer-events: none;
-    z-index: 0;
-}
-.dash-panel:hover::before {
-    left: 130%;
-}
-
-.dash-panel:hover {
-    border-color: var(--blue-border);
-    box-shadow:
-        0 0 0 1px var(--blue-border),
-        0 0 20px rgba(79, 110, 247, 0.22),
-        0 0 48px rgba(79, 110, 247, 0.08);
-}
-
-/* keep all panel children above the shine layer */
-.dash-panel > * { position: relative; z-index: 1; }
+.dash-panel:hover { border-color: var(--border-2); }
 
 .dash-panel-head {
     display: flex;
@@ -86,45 +60,58 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   CONTACT TABLE — fixed-column layout
-   Columns: [Contact — flex:1]  [Fav — 70px]  [Group — 110px]
+   CONTACT TABLE — Full width, extended to edges
+   Columns: [Contact — flex:1]  [Fav — 80px]  [Group — 130px]  [Edit — 100px]
    ═══════════════════════════════════════════════════════════ */
-.dash-contact-table-wrap { width: 100%; }
+.dash-contact-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+}
 
-/* ── Header row — violet pill tabs ──────────────────────── */
+/* ── Header row — MATCHED TO ROW STRUCTURE ─────────────────── */
 .dash-contact-thead {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 0 12px 14px 12px;
+    gap: 12px;
+    padding: 0 16px 14px 16px;
     border-bottom: 1px solid rgba(139, 92, 246, 0.15);
     margin-bottom: 4px;
+    width: 100%;
 }
 
-/* Column width wrappers */
+/* Column width wrappers — EXACT MATCH TO .dash-contact-row */
 .dash-th-contact {
     flex: 1;
     min-width: 0;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding-left: 0;
-    margin-left :-10px;
+    padding: 0;
 }
 .dash-th-fav {
-    width: 70px;
+    width: 80px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-right: 16px;
+    padding: 0;
 }
 .dash-th-group {
-    width: 110px;
+    width: 130px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
+}
+.dash-th-edit {
+    width: 100px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
 
 /* The pill — all three violet */
@@ -133,7 +120,7 @@
     font-weight: 700;
     letter-spacing: 0.10em;
     text-transform: uppercase;
-    padding: 5px 10px;
+    padding: 6px 10px;
     border-radius: 20px;
     background: rgba(139, 92, 246, 0.13);
     border: 1px solid rgba(139, 92, 246, 0.30);
@@ -146,14 +133,15 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    width: 100%;
 }
 
-/* ── Each row ────────────────────────────────────────────── */
+/* ── Each row — MATCHED TO HEADER STRUCTURE ────────────────── */
 .dash-contact-row {
     display: flex;
     align-items: center;
-    gap: 0;
-    padding: 10px 12px;
+    gap: 12px;
+    padding: 12px 16px;
     border-radius: 10px;
     border-bottom: 1px solid var(--border);
     transition:
@@ -161,6 +149,7 @@
         border-color var(--t) var(--ease),
         transform    var(--t) var(--ease);
     cursor: default;
+    width: 100%;
 }
 .dash-contact-row:last-child { border-bottom: none; }
 .dash-contact-row:hover {
@@ -169,25 +158,28 @@
     transform: translateX(3px);
 }
 
-/* ── Contact cell ────────────────────────────────────────── */
+/* ── Contact cell — MATCHES .dash-th-contact ─────────────────── */
 .dash-c-contact-cell {
     flex: 1;
     min-width: 0;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding-right: 10px;
+    gap: 12px;
+    padding: 0;
 }
 
 /* Avatar — image or initials */
 .dash-c-av {
-    width: 38px; height: 38px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: var(--blue-mid);
     border: 1px solid var(--blue-border);
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--blue-text);
-    font-size: 0.78rem;
+    font-size: 0.80rem;
     font-weight: 700;
     letter-spacing: 0.02em;
     flex-shrink: 0;
@@ -209,7 +201,10 @@
     display: block;
 }
 
-.dash-c-info { flex: 1; min-width: 0; }
+.dash-c-info {
+    flex: 1;
+    min-width: 0;
+}
 
 .dash-c-name {
     font-size: 0.875rem;
@@ -229,20 +224,20 @@
     text-overflow: ellipsis;
 }
 
-/* ── Favourite cell ──────────────────────────────────────── */
+/* ── Favourite cell — MATCHES .dash-th-fav ────────────────────── */
 .dash-c-fav-cell {
-    width: 70px;
+    width: 80px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-right: 14px;
+    padding: 0;
 }
 .dash-fav-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.72rem;
+    font-size: 0.80rem;
     color: #eab308;
     opacity: 0.85;
     transition: transform 0.2s ease, opacity 0.2s ease;
@@ -252,13 +247,14 @@
     opacity: 1;
 }
 
-/* ── Group cell ──────────────────────────────────────────── */
+/* ── Group cell — MATCHES .dash-th-group ──────────────────────── */
 .dash-c-group-cell {
-    width: 110px;
+    width: 130px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
 }
 
 /* Tag pills */
@@ -267,13 +263,13 @@
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 3px 9px;
+    padding: 4px 9px;
     border-radius: 20px;
     background: var(--gold-dim);
     border: 1px solid var(--gold-border);
     color: var(--gold);
     white-space: nowrap;
-    max-width: 108px;
+    max-width: 128px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -283,66 +279,71 @@
 .dash-tag-family    { background: rgba(251, 146, 60, 0.14);  border-color: rgba(251, 146, 60, 0.28);     color: #fb923c; }
 .dash-tag-anonymous { background: rgba(107, 114, 128, 0.14); border-color: rgba(107, 114, 128, 0.28);    color: #9ca3af; }
 
-/* ── QUICK ACTIONS ───────────────────────────────────────── */
-.dash-action-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-.dash-action-btn {
+/* ── Edit & Delete cells — MATCHES .dash-th-edit ────────────────── */
+.dash-c-edit-cell {
+    width: 100px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 11px;
-    padding: 11px 13px;
-    border-radius: var(--r-md);
-    background: var(--bg-elevated);
-    border: 1px solid var(--border);
-    color: var(--text-2);
-    font-size: 0.84rem;
-    font-family: var(--font);
+    justify-content: center;
+    gap: 6px;
+    padding: 0;
+}
+.dash-edit-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(156, 163, 175, 0.70);
+    font-size: 0.75rem;
     text-decoration: none;
     transition:
-        background   var(--t) var(--ease),
-        border-color var(--t) var(--ease),
-        color        var(--t) var(--ease),
-        transform    var(--t) var(--ease),
-        box-shadow   var(--t) var(--ease);
+        background   0.18s ease,
+        border-color 0.18s ease,
+        color        0.18s ease,
+        transform    0.18s ease;
+    cursor: pointer;
 }
-.dash-action-btn:hover {
-    background: var(--blue-dim);
-    border-color: var(--blue-border);
-    color: var(--text);
-    transform: translateX(4px);
-    box-shadow:
-        0 0 0 1px var(--blue-border),
-        0 0 14px rgba(79, 110, 247, 0.25);
+.dash-edit-btn:hover {
+    background: rgba(139, 92, 246, 0.14);
+    border-color: rgba(139, 92, 246, 0.30);
+    color: #a78bfa;
+    transform: scale(1.20);
 }
-.dash-action-icon {
-    width: 28px; height: 28px;
-    border-radius: 7px;
-    background: var(--blue-mid);
-    border: 1px solid var(--blue-border);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--blue-text);
-    font-size: 0.78rem;
-    flex-shrink: 0;
-    transition: background var(--t), border-color var(--t), box-shadow var(--t);
+
+.dash-delete-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(156, 163, 175, 0.70);
+    font-size: 0.75rem;
+    text-decoration: none;
+    transition:
+        background   0.18s ease,
+        border-color 0.18s ease,
+        color        0.18s ease,
+        transform    0.18s ease;
+    cursor: pointer;
+    padding: 0;
 }
-.dash-action-btn:hover .dash-action-icon {
-    background: rgba(79, 110, 247, 0.32);
-    border-color: rgba(79, 110, 247, 0.55);
-    box-shadow: 0 0 10px rgba(79, 110, 247, 0.40);
+.dash-delete-btn:hover {
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.30);
+    color: #ef4444;
+    transform: scale(1.20);
 }
-.dash-action-label { flex: 1; }
-.dash-action-arr {
-    font-size: 0.62rem;
-    color: var(--text-muted);
-    flex-shrink: 0;
-    transition: transform var(--t) var(--ease), color var(--t);
-}
-.dash-action-btn:hover .dash-action-arr {
-    transform: translateX(3px);
-    color: var(--blue-text);
+
+.dash-delete-btn:active {
+    background: rgba(239, 68, 68, 0.20);
 }
 
 /* ── ANIMATIONS ──────────────────────────────────────────── */
@@ -355,11 +356,71 @@
 .dash-anim-d2 { animation-delay: 0.13s; }
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
-@media (max-width: 900px) {
-    .ct-layout { grid-template-columns: 1fr; }
-    .dash-th-group   { width: 90px; }
-    .dash-c-group-cell { width: 90px; }
+@media (max-width: 1200px) {
+    .dash-th-contact,
+    .dash-c-contact-cell {
+        min-width: 240px;
+    }
+    .dash-th-group,
+    .dash-c-group-cell {
+        width: 110px;
+    }
 }
+
+@media (max-width: 900px) {
+    .dash-th-contact,
+    .dash-c-contact-cell {
+        min-width: 200px;
+    }
+    .dash-th-fav,
+    .dash-c-fav-cell {
+        width: 70px;
+    }
+    .dash-th-group,
+    .dash-c-group-cell {
+        width: 100px;
+    }
+    .dash-th-edit,
+    .dash-c-edit-cell {
+        width: 90px;
+    }
+}
+
 @media (max-width: 640px) {
-    .dash-panel { padding: 18px; }
+    .dash-panel { padding: 16px; }
+    .dash-contact-thead,
+    .dash-contact-row {
+        padding: 0 12px;
+    }
+    .dash-c-contact-cell {
+        min-width: 160px;
+    }
+    .dash-th-fav,
+    .dash-c-fav-cell {
+        width: 60px;
+    }
+    .dash-th-group,
+    .dash-c-group-cell {
+        width: 80px;
+    }
+    .dash-th-edit,
+    .dash-c-edit-cell {
+        width: 80px;
+    }
+    .dash-tag {
+        font-size: 0.55rem;
+        padding: 3px 7px;
+        max-width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dash-th-group,
+    .dash-c-group-cell {
+        display: none;
+    }
+    .dash-contact-thead,
+    .dash-contact-row {
+        padding: 0 10px;
+    }
 }

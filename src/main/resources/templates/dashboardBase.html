@@ -140,7 +140,7 @@
                             aria-haspopup="true" aria-expanded="false">
                         <div class="db-avatar-ring">
                            <img th:if="${user?.image != null}"
-						     th:src="@{/images/{image}(image=${user.image})}"
+						     th:src="@{/user/images/{img}(img=${c.fileName})}"
 						     class="db-avatar-img"
 						     alt="Profile"/>
 						

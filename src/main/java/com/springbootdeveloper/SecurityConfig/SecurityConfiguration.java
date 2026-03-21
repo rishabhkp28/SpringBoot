@@ -7,8 +7,12 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.springbootdeveloper.JWTSecurityConfig.JwtAuthenticationFilter;
 
 
 @Configuration
@@ -17,11 +21,12 @@ public class SecurityConfiguration{//these class provide the  bean dependencies 
 	
 	
 	private UserDetailsServiceImplementer udsImplementerObject;
-		
+	private JwtAuthenticationFilter jwtFilter;	
 	
-	public SecurityConfiguration(UserDetailsServiceImplementer udsImplementerObject)// gets injected by itself
+	public SecurityConfiguration(UserDetailsServiceImplementer udsImplementerObject, JwtAuthenticationFilter jwtFilter)// gets injected by itself
 	{
 		this.udsImplementerObject = udsImplementerObject;
+		this.jwtFilter = jwtFilter;
 	}
 	
 	@Bean
@@ -44,19 +49,19 @@ public class SecurityConfiguration{//these class provide the  bean dependencies 
 	    return config.getAuthenticationManager();
 	}
 
-	
+	/* Used when we wanted to have stateful server system , here storage of credentials is in session
 	@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		//Spring Security deals with authentication , SignUp and all will be handled by us
 		
-		 
+		
 		 
 		 http.authorizeHttpRequests(auth -> auth
 			        .requestMatchers("/signUp", "/login", "/css/**", "/js/**","/getStarted","/dynamic/validate/**").permitAll()//first general matchers then role based then public
 			        .requestMatchers("/admin/**").hasAuthority("ADMIN")
 			        .requestMatchers("/user/**").hasAuthority("USER") //this role method is predefined spring security paramter that defines hierarchy
 			        .anyRequest().authenticated()
-			        /* hasRole internally checks for ROLE_USER or ROLE_ADMIN while has Authority doesnt*/
+			        // hasRole internally checks for ROLE_USER or ROLE_ADMIN while has Authority doesnt
 			)
 			.formLogin(form -> form
 			        .loginPage("/login")//Spring security already handling the security on authentication page
@@ -75,7 +80,40 @@ public class SecurityConfiguration{//these class provide the  bean dependencies 
 			        .permitAll()//this allows the authenticated user to switch to these mentioned without logging in again
 			    ).csrf(csrf -> csrf.disable());
 
-	    return http.build();	
+	    return http.build();
+	    
+	   
     }
+    */
+	// When we want to have a stateless server system, with help of jwt we dont need to store things on server
+	@Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		//Spring Security deals with authentication , SignUp and all will be handled by us
+		
+		
+		 
+		http
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session ->
+            session.sessionCreationPolicy(
+                SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/signUp", "/login", "/css/**", "/js/**","/getStarted","/dynamic/validate/**").permitAll()
+            .requestMatchers("/admin/**").hasAuthority("ADMIN")
+            .requestMatchers("/user/**").hasAuthority("USER")
+            .anyRequest().authenticated()
+        );
+
+        http.addFilterBefore(
+            jwtFilter,
+            UsernamePasswordAuthenticationFilter.class
+        );
+
+        return http.build();
+	    
+	   
+    }
+	
+	
 
 }

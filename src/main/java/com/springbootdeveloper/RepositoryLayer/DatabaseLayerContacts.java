@@ -1,7 +1,9 @@
 package com.springbootdeveloper.RepositoryLayer;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -54,8 +56,26 @@ public interface DatabaseLayerContacts extends CrudRepository<Contact , UUID> {
 		
 		long countByUser_UserIdAndGroup(UUID userId, ContactGroup group);
 
-}	
 
+	
+	
 
+		@Query(value = """
+			    SELECT EXISTS (
+			        SELECT 1 
+			        FROM contacts 
+			        WHERE contact_id = :contactId 
+			        AND user_id = :userId
+			    )
+			""", nativeQuery = true)
+			Integer verifyOwner(UUID contactId, UUID userId);
+		
+		
+		
+		@Modifying(clearAutomatically = true)  // (Defines whether we should clear the underlying persistence context after executing the modifying query.
+		@Query(value = "DELETE FROM contacts WHERE contact_id = :contactId", nativeQuery = true)
+	    int deleteContactNative(@Param("contactId") UUID contactId);
+	    
 
+}
 

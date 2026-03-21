@@ -1,7 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
-   SmartCM — CONTACTS PAGE CSS
-   Every class used in contacts.html is defined here explicitly.
-   Tokens (--vars) are inherited from dashboardBase.css via :root.
+   SmartCM — GROUP CONTACTS PAGE CSS
+   Tokens (--vars) inherited from dashboardBase.css via :root
    ═══════════════════════════════════════════════════════════ */
 
 /* ── PAGE LAYOUT ─────────────────────────────────────────── */
@@ -11,7 +10,6 @@
     gap: 16px;
     align-items: start;
 }
-
 .ct-side {
     display: flex;
     flex-direction: column;
@@ -24,9 +22,45 @@
     border: 1px solid var(--border);
     border-radius: var(--r-xl);
     padding: 22px;
-    transition: border-color var(--t);
+    position: relative;
+    overflow: hidden;
+    transition: border-color var(--t), box-shadow var(--t);
 }
-.dash-panel:hover { border-color: var(--border-2); }
+
+/* shine sweep on panel */
+.dash-panel::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.04) 45%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.04) 55%,
+        transparent 100%
+    );
+    transform: skewX(-12deg);
+    transition: left 0.60s var(--ease);
+    pointer-events: none;
+    z-index: 0;
+}
+.dash-panel:hover::before {
+    left: 130%;
+}
+
+.dash-panel:hover {
+    border-color: var(--blue-border);
+    box-shadow:
+        0 0 0 1px var(--blue-border),
+        0 0 20px rgba(79, 110, 247, 0.22),
+        0 0 48px rgba(79, 110, 247, 0.08);
+}
+
+/* keep all panel children above the shine layer */
+.dash-panel > * { position: relative; z-index: 1; }
 
 .dash-panel-head {
     display: flex;
@@ -35,7 +69,6 @@
     gap: 12px;
     margin-bottom: 18px;
 }
-
 .dash-panel-title {
     font-family: var(--font-display);
     font-size: 1.15rem;
@@ -45,7 +78,6 @@
     margin: 0;
     line-height: 1.2;
 }
-
 .dash-panel-sub {
     font-size: 0.70rem;
     color: var(--text-2);
@@ -53,54 +85,143 @@
     letter-spacing: 0.03em;
 }
 
-/* ── CONTACT LIST ────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   CONTACT TABLE — fixed-column layout
+   Columns: [Contact — flex:1]  [Fav — 70px]  [Group — 110px]
+   ═══════════════════════════════════════════════════════════ */
+.dash-contact-table-wrap { width: 100%; }
+
+/* ── Header row — violet pill tabs ──────────────────────── */
+.dash-contact-thead {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px 14px 12px;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.15);
+    margin-bottom: 4px;
+}
+
+/* Column width wrappers */
+.dash-th-contact {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 0;
+    margin-left : -10px;
+}
+.dash-th-fav {
+    width: 70px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 16px;
+}
+.dash-th-group {
+    width: 110px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* The pill — all three violet */
+.dash-th {
+    font-size: 0.57rem;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: rgba(139, 92, 246, 0.13);
+    border: 1px solid rgba(139, 92, 246, 0.30);
+    color: #c4b5fd;
+    white-space: nowrap;
+}
+
+/* ── Contact list shell ──────────────────────────────────── */
 .dash-contact-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
+/* ── Each row ────────────────────────────────────────────── */
 .dash-contact-row {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 0;
+    gap: 0;
+    padding: 10px 12px;
+    border-radius: 10px;
     border-bottom: 1px solid var(--border);
-    transition: background var(--t);
+    transition:
+        background   var(--t) var(--ease),
+        border-color var(--t) var(--ease),
+        transform    var(--t) var(--ease);
+    cursor: default;
 }
-.dash-contact-row:last-child  { border-bottom: none; padding-bottom: 0; }
-.dash-contact-row:first-child { padding-top: 0; }
+.dash-contact-row:last-child { border-bottom: none; }
+.dash-contact-row:hover {
+    background: var(--bg-elevated);
+    border-color: transparent;
+    transform: translateX(3px);
+}
 
-/* Avatar */
+/* ── Contact cell ────────────────────────────────────────── */
+.dash-c-contact-cell {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 10px;
+}
+
+/* Avatar — image or initials */
 .dash-c-av {
-    width: 36px; height: 36px;
+    width: 38px; height: 38px;
     border-radius: 50%;
     background: var(--blue-mid);
     border: 1px solid var(--blue-border);
     display: flex; align-items: center; justify-content: center;
     color: var(--blue-text);
-    font-size: 0.72rem;
-    font-weight: 600;
+    font-size: 0.78rem;
+    font-weight: 700;
     letter-spacing: 0.02em;
     flex-shrink: 0;
     font-family: var(--font);
+    overflow: hidden;
+    transition: border-color var(--t), box-shadow var(--t);
+}
+.dash-contact-row:hover .dash-c-av {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
 }
 
-/* Info block */
+/* Photo fills circle */
+.dash-c-av-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
 .dash-c-info { flex: 1; min-width: 0; }
 
 .dash-c-name {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text);
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 .dash-c-meta {
-    font-size: 0.72rem;
+    font-size: 0.70rem;
     color: var(--text-2);
     margin: 2px 0 0;
     white-space: nowrap;
@@ -108,42 +229,59 @@
     text-overflow: ellipsis;
 }
 
-/* Favourite badge */
+/* ── Favourite cell ──────────────────────────────────────── */
+.dash-c-fav-cell {
+    width: 70px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 14px;
+}
 .dash-fav-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.65rem;
+    font-size: 0.72rem;
     color: #eab308;
-    flex-shrink: 0;
-    opacity: 0.90;
+    opacity: 0.85;
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
 .dash-contact-row:hover .dash-fav-badge {
-    transform: scale(1.25) rotate(-8deg);
+    transform: scale(1.3) rotate(-8deg);
     opacity: 1;
 }
 
-/* ── TAG PILLS ───────────────────────────────────────────── */
+/* ── Group cell ──────────────────────────────────────────── */
+.dash-c-group-cell {
+    width: 110px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Tag pills */
 .dash-tag {
-    font-size: 0.60rem;
-    font-weight: 600;
-    letter-spacing: 0.07em;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     padding: 3px 9px;
     border-radius: 20px;
     background: var(--gold-dim);
     border: 1px solid var(--gold-border);
     color: var(--gold);
-    flex-shrink: 0;
     white-space: nowrap;
+    max-width: 108px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-
-.dash-tag-work      { background: var(--blue-mid);              border-color: var(--blue-border);          color: var(--blue-text); }
-.dash-tag-friend    { background: rgba(139,92,246,0.14);        border-color: rgba(139,92,246,0.28);        color: #a78bfa; }
-.dash-tag-family    { background: rgba(251,146,60,0.14);        border-color: rgba(251,146,60,0.28);        color: #fb923c; }
-.dash-tag-client    { background: rgba(34,197,94,0.12);         border-color: rgba(34,197,94,0.26);         color: #4ade80; }
-.dash-tag-anonymous { background: rgba(107,114,128,0.14);       border-color: rgba(107,114,128,0.28);       color: #9ca3af; }
+.dash-tag-work      { background: var(--blue-mid);           border-color: var(--blue-border);           color: var(--blue-text); }
+.dash-tag-friend    { background: rgba(139, 92, 246, 0.14);  border-color: rgba(139, 92, 246, 0.28);     color: #a78bfa; }
+.dash-tag-client    { background: rgba(34, 197, 94, 0.12);   border-color: rgba(34, 197, 94, 0.26);      color: #4ade80; }
+.dash-tag-family    { background: rgba(251, 146, 60, 0.14);  border-color: rgba(251, 146, 60, 0.28);     color: #fb923c; }
+.dash-tag-anonymous { background: rgba(107, 114, 128, 0.14); border-color: rgba(107, 114, 128, 0.28);    color: #9ca3af; }
 
 /* ── QUICK ACTIONS ───────────────────────────────────────── */
 .dash-action-list {
@@ -151,7 +289,6 @@
     flex-direction: column;
     gap: 6px;
 }
-
 .dash-action-btn {
     display: flex;
     align-items: center;
@@ -165,18 +302,21 @@
     font-family: var(--font);
     text-decoration: none;
     transition:
-        background      var(--t) var(--ease),
-        border-color    var(--t) var(--ease),
-        color           var(--t) var(--ease),
-        transform       var(--t) var(--ease);
+        background   var(--t) var(--ease),
+        border-color var(--t) var(--ease),
+        color        var(--t) var(--ease),
+        transform    var(--t) var(--ease),
+        box-shadow   var(--t) var(--ease);
 }
 .dash-action-btn:hover {
     background: var(--blue-dim);
     border-color: var(--blue-border);
     color: var(--text);
     transform: translateX(4px);
+    box-shadow:
+        0 0 0 1px var(--blue-border),
+        0 0 14px rgba(79, 110, 247, 0.25);
 }
-
 .dash-action-icon {
     width: 28px; height: 28px;
     border-radius: 7px;
@@ -186,15 +326,14 @@
     color: var(--blue-text);
     font-size: 0.78rem;
     flex-shrink: 0;
-    transition: background var(--t), border-color var(--t);
+    transition: background var(--t), border-color var(--t), box-shadow var(--t);
 }
 .dash-action-btn:hover .dash-action-icon {
-    background: rgba(37, 99, 235, 0.32);
-    border-color: rgba(37, 99, 235, 0.55);
+    background: rgba(79, 110, 247, 0.32);
+    border-color: rgba(79, 110, 247, 0.55);
+    box-shadow: 0 0 10px rgba(79, 110, 247, 0.40);
 }
-
 .dash-action-label { flex: 1; }
-
 .dash-action-arr {
     font-size: 0.62rem;
     color: var(--text-muted);
@@ -211,19 +350,16 @@
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-
-.dash-anim {
-    opacity: 0;
-    animation: dashFadeUp 0.48s var(--ease) forwards;
-}
+.dash-anim { opacity: 0; animation: dashFadeUp 0.48s var(--ease) forwards; }
 .dash-anim-d1 { animation-delay: 0.06s; }
 .dash-anim-d2 { animation-delay: 0.13s; }
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 900px) {
     .ct-layout { grid-template-columns: 1fr; }
+    .dash-th-group   { width: 90px; }
+    .dash-c-group-cell { width: 90px; }
 }
-
 @media (max-width: 640px) {
     .dash-panel { padding: 18px; }
 }

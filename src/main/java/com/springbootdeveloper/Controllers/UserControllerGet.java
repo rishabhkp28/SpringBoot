@@ -1,5 +1,17 @@
 package com.springbootdeveloper.Controllers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +22,10 @@ import com.springbootdeveloper.ServiceLayer.ServiceClassContact;
 import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
 import com.springbootdeveloper.DTO.ContactDto;
 import com.springbootdeveloper.DTO.UserDto;
+import com.springbootdeveloper.Exceptions.ContactNotFoundException;
+import com.springbootdeveloper.Exceptions.OwnerMismatchException;
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
+import com.springbootdeveloper.Helpers.FileHandler;
 import com.springbootdeveloper.Models.ContactGroup;
 
 @Controller
@@ -19,11 +34,13 @@ public class UserControllerGet {
 	
 	private ServiceClassUser serviceClassUser;
 	private ServiceClassContact serviceClassContact;
+	private FileHandler fileHandler;
 	
-	public UserControllerGet(ServiceClassUser serviceClassUser,ServiceClassContact serviceClassContact)
+	public UserControllerGet(ServiceClassUser serviceClassUser,ServiceClassContact serviceClassContact,FileHandler fileHandler)
 	{
 		this.serviceClassUser = serviceClassUser;
 		this.serviceClassContact = serviceClassContact;
+		this.fileHandler = fileHandler;
 	}
 
 	/* ----------- HELPER METHOD (ONLY ADDITION) ----------- */
@@ -35,6 +52,10 @@ public class UserControllerGet {
 		model.addAttribute("pageSubtitle",pageSubtitle);
 		model.addAttribute("user",userDto);
 	}
+	
+	
+	
+	
 	
 	@GetMapping(path ="/user/dashboard")
 	public String displayDashboard(Authentication authentication,Model model)
@@ -326,6 +347,130 @@ public class UserControllerGet {
 		
 	}
 	
+	
+	@GetMapping(path = "/user/editContactsRequest")
+	public String editContacts(Authentication authentication, Model model)
+	{
+		UserDto userDto = null;
+		try
+		{
+			userDto = serviceClassUser.findByEmail(authentication.getName());
+		}
+		catch(UserNotFoundException e)
+		{
+			return "redirect:/logout";
+		}
+		
+		
+		
+		
+		
+		setPageModel(
+				model,
+				"contacts",
+				"My Contacts Edit Mode",
+				"Hey "+userDto.getName()+"!!!Here are the contacts, modify as you like by clicking on edit icon",userDto
+		);
+		
+		model.addAttribute("userContacts",serviceClassContact.findAllContacts(userDto.getUserId()));
+		return "normalUser/editContacts";
+	}
+	@GetMapping(path = "/user/editContact/{contactId}")
+	public String editContact(Authentication authentication, Model model,@PathVariable("contactId") UUID contactId)
+	{
+		UserDto userDto = null;
+		ContactDto contactDto = null;
+		try
+		{
+			userDto = serviceClassUser.findByEmail(authentication.getName());
+			contactDto = serviceClassContact.getContactById(contactId);
+			
+			if(!serviceClassContact.verifyOwner(contactId,userDto.getUserId()))
+					throw new OwnerMismatchException("Ownership Mismatched");
+			
+		}
+		catch(UserNotFoundException e)
+		{
+			return "redirect:/user/editContactsRequest";
+		}
+		catch(ContactNotFoundException e)
+		{
+			return "redirect:/user/editContactsRequest?error=True";
+		}
+		catch(OwnerMismatchException e)
+		{
+			
+			return "redirect:/user/editContactsRequest?error=True";
+		}
+				
+		setPageModel(
+				model,
+				"dashboard",
+				"Dashboard",
+				"Hey "+userDto.getName()+"!!!Here are the contacts that you added this month",userDto
+		);
+		
+		model.addAttribute("contactDto",contactDto);
+		
+		return "normalUser/editContact";
+	}
+	
+	
+	
+	
+	
+	@GetMapping("/user/images/{contactId}") /*Caution as this can bypass the security for image checking*/
+    public ResponseEntity<Resource> serveImage(
+            @PathVariable("contactId") UUID contactId, Authentication authentication) {
+		
+		UserDto userDto = null;
+		ContactDto contactDto = null;
+		String fileName = null;
+		
+		try
+		{
+			userDto = serviceClassUser.findByEmail(authentication.getName());
+			contactDto = serviceClassContact.getContactById(contactId);
+			fileName =contactDto.getFileName();
+			
+			if(!serviceClassContact.verifyOwner(contactId,userDto.getUserId()))
+				throw new OwnerMismatchException("Ownership Mismatched");
+		
+			
+		}
+		catch(UserNotFoundException e)
+		{
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		catch(ContactNotFoundException e)
+		{
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		catch(OwnerMismatchException e)
+		{
+		    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+		
+		
+        // FileHandler.getFile() already has path traversal protection
+        Resource resource = fileHandler.getFile(fileName);
+ 
+        // detect content type from file extension
+        String contentType;
+        try {
+            contentType = Files.probeContentType(Paths.get(fileName));
+        } catch (IOException e) {
+            contentType = null;
+        }
+ 
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+ 
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .body(resource);
+    }
 	
 
 }

@@ -11,14 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springbootdeveloper.DTO.ProfileEnhanceDto;
 import com.springbootdeveloper.DTO.UserDto;
-import com.springbootdeveloper.Exceptions.EmptyFileException;
-import com.springbootdeveloper.Exceptions.FileSizeException;
-import com.springbootdeveloper.Exceptions.FileStorageException;
-import com.springbootdeveloper.Exceptions.UnsupportedFileTypeException;
-import com.springbootdeveloper.Exceptions.UserNotFoundException;
+
 import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
 
-import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class GetController {
@@ -67,14 +62,15 @@ public class GetController {
     	
     }
 	
+	/*before this our security method is triggered*/
 	@GetMapping(path = "/enhanceProfileRequest")
 	public String showEnhanceProfile(Authentication authentication, Model model) {
 	    
-	    if (authentication == null || !authentication.isAuthenticated()) { //for now let it be here
+	  /*  if (authentication == null || !authentication.isAuthenticated()) { //for now let it be here
 	    	System.out.println("ReachedAuthenticationError--------------path = \"/enhanceProfileRequest\"--------------------------%%%%%@%%%$^@#");
 	        return "redirect:/login";
-	    }
-	    
+	    } Not needed as spring security is working
+	    */
 	    
 	    UserDto user = sc.findByEmail(authentication.getName());
 	    
