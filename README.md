@@ -53,3 +53,12 @@ Progress Update (9–11 March):
     * Remaining important functionalities include, Searching Contacts, importing and exporting contacts as json,, Profile Strength indicator button, Editing the contact,
       Settings for the user, displaying the mini images of contacts in the list, user change password facility , change email facility, payment gateway integration,             Implementing ResponseEntity<> in the controller layer for proper http Response status to the user and many  more ,and at the end cloud hosting. 
     
+Progress Update (11–21 March):
+
+        * Shifted the focus from session based authentication to JWT for better scalability in future, made modules to implement JWT,in the project( This took the most time, learning JWT and implementing)
+        * Made appearence appealing with better animation for the logged in user.
+        * Changed the theme for the project , made theme consistent to authenticated and non authenticated users.
+        * Implemented the delete functionality and edit functionality for the contacts along with dynamic validations whereever needed.
+        * Implemented security patches for handling non verified GET image requests and malicious delete contact requests.
+        * Mini Images of the users are now available in the list along whole project.
+        
