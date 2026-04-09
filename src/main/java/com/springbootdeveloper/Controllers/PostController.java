@@ -67,7 +67,7 @@ public class PostController {
             return "signUp"; //when error is there
         }
        
-        sc.autoLogin(userDto, request, response);//sent by the user
+        sc.autoLogin(userDto, response);//sent by the user
         
         return "redirect:/enhanceProfileRequest";
     }
@@ -76,28 +76,9 @@ public class PostController {
     @PostMapping(path = "/enhance-form")
     public String handleEnhancedForm(@Valid @ModelAttribute("enhancedUser") ProfileEnhanceDto enhancedProfile,BindingResult result,Authentication authentication, Model model)
     {    	
-    	//We can even skip this check as we already have configured this in spring security configuration file
-    	if (authentication == null || !authentication.isAuthenticated()) {
-    		System.out.println("This is post controller");
-            return "redirect:/login"; // Send to login page
-        }/*Redirect allows to handlle post->redirect->get , 
-        Or this enhanceform would open the login page and if we click on reload the same post data is sent again*/
     	
-    	
-    	//the user can only reach here if the user has been authenticated by the spring security
-    	
-    	//main task is to get the user 
     	String fileName= "";
-    	UserDto userDto = null;
-    	try
-    	{
-    		userDto = sc.findByEmail(authentication.getName()); //this wont fail as its authenticated, but if happens its invalid session or user deleted by admin
-    		System.out.println("we got hte user as "+userDto.getEmail());
-    	}
-    	catch(UserNotFoundException e)
-    	{
-    		return "redirect:/logout";
-    	}
+    	UserDto userDto = sc.findByEmail(authentication.getName());
     	
     	if(result.hasErrors()) {
     		model.addAttribute("registeredUserDto",userDto);
@@ -108,10 +89,6 @@ public class PostController {
     	try
     	{
     		userDto = sc.save(userDto,enhancedProfile);
-    	}
-    	catch(UserNotFoundException e)
-    	{
-    		return "redirect:/logout";
     	}
     	catch(RuntimeException e) {
     		
@@ -131,37 +108,6 @@ public class PostController {
 	 		return "redirect:/normalUser/userDashboard";
     	
     }
-    
-    /*
-    @PostMapping(path = "/login")
-    public String handleLogin(@Valid @ModelAttribute("Userlog")UserDto dto,BindingResult result,HttpServletRequest request)
-    {
-    	//case when the user exists
-    	try {
-            sc.autoLogin(dto, request);
-            return "redirect:/dashboard";//this is a request
-        } catch (BadCredentialsException e) {
-            result.reject("login.error", "Invalid email or password");
-            return "login";
-        }
-    	
-    	
-    	//case when the user did not exist but tries to Log In
-    	/// 
-    	In this case we must not tell whether user exists or not or whether invalid credentials exist for security purposes
-    	 * to handle User Enumeration Attacks
-    	
-    	
-    	This method is not useful as the login is already handled by the spring security in the security configuration 
-		*/
-    	
-    	
- }
-    
- 
-    
-    
-    
-    
+}
     
 

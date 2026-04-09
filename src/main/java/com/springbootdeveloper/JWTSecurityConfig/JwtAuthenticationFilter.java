@@ -7,6 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.springbootdeveloper.SecurityConfig.UserDetailsServiceImplementer;
+import io.jsonwebtoken.security.SignatureException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+
+
 import java.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -49,28 +54,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain)
-            throws ServletException, IOException {
+            throws ServletException, IOException 
+    {
 
         // ✅ use extractToken instead of reading header directly
         String token = extractToken(request);
+        String username = "";
+        if (token != null) 
+        {
+        	
+        	try {
+        	    username = this.jwtUtil.getUsernameFromToken(token);
 
-        if (token != null) {
-            String username = jwtUtil.extractUsername(token);
-            if (username != null &&
-                SecurityContextHolder.getContext()
-                     .getAuthentication() == null) {
-                UserDetails userDetails =
-                    userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                    );
-                SecurityContextHolder.getContext()
-                        .setAuthentication(auth);
-            }
+		        } 		
+        	catch (IllegalArgumentException e)
+        	{
+		       logger.warn("Unable to get JWT Token", e);
+        	} 
+        	catch (ExpiredJwtException e) 
+        	{
+		        	 logger.warn("JWT Token has expired", e);
+        	} 
+        	catch (MalformedJwtException | SignatureException e) 
+        	{
+		        logger.warn("Invalid JWT Token", e);
+		     } 
+        	catch (Exception e) 
+        	{
+		         logger.error("Unexpected error while processing JWT", e);
+        	}
         }
+        else
+        {
+        	logger.info("Invalid Header Value !! ");
+        }
+        		
+  
+            if (username != null &&  SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken auth =    new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+            else
+            {
+            	logger.info("Validation Failed");
+            }
 
         filterChain.doFilter(request, response); // always continue chain as this is run before anything ..
     }

@@ -51,7 +51,7 @@
                             <!-- Avatar: image if available, else initials -->
                             <div class="dash-c-av">
                                 <img th:if="${c.fileName != null}"
-                                     th:src="@{/user/images/{id}(id=${c.contactId})}"
+                                     th:src="@{/contact/images/{id}(id=${c.contactId})}"
                                      class="dash-c-av-img"
                                      alt="Contact photo"/>
                                 <span th:if="${c.fileName == null}"

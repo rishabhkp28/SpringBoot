@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.springbootdeveloper.DTO.ProfileEnhanceDto;
 import com.springbootdeveloper.DTO.UserDto;
-
+import com.springbootdeveloper.DTO.UserLoginDto;
 import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
 
 
@@ -43,7 +43,7 @@ public class GetController {
 	@GetMapping(path = "/login") // this thing is called by Spring Security Internally ".loginPage("/login")" 
 	public String loginPage(Model model)
 	{
-		model.addAttribute("Userlog",new UserDto());
+		model.addAttribute("userLog",new UserLoginDto());
 		System.out.println("Login Page is launched");
 		return "login";
 	}
@@ -65,12 +65,6 @@ public class GetController {
 	/*before this our security method is triggered*/
 	@GetMapping(path = "/enhanceProfileRequest")
 	public String showEnhanceProfile(Authentication authentication, Model model) {
-	    
-	  /*  if (authentication == null || !authentication.isAuthenticated()) { //for now let it be here
-	    	System.out.println("ReachedAuthenticationError--------------path = \"/enhanceProfileRequest\"--------------------------%%%%%@%%%$^@#");
-	        return "redirect:/login";
-	    } Not needed as spring security is working
-	    */
 	    
 	    UserDto user = sc.findByEmail(authentication.getName());
 	    

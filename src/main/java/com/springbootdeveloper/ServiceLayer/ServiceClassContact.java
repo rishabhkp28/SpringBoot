@@ -129,7 +129,7 @@ public class ServiceClassContact {
 Case                         fileInput   removePhotoFlag     Server action
 Newfile                       hasfile     false               delete old → save new
 Remove clicked               empty        true                delete old → null
-Nothing done                emptyfalse      keep               existing*/
+Nothing done                emptyfalse     keep               existing*/
 	
 	public ContactDto updateContact(ContactDto contactDto)throws RuntimeException //for handling exceptions caused by fileHandler
 	{
@@ -140,38 +140,39 @@ Nothing done                emptyfalse      keep               existing*/
 
 		MultipartFile newFile = contactDto.getMultipartFile(); //will be empty if user didnt do anything
 		String existingFileName = existingContact.getImage(); // fetch from DB before update
-
-		
-				if (newFile != null && !newFile.isEmpty()) {
-				    // Case 1 — new file uploaded
-				    if (existingFileName != null && !existingFileName.isEmpty()) {
-				        fileHandler.deleteIfExists(existingFileName); // delete old
-				    }
-				    String newFileName = fileHandler.upload(newFile); // save new
-				    existingContact.setImage(newFileName);
-		
-				} else if (contactDto.isRemovePhoto()) {
-				    // Case 2 — user clicked remove
-				    if (existingFileName != null && !existingFileName.isEmpty()) {
-				        fileHandler.deleteIfExists(existingFileName); // delete old
-				    }
-				    existingContact.setImage(null); // null in DB
-		
-				} else {
-				    // Case 3 — user did nothing
-					existingContact.setImage(existingFileName); // keep existing
-				}
+		String newFileName = "";
+			if (newFile != null && !newFile.isEmpty()) {
+			    // ✅ FILE HAS HIGHEST PRIORITY
+	
+			    newFileName = fileHandler.upload(newFile);
+			    existingContact.setImage(newFileName);
+	
+			    if (existingFileName != null && !existingFileName.isEmpty()) {
+			        fileHandler.deleteIfExists(existingFileName);
+			    }
+	
+			} else if (contactDto.isRemovePhoto()) {
+			    // ✅ REMOVE ONLY
+	
+			    if (existingFileName != null && !existingFileName.isEmpty()) {
+			        fileHandler.deleteIfExists(existingFileName);
+			    }
+	
+			    existingContact.setImage(null);
+	
+			} 
 				
-				existingContact.setDescription(contactDto.getDescription());
-				existingContact.setEmail(contactDto.getEmail());
-				existingContact.setNickName(contactDto.getNickName());
-				existingContact.setPhone(contactDto.getPhone());
-				existingContact.setGroup(contactDto.getGroup());
-				existingContact.setName(contactDto.getName());
-				existingContact.setFavourite(contactDto.getFavourite());
+
+			existingContact.setDescription(contactDto.getDescription());
+			existingContact.setEmail(contactDto.getEmail());
+			existingContact.setNickName(contactDto.getNickName());
+			existingContact.setPhone(contactDto.getPhone());
+			existingContact.setGroup(contactDto.getGroup());
+			existingContact.setName(contactDto.getName());
+			existingContact.setFavourite(contactDto.getFavourite());
 
 				
-				return convertToDto(dbContacts.save(existingContact)); // can throw duplicate Contact Exception
+			return convertToDto(dbContacts.save(existingContact)); // can throw duplicate Contact Exception
 
 	}
 
@@ -250,7 +251,7 @@ Nothing done                emptyfalse      keep               existing*/
     	return dbContacts.countByUser_UserIdAndCreatedDateBetween(userId, startOfMonth, now);
     }
  
-    public boolean verifyOwner(UUID contactId,UUID userId)
+    public boolean verifyContactOwner(UUID contactId,UUID userId)
     {
     	
     	return dbContacts.verifyOwner(contactId, userId) == 1;

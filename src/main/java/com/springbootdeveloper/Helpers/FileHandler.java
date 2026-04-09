@@ -76,7 +76,7 @@ public class FileHandler
         try {
             // ── PATH TRAVERSAL PROTECTION ──────────────────────────
             // Step 1: strip any directory separators from filename
-            //         e.g. "../../etc/passwd" → attacker trying to escape uploads dir
+            //         e.g. "../../etc/passwd" → attacker trying to escape uploads dir., done by normalize
             if (filename == null || filename.isBlank()) {
                 throw new FileStorageException("Filename cannot be empty");
             }
@@ -93,8 +93,8 @@ public class FileHandler
             }
 
             // Step 4: build resource and verify it exists
-            Resource resource = new UrlResource(filePath.toUri());
-
+            Resource resource = new UrlResource(filePath.toUri()); //as this works with Uniform Resource Identifier 
+            //.toUri() converts that file path into a URI (like file:///C:/folder/file.txt).
             if (!resource.exists() || !resource.isReadable()) {
                 throw new FileStorageException("File not found or not readable: " + filename);
             }
@@ -108,11 +108,14 @@ public class FileHandler
 
 
     public boolean deleteIfExists(String filename) {
+    	
+    	if(filename ==null)
+    		return true;
         try {
             // ── PATH TRAVERSAL PROTECTION (same pattern) ───────────
             Path uploadPath = Paths.get(uploadDirectory).toAbsolutePath().normalize();
             Path filePath   = uploadPath.resolve(filename).normalize();//remove the . or . .
-
+            	
             if (!filePath.startsWith(uploadPath)) {
                 throw new FileStorageException("Access denied: invalid file path");
             }

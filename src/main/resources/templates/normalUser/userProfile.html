@@ -1,11 +1,306 @@
+<th:block
+      th:replace="~{dashboardBase :: base(~{::pageCss}, ~{::pageJs}, ~{::content})}">
 
-
-<th:block th:replace="dashboardBase :: base(~{}, ~{}, ~{::content})">
-
-    <th:block th:fragment="content">
-        <h1 style="font-size:20px; color: pink;">Hey this is the profile page</h1>
-    </th:block>
-
+<!-- ░░ PAGE CSS ░░ -->
+<th:block th:fragment="pageCss">
+    <link rel="stylesheet" th:href="@{/css/userProfileStyle.css}"/>
 </th:block>
 
-</html>
+<!-- ░░ PAGE CONTENT ░░ -->
+<th:block th:fragment="content">
+<div id="edit-profile-page" class="up-page">
+
+    <!-- Flash Messages -->
+    <div th:if="${successMessage}" class="up-flash up-flash-success">
+        <i class="fa-solid fa-circle-check"></i>
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="up-flash up-flash-error">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- ── PAGE HEADING ──────────────────────────────────── -->
+    <div class="up-page-header">
+        <a th:href="@{/user/dashboard}" class="up-back-btn" title="Back to dashboard">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div>
+            <h1 class="up-page-title">Edit Profile</h1>
+            <p class="up-page-sub">Update your info · confirm with your password to save</p>
+        </div>
+    </div>
+
+    <form th:action="@{/user/updateProfileRequest}"
+          method="post"
+          enctype="multipart/form-data"
+          th:object="${userProfile}"
+          class="up-form"
+          id="up-form">
+
+        <input type="hidden" th:field="*{userId}"/>
+        <input type="hidden" id="up-remove-photo-flag" th:field="*{removePhoto}"/>
+
+        <!-- Global server errors -->
+        <section id="up-global-error"
+		         th:if="${#fields.hasGlobalErrors()}">
+		    <div class="up-flash up-flash-error">
+		        <i class="fa-solid fa-circle-exclamation"></i>
+		        <div>
+		            <p th:each="err : ${#fields.globalErrors()}"
+		               th:text="${err}"></p>
+		        </div>
+    </div>
+</section>
+
+        <div class="up-grid">
+
+            <!-- ══════════════════════════════════════════
+                 LEFT — avatar card
+                 ══════════════════════════════════════════ -->
+            <div class="up-left">
+                <div class="up-card up-avatar-card">
+                    <div class="up-card-head">
+                        <span class="up-card-title">Profile Photo</span>
+                        <span class="up-card-sub">Optional — used across the app</span>
+                    </div>
+
+                    <!-- Avatar circle -->
+                    <div class="up-avatar-wrap">
+                        <div class="up-avatar" id="up-avatar">
+                            <img th:if="${userProfile.fileName != null and userProfile.fileName != ''}"
+                                 th:src="@{/user/images/{id}(id=${userProfile.fileName})}"
+                                 class="up-avatar-img" id="up-avatar-img" alt="Profile photo"/>
+                            <span th:if="${userProfile.fileName == null or userProfile.fileName == ''}"
+                                  class="up-avatar-initials" id="up-avatar-initials"
+                                  th:text="${userProfile.name != null ? #strings.substring(userProfile.name,0,1).toUpperCase() : '?'}">?</span>
+                        </div>
+                        <button type="button" class="up-avatar-remove" id="up-avatar-remove"
+                                title="Remove photo"
+                                th:if="${userProfile.fileName != null and userProfile.fileName != ''}">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <input type="file" id="up-file-input" name="multipartFile"
+                           accept="image/*" class="up-file-hidden"/>
+
+                    <div class="up-upload-zone" id="up-upload-zone">
+                        <i class="fa-solid fa-cloud-arrow-up up-upload-icon"></i>
+                        <span class="up-upload-label" id="up-upload-label">Click or drag to upload</span>
+                        <span class="up-upload-sub" id="up-upload-sub">PNG · JPG · GIF · JPEG — min 10 KB, max 2 MB</span>
+                    </div>
+
+                    <div class="up-file-preview" id="up-file-preview" style="display:none;">
+                        <img src="" alt="Preview" class="up-preview-thumb" id="up-preview-thumb"/>
+                        <div class="up-preview-info">
+                            <span class="up-preview-name" id="up-preview-name"></span>
+                            <span class="up-preview-size" id="up-preview-size"></span>
+                        </div>
+                        <button type="button" class="up-preview-clear" id="up-preview-clear" title="Remove">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <section id="multipartFileErrorServerSide">
+                        <p style="color:#f87171"
+                           th:if="${#fields.hasErrors('multipartFile')}"
+                           th:errors="*{multipartFile}"
+                           class="up-validation-msg"></p>
+                    </section>
+                    <p id="multipartFileError" class="up-validation-msg"></p>
+
+                    <a th:href="@{/user/changePasswordRequest}" class="up-change-pw-link">
+                        <i class="fa-solid fa-key"></i>
+                        <span>Change Password</span>
+                        <i class="fa-solid fa-chevron-right up-link-arr"></i>
+                    </a>
+                </div>
+            </div><!-- /up-left -->
+
+
+            <!-- ══════════════════════════════════════════
+                 RIGHT — editable fields + confirm pw
+                 ══════════════════════════════════════════ -->
+            <div class="up-right">
+
+                <!-- ── PERSONAL DETAILS ─────────────────── -->
+                <!--
+                    KEY: data-original-* attributes store the server-rendered
+                    values so JS can detect whether the user actually changed
+                    anything. If nothing changed AND no new photo AND removePhoto
+                    is false, the password field is not required.
+                -->
+                <div class="up-card"
+                     th:data-original-name="${userProfile.name}"
+                     th:data-original-email="${userProfile.email}"
+                     th:data-original-bio="${userProfile.bio != null ? userProfile.bio : ''}"
+                     th:data-original-image="${userProfile.fileName != null ? userProfile.fileName : ''}"
+                     id="up-details-card">
+
+                    <div class="up-card-head">
+                        <span class="up-card-title">Personal Details</span>
+                        <span class="up-card-sub">Visible to other users</span>
+                    </div>
+
+                    <div class="up-fields">
+
+                        <!-- NAME
+                             DTO: @NotBlank @Size(min=3,max=50)
+                                  @Pattern(^[A-Za-z]+( [A-Za-z]+)*$) -->
+                        <div class="up-field-group">
+                            <label class="up-label" for="up-name">
+                                Full Name <span class="up-required-star">*</span>
+                            </label>
+                            <div class="up-input-wrap">
+                                <i class="fa-solid fa-user up-input-icon"></i>
+                                <input type="text" id="up-name"
+                                       th:field="*{name}"
+                                       class="up-input"
+                                       placeholder="John Doe"
+                                       th:classappend="${#fields.hasErrors('name')} ? ' is-invalid' : ''"
+                                       required/>
+                            </div>
+                            <section id="nameErrorServerSide">
+                                <p style="color:#f87171"
+                                   th:if="${#fields.hasErrors('name')}"
+                                   th:errors="*{name}"
+                                   class="up-validation-msg"></p>
+                            </section>
+                            <p id="nameError" class="up-validation-msg"></p>
+                        </div>
+
+                        <!-- EMAIL
+                             DTO: @NotBlank @Email @Size(max=300)
+                                  @Pattern(@gmail.com, CASE_INSENSITIVE) -->
+                        <div class="up-field-group">
+                            <label class="up-label" for="up-email">
+                                Email Address <span class="up-required-star">*</span>
+                            </label>
+                            <div class="up-input-wrap">
+                                <i class="fa-solid fa-envelope up-input-icon"></i>
+                                <input type="email" id="up-email"
+                                       th:field="*{email}"
+                                       class="up-input"
+                                       placeholder="john@gmail.com"
+                                       th:classappend="${#fields.hasErrors('email')} ? ' is-invalid' : ''"
+                                       required/>
+                            </div>
+                            <section id="emailErrorServerSide">
+                                <p style="color:#f87171"
+                                   th:if="${#fields.hasErrors('email')}"
+                                   th:errors="*{email}"
+                                   class="up-validation-msg"></p>
+                            </section>
+                            <p id="emailError" class="up-validation-msg"></p>
+                        </div>
+
+                        <!-- BIO — DTO: @Size(max=200) optional -->
+                        <div class="up-field-group">
+                            <label class="up-label" for="up-bio">
+                                Bio
+                                <span class="up-char-counter">
+                                    <span id="bioCharCount">0</span>/200
+                                </span>
+                            </label>
+                            <div class="up-input-wrap up-input-wrap--textarea">
+                                <i class="fa-solid fa-align-left up-input-icon"></i>
+                                <textarea id="up-bio"
+                                          th:field="*{bio}"
+                                          class="up-input"
+                                          placeholder="Tell people a little about yourself…"
+                                          maxlength="200"
+                                          th:classappend="${#fields.hasErrors('bio')} ? ' is-invalid' : ''"></textarea>
+                            </div>
+                            <section id="bioErrorServerSide">
+                                <p style="color:#f87171"
+                                   th:if="${#fields.hasErrors('bio')}"
+                                   th:errors="*{bio}"
+                                   class="up-validation-msg"></p>
+                            </section>
+                            <p id="bioError" class="up-validation-msg"></p>
+                        </div>
+
+                    </div>
+                </div><!-- /personal details -->
+
+
+                <!-- ── CONFIRM WITH PASSWORD ────────────── -->
+                <!--
+                    This card is shown at all times but the password
+                    field is only REQUIRED when JS detects a change.
+                    The hint text updates dynamically via JS.
+                    DTO field: currentPassword — no DTO constraint,
+                    BCrypt verification happens in the service.
+                -->
+                <div class="up-card up-confirm-card" id="up-confirm-card">
+                    <div class="up-card-head">
+                        <span class="up-card-title">Confirm Changes</span>
+                        <!--
+                            JS will toggle between two sub-texts:
+                            "no-change" hint vs "required" hint
+                        -->
+                        <span class="up-card-sub" id="up-confirm-sub">
+                            No changes detected — password not required
+                        </span>
+                    </div>
+
+                    <div class="up-fields">
+                        <div class="up-field-group">
+                            <label class="up-label" for="up-current-password">
+                                Current Password
+                                <!-- star shown/hidden by JS -->
+                                <span class="up-required-star" id="up-pw-required-star"
+                                      style="display:none;">*</span>
+                            </label>
+                            <div class="up-input-wrap up-password-wrap">
+                                <i class="fa-solid fa-key up-input-icon"></i>
+                                <input type="password"
+                                       id="up-current-password"
+                                       th:field="*{currentPassword}"
+                                       class="up-input"
+                                       placeholder="Only needed if you changed something"/>
+                                <button type="button" class="up-toggle-pw"
+                                        id="up-toggle-current-pw" title="Show/Hide">
+                                    <i class="fa-regular fa-eye" id="up-current-pw-eye"></i>
+                                </button>
+                            </div>
+                           <section id="currentPasswordErrorServerSide">
+							    <p style="color:#f87171"
+							       th:if="${#fields.hasErrors('currentPassword')}"
+							       th:each="err : ${#fields.errors('currentPassword')}"
+							       th:text = "${err}"
+							       class="up-validation-msg"></p>
+							</section>
+                            <p id="currentPasswordError" class="up-validation-msg"></p>
+                        </div>
+                    </div>
+                </div><!-- /confirm card -->
+
+
+                <!-- ── BUTTON ROW ────────────────────────── -->
+                <div class="up-btn-row">
+                    <a th:href="@{/user/dashboard}" class="up-btn up-btn-cancel">
+                        <i class="fa-solid fa-xmark"></i>
+                        <span>Cancel</span>
+                    </a>
+                    <button type="submit" class="up-btn up-btn-save" id="up-submit-btn">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Save Changes</span>
+                    </button>
+                </div>
+
+            </div><!-- /up-right -->
+
+        </div><!-- /up-grid -->
+
+    </form>
+</div>
+</th:block>
+
+<!-- ░░ PAGE JS ░░ -->
+<th:block th:fragment="pageJs">
+    <script th:src="@{/js/userProfileScript.js}"></script>
+</th:block>
+
+</th:block>

@@ -140,7 +140,7 @@
                             aria-haspopup="true" aria-expanded="false">
                         <div class="db-avatar-ring">
                            <img th:if="${user?.image != null}"
-						     th:src="@{/user/images/{img}(img=${c.fileName})}"
+						     th:src="@{/user/images/{img}(img=${user.image})}"
 						     class="db-avatar-img"
 						     alt="Profile"/>
 						
@@ -165,7 +165,7 @@
                         <div class="db-dropdown-header">
                             <div class="db-dh-avatar">
                                 <img th:if="${user?.image != null}"
-                                     th:src="@{/images/{img}(img = ${user.image})}"
+                                     th:src="@{/user/images/{img}(img = ${user.image})}"
                                      alt="Profile"/>
                                 <span th:if="${user?.image == null}"
                                       th:text="${user?.name != null ? #strings.substring(user.name, 0, 1).toUpperCase() : 'U'}">U</span>
@@ -180,7 +180,7 @@
 
                         <div class="db-dropdown-divider"></div>
 
-                        <a th:href="@{/user/profile}" class="db-dropdown-item" role="menuitem">
+                        <a th:href="@{/user/viewProfileRequest}" class="db-dropdown-item" role="menuitem">
                             <span class="db-di-icon"><i class="fa-solid fa-circle-user"></i></span>
                             <span>View Profile</span>
                         </a>

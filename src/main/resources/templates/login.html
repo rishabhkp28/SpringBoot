@@ -20,11 +20,6 @@
                 <h1>Welcome back to<br><span>SmartCM.</span></h1>
                 <p>Sign in to pick up right where you left off. Your contacts are waiting.</p>
             </div>
-            <ul class="feature-list">
-                <li><i class="fa-solid fa-shield-halved"></i> Your data is always encrypted</li>
-                <li><i class="fa-solid fa-bolt"></i> Instant access, zero hassle</li>
-                <li><i class="fa-solid fa-rotate"></i> Synced across all your devices</li>
-            </ul>
         </div>
 
         <!-- Right Panel -->
@@ -36,14 +31,16 @@
                     <p>Welcome back — let's get you in</p>
                 </div>
 
-                <!-- Server-side error (e.g. bad credentials) -->
-                <div th:if="${param.error}" class="alert-error" id="loginErrorAlert">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                 	<span>Invalid email or password
-						</span>
-                </div>
-					
-                <form th:action="@{/login}" method="post" id="loginForm" th:object = "${Userlog}" novalidate>
+                <form th:action="@{/login}" method="post" id="loginForm"
+                      th:object="${userLog}" novalidate>
+
+                    <!-- ✅ GLOBAL ERROR -->
+                    <div id="loginErrorAlert"
+                         th:if="${#fields.hasGlobalErrors()}"
+                         class="server-error">
+                        <p th:each="err : ${#fields.globalErrors()}"
+                           th:text="${err}"></p>
+                    </div>
 
                     <!-- Email -->
                     <div class="field-group">
@@ -52,11 +49,11 @@
                             <i class="fa-solid fa-envelope"></i>
                             <input type="email"
                                    id="email"
-                                   name="email"
-                                   th:field = "*{email}"
+                                   th:field="*{email}"
                                    placeholder="you@example.com"
                                    autocomplete="email"
-                                   required>
+                                   required
+                                   th:classappend="${#fields.hasGlobalErrors()} ? 'is-invalid'">
                         </div>
                         <p id="emailError" class="validation-msg"></p>
                     </div>
@@ -71,11 +68,11 @@
                             <i class="fa-solid fa-lock"></i>
                             <input type="password"
                                    id="password"
-                                   name="password"
-                                   th:field = "*{password}"
+                                   th:field="*{password}"
                                    placeholder="Enter your password"
                                    autocomplete="current-password"
-                                   required>
+                                   required
+                                   th:classappend="${#fields.hasGlobalErrors()} ? 'is-invalid'">
                             <button type="button" class="toggle-password" onclick="togglePassword()">
                                 <i class="fa-solid fa-eye" id="toggleIcon"></i>
                             </button>
@@ -86,7 +83,7 @@
                     <!-- Remember Me -->
                     <div class="remember-row">
                         <label class="remember-label">
-                            <input type="checkbox" id="rememberMe" name="remember-me">
+                            <input type="checkbox" name="remember-me">
                             Keep me signed in
                         </label>
                     </div>
@@ -94,7 +91,7 @@
                     <!-- Submit -->
                     <button type="submit" class="submit-btn" id="submitBtn">
                         Sign In <i class="fa-solid fa-arrow-right"></i>
-                    </button> 	 
+                    </button>
 
                 </form>
 

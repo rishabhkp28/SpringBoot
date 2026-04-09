@@ -20,8 +20,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.springbootdeveloper.ServiceLayer.ServiceClassContact;
 import com.springbootdeveloper.ServiceLayer.ServiceClassUser;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.springbootdeveloper.DTO.ContactDto;
+import com.springbootdeveloper.DTO.PasswordDto;
 import com.springbootdeveloper.DTO.UserDto;
+import com.springbootdeveloper.DTO.UserProfileDto;
 import com.springbootdeveloper.Exceptions.ContactNotFoundException;
 import com.springbootdeveloper.Exceptions.OwnerMismatchException;
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
@@ -61,28 +66,14 @@ public class UserControllerGet {
 	public String displayDashboard(Authentication authentication,Model model)
 	{
 		
-		UserDto userDto = null;
-		long favourites = 0;
-				
-		try
-		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
-			favourites = serviceClassContact.getFavouritesCount(userDto.getUserId());
-		}
-		catch(UserNotFoundException e)
-		{
-			return "redirect:/logout";
-		}
-
-		
-
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
+		long favourites =  serviceClassContact.getFavouritesCount(userDto.getUserId());
 		setPageModel(
 				model,
 				"dashboard",
 				"Dashboard",
 				"Hey "+userDto.getName()+"!!! Welcome to your User Dashboard",userDto
 		);
-		
 		model.addAttribute("favouritesCount",serviceClassContact.getFavouritesCount(userDto.getUserId()));
 		model.addAttribute("recentContacts",serviceClassContact.findLast10(userDto.getUserId()));
 		model.addAttribute("totalContactsCount",serviceClassContact.getContactsCount(userDto.getUserId()));
@@ -94,18 +85,7 @@ public class UserControllerGet {
 	@GetMapping(path ="/user/contacts")
 	public String displayContacts(Authentication authentication,Model model)
 	{
-		UserDto userDto = null;
-				
-		try
-		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
-		}
-		catch(UserNotFoundException e)
-		{
-			return "redirect:/logout";
-		}
-
-	
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
 
 		setPageModel(
 				model,
@@ -122,19 +102,8 @@ public class UserControllerGet {
 	@GetMapping(path ="/user/favouriteContacts")
 	public String displayFavourites(Authentication authentication,Model model)
 	{
-		UserDto userDto = null;
-				
-		try
-		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
-		}
-		catch(UserNotFoundException e)
-		{
-			return "redirect:/logout";
-		}
-
-		
-
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
+					
 		setPageModel(
 				model,
 				"favourites",
@@ -149,20 +118,7 @@ public class UserControllerGet {
 	@GetMapping(path ="/user/groups")
 	public String displayGroups(Authentication authentication,Model model)
 	{
-		UserDto userDto = null;
-
-		try
-		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
-		}
-		catch(UserNotFoundException e)
-		{
-			return "redirect:/logout";
-		}
-
-		
-
-		setPageModel(
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());setPageModel(
 				model,
 				"groups",
 				"Groups",
@@ -182,19 +138,7 @@ public class UserControllerGet {
 	@GetMapping(path ="/user/import")
 	public String displayImport(Authentication authentication,Model model)
 	{
-		
-		UserDto userDto = null;
-				
-		try
-		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
-		}
-		catch(UserNotFoundException e)
-		{
-			return "redirect:/logout";
-		}
-    	
-		
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
 
 		setPageModel(
 				model,
@@ -209,19 +153,7 @@ public class UserControllerGet {
 	@GetMapping(path ="/user/profile")
 	public String displaProfile(Authentication authentication,Model model)
 	{
-		UserDto userDto = null;
-				
-		try
-		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
-		}
-		catch(UserNotFoundException e)
-		{
-			return "redirect:/logout";
-		}
-		    	
-		
-
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
 		setPageModel(
 				model,
 				"profile",
@@ -235,19 +167,7 @@ public class UserControllerGet {
 	@GetMapping(path ="/user/settings")
 	public String displaySettings(Authentication authentication,Model model)
 	{
-		
-		UserDto userDto = null;
-		
-		try
-		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
-		}
-		catch(UserNotFoundException e)
-		{
-			return "redirect:/logout";
-		}
-
-	
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
 
 		setPageModel(
 				model,
@@ -262,18 +182,7 @@ public class UserControllerGet {
 	@GetMapping(path ="/user/addContactRequest")
 	public String handleAddContact(Authentication authentication,Model model)
 	{
-		UserDto userDto = null;
-		
-		try
-		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
-		}
-		catch(UserNotFoundException e)
-		{
-			return "redirect:/logout";
-		}
-		
-		
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
 
 		setPageModel(
 				model,
@@ -293,17 +202,7 @@ public class UserControllerGet {
 	public String displayGroupedContacts(Authentication authentication,@PathVariable("Group") ContactGroup group,Model model)
 	{
 		
-				UserDto userDto = null;
-		
-					try
-					{
-						userDto = serviceClassUser.findByEmail(authentication.getName());
-					}
-					catch(UserNotFoundException e)
-					{
-						return "redirect:/logout";
-					}
-					
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
 					setPageModel(
 							model,
 							"groups",
@@ -320,18 +219,7 @@ public class UserControllerGet {
 	@GetMapping(path ="/user/contactsForThisMonth")
 	public String displayContactsForThisMonth(Authentication authentication,Model model)
 	{
-		
-				UserDto userDto = null;
-		
-					try
-					{
-						userDto = serviceClassUser.findByEmail(authentication.getName());
-					}
-					catch(UserNotFoundException e)
-					{
-						return "redirect:/logout";
-					}
-		
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
 					setPageModel(
 							model,
 							"dashboard",
@@ -351,19 +239,7 @@ public class UserControllerGet {
 	@GetMapping(path = "/user/editContactsRequest")
 	public String editContacts(Authentication authentication, Model model)
 	{
-		UserDto userDto = null;
-		try
-		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
-		}
-		catch(UserNotFoundException e)
-		{
-			return "redirect:/logout";
-		}
-		
-		
-		
-		
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
 		
 		setPageModel(
 				model,
@@ -378,20 +254,13 @@ public class UserControllerGet {
 	@GetMapping(path = "/user/editContact/{contactId}")
 	public String editContact(Authentication authentication, Model model,@PathVariable("contactId") UUID contactId)
 	{
-		UserDto userDto = null;
+		UserDto userDto = serviceClassUser.findByEmail(authentication.getName());
 		ContactDto contactDto = null;
 		try
 		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
 			contactDto = serviceClassContact.getContactById(contactId);
-			
-			if(!serviceClassContact.verifyOwner(contactId,userDto.getUserId()))
-					throw new OwnerMismatchException("Ownership Mismatched");
-			
-		}
-		catch(UserNotFoundException e)
-		{
-			return "redirect:/user/editContactsRequest";
+			if(!serviceClassContact.verifyContactOwner(contactId,userDto.getUserId()))
+					throw new OwnerMismatchException("Ownership Mismatched");	
 		}
 		catch(ContactNotFoundException e)
 		{
@@ -401,8 +270,7 @@ public class UserControllerGet {
 		{
 			
 			return "redirect:/user/editContactsRequest?error=True";
-		}
-				
+		}	
 		setPageModel(
 				model,
 				"dashboard",
@@ -415,33 +283,25 @@ public class UserControllerGet {
 		return "normalUser/editContact";
 	}
 	
-	
-	
-	
-	
-	@GetMapping("/user/images/{contactId}") /*Caution as this can bypass the security for image checking*/
+
+	@GetMapping("/contact/images/{contactId}") /*Caution as this can bypass the security for image checking*/
     public ResponseEntity<Resource> serveImage(
             @PathVariable("contactId") UUID contactId, Authentication authentication) {
 		
-		UserDto userDto = null;
+		UserDto userDto =  serviceClassUser.findByEmail(authentication.getName());
 		ContactDto contactDto = null;
 		String fileName = null;
 		
 		try
 		{
-			userDto = serviceClassUser.findByEmail(authentication.getName());
+			
 			contactDto = serviceClassContact.getContactById(contactId);
-			fileName =contactDto.getFileName();
+			fileName = contactDto.getFileName();
 			
-			if(!serviceClassContact.verifyOwner(contactId,userDto.getUserId()))
-				throw new OwnerMismatchException("Ownership Mismatched");
+			if(!serviceClassContact.verifyContactOwner(contactId,userDto.getUserId()))
+				throw new OwnerMismatchException("Ownership Mismatched");	
+		}
 		
-			
-		}
-		catch(UserNotFoundException e)
-		{
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
 		catch(ContactNotFoundException e)
 		{
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -450,8 +310,7 @@ public class UserControllerGet {
 		{
 		    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
-		
-		
+
         // FileHandler.getFile() already has path traversal protection
         Resource resource = fileHandler.getFile(fileName);
  
@@ -472,5 +331,74 @@ public class UserControllerGet {
                 .body(resource);
     }
 	
+	@GetMapping("/user/images/{contactId}") /*Caution as this can bypass the security for image checking*/
+    public ResponseEntity<Resource> serveUserImage(Authentication authentication) {
+		
+		UserDto userDto =  serviceClassUser.findByEmail(authentication.getName());
+		String imageName;
+		
+			imageName = userDto.getImage();
+		
+		
+		// FileHandler.getFile() already has path traversal protection
+        Resource resource = fileHandler.getFile(imageName);
+ 
+        // detect content type from file extension
+        String contentType;
+        try {
+            contentType = Files.probeContentType(Paths.get(imageName));
+        } catch (IOException e) {
+            contentType = null;
+        }
+ 
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+ 
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .body(resource);
+    }
+	
+	
+	@GetMapping(path = "/user/viewProfileRequest")
+	public String displayProfile(HttpServletRequest request,Model model)
+	{
+		UserDto userDto = serviceClassUser.findByEmail(request.getUserPrincipal().getName());
+		
+		
+		/*This conversion is needed as we need to make sure he validations match the newer one*/
+		
+		UserProfileDto userProfileDto = serviceClassUser.convertToUserProfileDto(userDto);
+		System.out.println("Here is the filename "+userProfileDto.getFileName());
+		model.addAttribute("userDto",userDto);
+		setPageModel(
+				model,
+				"dashboard",
+				"User Profile",
+				"Hey "+userDto.getName()+"!!!Here you can make changes in your Profile",userDto
+		);
+		model.addAttribute("userProfile",userProfileDto);
+		return "normalUser/userProfile";
+	}
+	@GetMapping(path = "/user/changePasswordRequest")
+	public String loadChangePasswordModule(Model model, Authentication authentication)
+	{
+		
+		UserDto userDto =  serviceClassUser.findByEmail(authentication.getName());
+		model.addAttribute("userDto",userDto);
+		setPageModel(
+				model,
+				"dashboard",
+				"User Profile",
+				"Hey "+userDto.getName()+"!!!Here you can make changes in your Profile",userDto
+		);
+		
+		model.addAttribute("changePasswordDto",new PasswordDto());
+		return "normalUser/changePassword";
+	}
+	
 
+	
+	
 }

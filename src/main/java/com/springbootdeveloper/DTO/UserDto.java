@@ -2,7 +2,8 @@ package com.springbootdeveloper.DTO;
 
 import jakarta.validation.constraints.*;
 import java.util.*;
-import com.springbootdeveloper.Models.Contact;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public class UserDto {
 
@@ -35,13 +36,17 @@ public class UserDto {
     private String password;
 
     private String image;
-    private String bio;
     private boolean enable;
     private String role;
-
+    private MultipartFile multipartFile;
+   
     @AssertTrue(message = "You must agree to the terms")
     private boolean agreeTerms;
-
+    
+    
+    
+    @Size(max = 200, message = "Password must not exceed 20 characters")
+    private String bio; //only for setting purpose
     private List<ContactDto> contactDtos = new ArrayList<>();
 
 	public UUID getUserId() {
@@ -74,12 +79,6 @@ public class UserDto {
 	public void setImage(String image) {
 		this.image = image;
 	}
-	public String getBio() {
-		return bio;
-	}
-	public void setBio(String bio) {
-		this.bio = bio;
-	}
 	public boolean isEnable() {
 		return enable;
 	}
@@ -103,5 +102,19 @@ public class UserDto {
 	}
 	public void setContactDtos(List<ContactDto> contactDtos) {
 		this.contactDtos = contactDtos;
+	}
+
+	public MultipartFile getMultipartFile() {
+		return multipartFile;
+	}
+	public void setMultipartFile(MultipartFile multipartFile) {
+		this.multipartFile = multipartFile;
+	}
+	
+	public String getBio() {
+		return bio;
+	}
+	public void setBio(String bio) {
+		this.bio = bio;
 	}
 }

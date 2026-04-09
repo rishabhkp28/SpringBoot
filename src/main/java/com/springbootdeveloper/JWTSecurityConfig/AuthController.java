@@ -2,15 +2,20 @@ package com.springbootdeveloper.JWTSecurityConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.springbootdeveloper.DTO.UserLoginDto;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @Controller
 public class AuthController {
@@ -23,26 +28,39 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(
-            @RequestParam("email") String email,
-            @RequestParam("password") String password,
+            @Valid @ModelAttribute("UserLog") UserLoginDto userLog,
+            BindingResult result,
             HttpServletResponse response) {
 
-        Authentication authentication =
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    email,
-                    password
-                )
-            );
+        if (result.hasErrors()) {
+            return "login";
+        }
 
-        String token = jwtUtil.generateToken(authentication);
+        try {
+            Authentication authentication =
+                authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                        userLog.getEmail(),
+                        userLog.getPassword() //throws exception if something is incorrect
+                    )
+                );
 
-        Cookie cookie = new Cookie("jwt", token);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(86400);
-        response.addCookie(cookie);
+            String token = jwtUtil.generateToken(authentication);
 
-        return "redirect:/user/dashboard";
+            Cookie cookie = new Cookie("jwt", token);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(86400);
+            response.addCookie(cookie);
+
+            return "redirect:/user/dashboard";
+
+        } catch (BadCredentialsException ex) {
+
+            // ✅ GLOBAL error (not tied to any field)
+            result.reject("login.failed", "Invalid email or password");
+
+            return "login";
+        }
     }
 }
