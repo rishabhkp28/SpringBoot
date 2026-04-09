@@ -67,5 +67,6 @@ Progress Update (21 March -10 April):
         * Enhanced the readibility of the JWT authentication module.
         * Implemented the UserProfile Updatation modules for the user to update his details into the database.
         * Implemented the UI (html+css+js) UserProfile.html UserProfileScript.js UserProfileStyle.css.
+        * Added the dynamic validations for better UI design.
         * Implemented the ChangePassword module to securely change password into the database and simultaneously autoLogin without being logged   out.  
         
