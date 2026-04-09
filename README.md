@@ -61,4 +61,12 @@ Progress Update (11–21 March):
         * Implemented the delete functionality and edit functionality for the contacts along with dynamic validations whereever needed.
         * Implemented security patches for handling non verified GET image requests and malicious delete contact requests.
         * Mini Images of the users are now available in the list along whole project.
+
+Progress Update (21 March -10 April):
+
+        * Enhanced the readibility of the JWT authentication module.
+        * Implemented the UserProfile Updatation modules for the user to update his details into the database.
+        * Implemented the UI (html+css+js) UserProfile.html UserProfileScript.js UserProfileStyle.css.
+        * Added the dynamic validations for better UI design.
+        * Implemented the ChangePassword module to securely change password into the database and simultaneously autoLogin without being logged   out.  
         
