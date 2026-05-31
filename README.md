@@ -69,4 +69,11 @@ Progress Update (21 March -10 April):
         * Implemented the UI (html+css+js) UserProfile.html UserProfileScript.js UserProfileStyle.css.
         * Added the dynamic validations for better UI design.
         * Implemented the ChangePassword module to securely change password into the database and simultaneously autoLogin without being logged   out.  
-        
+
+Break- Job Search - Joining
+
+Progress Update (31 May):
+
+        * Included webpage for Import Export of Contacts.
+        * Implemented the Export Contact Module ( Along with Profile Photo).
+
