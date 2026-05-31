@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.UUID;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -31,6 +34,7 @@ import com.springbootdeveloper.Exceptions.ContactNotFoundException;
 import com.springbootdeveloper.Exceptions.OwnerMismatchException;
 import com.springbootdeveloper.Exceptions.UserNotFoundException;
 import com.springbootdeveloper.Helpers.FileHandler;
+import com.springbootdeveloper.Helpers.VCFExportService;
 import com.springbootdeveloper.Models.ContactGroup;
 
 @Controller
@@ -40,12 +44,14 @@ public class UserControllerGet {
 	private ServiceClassUser serviceClassUser;
 	private ServiceClassContact serviceClassContact;
 	private FileHandler fileHandler;
+	private VCFExportService vCFExportService;
 	
-	public UserControllerGet(ServiceClassUser serviceClassUser,ServiceClassContact serviceClassContact,FileHandler fileHandler)
+	public UserControllerGet(ServiceClassUser serviceClassUser,ServiceClassContact serviceClassContact,FileHandler fileHandler,VCFExportService vCFExportService)
 	{
 		this.serviceClassUser = serviceClassUser;
 		this.serviceClassContact = serviceClassContact;
 		this.fileHandler = fileHandler;
+		this.vCFExportService = vCFExportService;
 	}
 
 	/* ----------- HELPER METHOD (ONLY ADDITION) ----------- */
@@ -260,7 +266,9 @@ public class UserControllerGet {
 		{
 			contactDto = serviceClassContact.getContactById(contactId);
 			if(!serviceClassContact.verifyContactOwner(contactId,userDto.getUserId()))
-					throw new OwnerMismatchException("Ownership Mismatched");	
+					throw new OwnerMismatchException("Ownership Mismatched");
+			
+			System.out.println("Contact is Verified");
 		}
 		catch(ContactNotFoundException e)
 		{
@@ -313,6 +321,7 @@ public class UserControllerGet {
 
         // FileHandler.getFile() already has path traversal protection
         Resource resource = fileHandler.getFile(fileName);
+        System.out.println("file name is "+fileName);
  
         // detect content type from file extension
         String contentType;
@@ -396,6 +405,36 @@ public class UserControllerGet {
 		
 		model.addAttribute("changePasswordDto",new PasswordDto());
 		return "normalUser/changePassword";
+	}
+	
+	@GetMapping("/user/export")
+	public ResponseEntity<byte[]> exportContacts(Principal principal) {
+
+	    String email = principal.getName();
+	    UserDto userDto = serviceClassUser.findByEmail(email);
+
+	    byte[] vcfBytes =
+	            vCFExportService.exportUserContacts(userDto.getContactDtos());
+
+	    HttpHeaders headers = new HttpHeaders();
+
+	    headers.setContentType(
+	            MediaType.parseMediaType("text/vcard")
+	    );
+
+	    headers.setContentDisposition(
+	            ContentDisposition
+	                    .attachment()
+	                    .filename("contacts.vcf")
+	                    .build()
+	    );
+
+	    return ResponseEntity
+	            .ok()
+	            .headers(headers)
+	            .body(vcfBytes);
+	    
+	    
 	}
 	
 

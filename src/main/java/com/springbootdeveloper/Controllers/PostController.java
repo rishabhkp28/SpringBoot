@@ -97,15 +97,15 @@ public class PostController {
     	    return "enhanceProfile";
     	}
     			    	
-	    	model.addAttribute("user",userDto);
-	 		model.addAttribute("activePage","dashboard");
-	 		model.addAttribute("pageTitle","Dashboard");	
-	 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Welcome to your User Dashboard");
-	 		model.addAttribute("recentContacts",null);
-	 		model.addAttribute("favouritesCount",0);
-	 		model.addAttribute("contactsAddedThisMonth",0);
-	 		model.addAttribute("totalContactsCount",0);
-	 		return "redirect:/normalUser/userDashboard";
+//	    	model.addAttribute("user",userDto);
+//	 		model.addAttribute("activePage","dashboard");
+//	 		model.addAttribute("pageTitle","Dashboard");	
+//	 		model.addAttribute("pageSubtitle","Hey "+userDto.getName()+"!!! Welcome to your User Dashboard");
+//	 		model.addAttribute("recentContacts",null);
+//	 		model.addAttribute("favouritesCount",0);
+//	 		model.addAttribute("contactsAddedThisMonth",0);
+//	 		model.addAttribute("totalContactsCount",0);
+	 		return "redirect:/user/dashboard";
     	
     }
 }

@@ -75,7 +75,7 @@
                 <!-- Current photo preview — shown when contact already has one -->
                 <div class="ec-current-photo" id="ec-current-photo"
                      th:if="${contactDto.fileName != null and contactDto.fileName != ''}">
-                    <img th:src="@{/user/images/{id}(id=${contactDto.contactId})}"
+                    <img th:src="@{/contact/images/{id}(id=${contactDto.contactId})}"
                          class="ec-current-img" alt="Current photo"
                          id="ec-current-img"/>
                     <div class="ec-current-info">

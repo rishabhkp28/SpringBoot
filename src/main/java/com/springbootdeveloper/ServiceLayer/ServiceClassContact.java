@@ -74,7 +74,7 @@ public class ServiceClassContact {
 			contact.setUser(user);
 			
 			dbContacts.save(contact);
-			user.addContact(contact);
+			user.addContact(contact); //similarly adding to contacts of the user
 			
 			return convertToDto(contact);
 	 }

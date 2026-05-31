@@ -109,24 +109,32 @@ public class ServiceClassUser {//defined for rules and regulations regarding the
     {
     	String fileName = "";
     	
-    	
     	User user = dl.findByEmail(userDto.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("User Not Found")); //if its value give value , if empty optional then throw exception
    	 							//this is exception Supplier
+    	
+    	boolean ifUpdated = false;
     	
 		if(enhancedProfile.getMultipartFile()!= null
 				&& !enhancedProfile.getMultipartFile().isEmpty())
     	{
 			fileName = fileHandler.upload(enhancedProfile.getMultipartFile());
 			user.setImage(fileName);
+			ifUpdated = true;
 			
     	}
 		
         if (enhancedProfile.getBio() != null && 
             !enhancedProfile.getBio().isBlank()) {
         	user.setBio(enhancedProfile.getBio());
-        	 
+        	ifUpdated = true;
            
+        }
+        
+        
+        if(ifUpdated)
+        {
+        	dl.save(user);
         }
         
         return convertToDto(user);

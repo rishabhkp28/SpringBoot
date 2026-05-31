@@ -1,11 +1,149 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{dashboardBase :: base(
+            ~{::pageCss},
+            ~{::pageJs},
+            ~{::content}
+      )}">
 
+<head>
 
-<th:block th:replace="dashboardBase :: base(~{}, ~{}, ~{::content})">
-
-    <th:block th:fragment="content">
-        <h1 style="font-size:20px; color: pink;">Hey this is the Imports page</h1>
+    <th:block th:fragment="pageCss">
+        <link rel="stylesheet"
+              th:href="@{/css/userImportStyle.css}">
     </th:block>
+
+</head>
+
+<body>
+
+<th:block th:fragment="content">
+
+    <section class="ie-hero db-anim">
+
+        <div class="ie-header">
+            <div class="ie-header-icon">
+                <i class="fa-solid fa-file-import"></i>
+            </div>
+
+            <div>
+                <h2>Import & Export Contacts</h2>
+                <p>
+                    Seamlessly move your contacts between devices
+                    using industry-standard vCard files.
+                </p>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="ie-grid">
+
+        <!-- IMPORT -->
+
+        <div class="ie-card db-anim db-anim-d1">
+
+            <div class="ie-card-icon import">
+                <i class="fa-solid fa-upload"></i>
+            </div>
+
+            <h3>Import Contacts</h3>
+
+            <p>
+                Upload a .vcf file and instantly add
+                contacts to your SmartCM account.
+            </p>
+
+            <form th:action="@{/user/import}"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <label class="ie-file-label">
+                    <i class="fa-solid fa-folder-open"></i>
+                    Choose VCF File
+
+                    <input type="file"
+                           name="file"
+                           accept=".vcf"
+                           required>
+                </label>
+
+                <button type="submit"
+                        class="db-btn db-btn-primary ie-btn">
+                    <i class="fa-solid fa-upload"></i>
+                    Import Contacts
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- EXPORT -->
+
+        <div class="ie-card db-anim db-anim-d2">
+
+            <div class="ie-card-icon export">
+                <i class="fa-solid fa-download"></i>
+            </div>
+
+            <h3>Export Contacts</h3>
+
+            <p>
+                Download all your contacts in
+                standard vCard format for backup
+                or migration.
+            </p>
+
+            <a th:href="@{/user/export}"
+               class="db-btn db-btn-primary ie-btn">
+
+                <i class="fa-solid fa-download"></i>
+                Export Contacts
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <section class="ie-info db-card db-anim db-anim-d3">
+
+        <h3 class="db-card-title">
+            Supported Format
+        </h3>
+
+        <div class="db-divider"></div>
+
+        <ul class="ie-list">
+            <li>
+                <i class="fa-solid fa-circle-check"></i>
+                vCard (.vcf) files
+            </li>
+
+            <li>
+                <i class="fa-solid fa-circle-check"></i>
+                UTF-8 encoding
+            </li>
+
+            <li>
+                <i class="fa-solid fa-circle-check"></i>
+                Multiple contacts per file
+            </li>
+
+            <li>
+                <i class="fa-solid fa-circle-check"></i>
+                Compatible with Android, iPhone & Outlook
+            </li>
+        </ul>
+
+    </section>
 
 </th:block>
 
+<th:block th:fragment="pageJs">
+<!-- js is not needed so i am leaving this part Empty ,I wrote it_Rishabh -->
+</th:block>
+
+</body>
 </html>
